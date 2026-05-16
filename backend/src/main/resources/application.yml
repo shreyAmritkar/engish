@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: style-communicator
+  datasource:
+    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/stylecommunicator}
+    username: ${DB_USER:postgres}
+    password: ${DB_PASSWORD:shrey}
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    properties:
+      hibernate:
+        jdbc:
+          time_zone: UTC
+  flyway:
+    enabled: true
+
+server:
+  port: ${PORT:8080}
+
+gemini:
+  api-key: ${GEMINI_API_KEY:}
+  flash-model: gemini-1.5-flash
+  pro-model: gemini-1.5-pro
+
+app:
+  cors-origins: ${CORS_ORIGINS:http://localhost:3000}
+  daily-session-cap: 10
+  style-cache-ttl-minutes: 60
+  similarity-threshold: 0.85

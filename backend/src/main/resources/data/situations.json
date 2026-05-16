@@ -1,0 +1,38 @@
+{
+  "DOMINANT": [
+    "You are the team lead. A junior engineer challenges your technical decision in front of everyone.",
+    "A client pushes back on your timeline during a status call with stakeholders listening.",
+    "A peer takes credit for your work in a leadership meeting.",
+    "Your director questions whether your team can deliver without offering support.",
+    "A vendor misses a deadline and blames your requirements in writing.",
+    "Two team members argue in your standup and expect you to pick a side immediately.",
+    "An executive asks you to cut scope without reducing commitments to customers.",
+    "A cross-functional partner refuses to attend your planning session.",
+    "You discover a critical bug hours before launch and must communicate ownership.",
+    "A senior IC publicly disagrees with your architecture choice in Slack."
+  ],
+  "EQUAL": [
+    "You and a colleague disagree on the best approach to a customer problem.",
+    "You need to split ownership of a high-visibility project fairly.",
+    "A teammate wants to change process mid-sprint without team buy-in.",
+    "You must give feedback to a peer who is also a close collaborator.",
+    "Two departments want the same engineer for overlapping priorities.",
+    "You are mediating a misunderstanding between two peers on your team.",
+    "A partner team proposes a integration plan that increases your workload.",
+    "You and a PM disagree on what success metrics should be for a launch.",
+    "A colleague asks you to cover their on-call shift with short notice.",
+    "You need to negotiate meeting cadence with a busy stakeholder."
+  ],
+  "SUBMISSIVE": [
+    "You are asking your manager for a raise after a successful project.",
+    "You need to decline extra work without damaging your reputation.",
+    "You must admit a mistake that delayed a dependency for another team.",
+    "You are requesting budget for a tool that will save time long-term.",
+    "Your skip-level asks why you have not been more visible lately.",
+    "You need help unblocking access that HR has not processed.",
+    "You want to push back on a performance review comment you disagree with.",
+    "You are asking to switch teams because of burnout.",
+    "A senior leader assigns you work outside your role scope.",
+    "You need an extension on a deadline you already committed to."
+  ]
+}
