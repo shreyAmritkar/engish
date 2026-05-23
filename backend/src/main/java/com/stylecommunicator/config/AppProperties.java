@@ -10,7 +10,7 @@ public class AppProperties {
     private String corsOrigins = "http://localhost:3000";
     private int dailySessionCap = 10;
     private int styleCacheTtlMinutes = 60;
-    private double similarityThreshold = 0.85;
+    private double similarityThreshold = 1.0;
 
     public String getCorsOrigins() { return corsOrigins; }
     public void setCorsOrigins(String corsOrigins) { this.corsOrigins = corsOrigins; }
@@ -21,3 +21,4 @@ public class AppProperties {
     public double getSimilarityThreshold() { return similarityThreshold; }
     public void setSimilarityThreshold(double similarityThreshold) { this.similarityThreshold = similarityThreshold; }
 }
+

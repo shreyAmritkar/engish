@@ -1,31 +1,37 @@
 package com.stylecommunicator.service;
 
-import com.stylecommunicator.config.AppProperties;
-import com.stylecommunicator.domain.StyleSource;
-import com.stylecommunicator.entity.StyleProfile;
-import com.stylecommunicator.repository.StyleProfileRepository;
-import com.stylecommunicator.util.CosineSimilarityUtil;
-import com.stylecommunicator.util.StylePromptCompressor;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import com.stylecommunicator.config.AppProperties;
+import com.stylecommunicator.domain.StyleSource;
+import com.stylecommunicator.entity.StyleProfile;
+import com.stylecommunicator.llm.LlmClient;
+import com.stylecommunicator.llm.LlmTier;
+import com.stylecommunicator.repository.StyleProfileRepository;
+import com.stylecommunicator.util.CosineSimilarityUtil;
+import com.stylecommunicator.util.StylePromptCompressor;
 
 @Service
 public class StyleEngineService {
 
     private final StyleProfileRepository styleProfileRepository;
-    private final GeminiService geminiService;
+    private final LlmClient llmClient;
     private final AppProperties appProperties;
     private final StylePromptCache stylePromptCache;
 
     public StyleEngineService(
             StyleProfileRepository styleProfileRepository,
-            GeminiService geminiService,
+            LlmClient llmClient,
             AppProperties appProperties,
             StylePromptCache stylePromptCache) {
         this.styleProfileRepository = styleProfileRepository;
-        this.geminiService = geminiService;
+        this.llmClient = llmClient;
         this.appProperties = appProperties;
         this.stylePromptCache = stylePromptCache;
     }
@@ -39,9 +45,9 @@ public class StyleEngineService {
             return duplicate.get();
         }
         candidate.setCompressedPrompt(StylePromptCompressor.compress(candidate));
-        styleProfileRepository.save(candidate);
-        stylePromptCache.put(candidate.getId(), candidate.getCompressedPrompt());
-        return candidate;
+        StyleProfile saved = styleProfileRepository.save(candidate);
+        stylePromptCache.put(saved.getId(), saved.getCompressedPrompt());
+        return saved;
     }
 
     @Transactional
@@ -80,7 +86,8 @@ public class StyleEngineService {
                 }
                 """.formatted(truncate(description, 1500));
 
-        return geminiService.generateJson(prompt, false).orElseGet(this::defaultExtraction);
+        return llmClient.generateJson(prompt, LlmTier.FAST)
+                .orElseGet(this::defaultExtraction);
     }
 
     private Map<String, Object> defaultExtraction() {
@@ -95,7 +102,9 @@ public class StyleEngineService {
                 "sample_phrases", List.of("Let me be direct.")
         );
     }
-
+    private String asString(Object value) {
+        return value != null ? value.toString() : null;
+    }
     private StyleProfile mapToProfile(String name, String description, UUID createdBy, StyleSource source, Map<String, Object> extracted) {
         StyleProfile profile = new StyleProfile();
         profile.setName(name);
@@ -114,9 +123,8 @@ public class StyleEngineService {
     }
 
     private Optional<StyleProfile> findSimilarProfile(StyleProfile candidate) {
-        List<StyleProfile> existing = styleProfileRepository.findAll();
         double threshold = appProperties.getSimilarityThreshold();
-        return existing.stream()
+        return styleProfileRepository.findAll().stream()
                 .filter(p -> CosineSimilarityUtil.cosineSimilarity(candidate, p) > threshold)
                 .findFirst();
     }
@@ -126,9 +134,7 @@ public class StyleEngineService {
         return text.length() <= max ? text : text.substring(0, max);
     }
 
-    private String asString(Object value) {
-        return value != null ? value.toString() : null;
-    }
+
 
     private int asInt(Object value, int defaultVal) {
         if (value instanceof Number n) return n.intValue();

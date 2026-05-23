@@ -1,6 +1,8 @@
 package com.stylecommunicator.service;
 
 import com.stylecommunicator.entity.PracticeSession;
+import com.stylecommunicator.llm.LlmClient;
+import com.stylecommunicator.llm.LlmTier;
 import com.stylecommunicator.entity.StyleProfile;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +15,15 @@ public class AnalysisRouter {
             "confidence", "tone", "persuasion", "emotional_control", "professionalism", "style_match"
     );
 
-    private final GeminiService geminiService;
+    private final LlmClient llmClient;
     private final GrammarCheckerService grammarCheckerService;
     private final StyleEngineService styleEngineService;
 
     public AnalysisRouter(
-            GeminiService geminiService,
+            LlmClient llmClient,
             GrammarCheckerService grammarCheckerService,
             StyleEngineService styleEngineService) {
-        this.geminiService = geminiService;
+        this.llmClient = llmClient;
         this.grammarCheckerService = grammarCheckerService;
         this.styleEngineService = styleEngineService;
     }
@@ -45,7 +47,7 @@ public class AnalysisRouter {
                 escape(userResponse)
         );
 
-        Map<String, Object> result = geminiService.generateJson(prompt, false)
+        Map<String, Object> result = llmClient.generateJson(prompt, LlmTier.FAST)
                 .orElseGet(this::defaultAnalysis);
 
         List<String> ruleGrammar = grammarCheckerService.check(userResponse);
@@ -77,7 +79,7 @@ public class AnalysisRouter {
                 style.getFormalityLevel() != null ? style.getFormalityLevel() : 5
         );
 
-        return geminiService.generateJson(prompt, true).orElse(Map.of(
+        return llmClient.generateJson(prompt, LlmTier.QUALITY).orElse(Map.of(
                 "assertive", userResponse,
                 "diplomatic", userResponse
         ));
@@ -97,7 +99,7 @@ public class AnalysisRouter {
                 findWeakest(scores),
                 session.getSituation()
         );
-        return geminiService.generateJson(prompt, false)
+        return llmClient.generateJson(prompt, LlmTier.FAST)
                 .map(m -> String.valueOf(m.getOrDefault("coaching_tip", "Focus on clarity and tone alignment with your target style.")))
                 .orElse("Focus on clarity and tone alignment with your target style.");
     }

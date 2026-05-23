@@ -70,7 +70,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
 }
 
 export const api = {
-  getStyles: (source = "COMMUNITY,PRESET") =>
+  getStyles: (source = "COMMUNITY,PRESET,USER_DESCRIBED") =>
     request<StyleProfile[]>(`/api/styles/library?source=${encodeURIComponent(source)}`),
 
   createStyleFromDescription: (name: string, description: string) =>

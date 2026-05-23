@@ -1,10 +1,12 @@
 spring:
+  config:
+    import: optional:file:.env[.properties]
   application:
     name: style-communicator
   datasource:
-    url: ${DATABASE_URL:jdbc:postgresql://localhost:5432/stylecommunicator}
-    username: ${DB_USER:postgres}
-    password: ${DB_PASSWORD:shrey}
+    url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
   jpa:
     hibernate:
       ddl-auto: validate
@@ -17,12 +19,23 @@ spring:
     enabled: true
 
 server:
-  port: ${PORT:8080}
+  port: ${PORT}
 
-gemini:
-  api-key: ${GEMINI_API_KEY:}
-  flash-model: gemini-1.5-flash
-  pro-model: gemini-1.5-pro
+# One key: OPENROUTER_API_KEY — pick any model id (Gemini, DeepSeek, etc.) via LLM_FAST_MODEL / LLM_QUALITY_MODEL
+llm:
+  provider: ${LLM_PROVIDER:openrouter}
+  api-key: ${OPENROUTER_API_KEY:${LLM_API_KEY:${GEMINI_API_KEY:}}}
+  fast-model: ${LLM_FAST_MODEL:google/gemini-2.0-flash-001}
+  quality-model: ${LLM_QUALITY_MODEL:google/gemini-2.0-flash-001}
+  fallback-models:
+    - google/gemini-2.0-flash-001
+    - openai/gpt-4o-mini
+  retry-max-attempts: ${LLM_RETRY_MAX:3}
+  retry-backoff-ms: ${LLM_RETRY_BACKOFF_MS:2000}
+  openrouter:
+    base-url: https://openrouter.ai/api/v1
+    site-url: ${OPENROUTER_SITE_URL:http://localhost:3000}
+    app-name: ${OPENROUTER_APP_NAME:Style Communicator}
 
 app:
   cors-origins: ${CORS_ORIGINS:http://localhost:3000}
