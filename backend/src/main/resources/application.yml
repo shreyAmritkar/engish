@@ -19,7 +19,7 @@ spring:
     enabled: true
 
 server:
-  port: ${PORT}
+  port: ${PORT:10000}
 
 # One key: OPENROUTER_API_KEY — pick any model id (Gemini, DeepSeek, etc.) via LLM_FAST_MODEL / LLM_QUALITY_MODEL
 llm:

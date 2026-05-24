@@ -1,7 +1,0 @@
-[build]
-builder = "NIXPACKS"
-
-[deploy]
-startCommand = "java -jar target/backend-0.1.0.jar"
-healthcheckPath = "/api/health"
-restartPolicyType = "ON_FAILURE"
