@@ -1,6 +1,6 @@
 import { getUserId } from "./user";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '')
+const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || "https://engish-gpsx.onrender.com";
 
 export type StyleProfile = {
   id: string;
