@@ -44,7 +44,7 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           npm install -g vercel@latest
-          # By running from the root and using --cwd, we avoid the nested folder duplication bug
-          vercel pull --yes --environment=production --token=$VERCEL_TOKEN --cwd frontend
-          vercel build --prod --token=$VERCEL_TOKEN --cwd frontend
-          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN --cwd frontend  
+          # Run globally from the root. Vercel will auto-detect the layout using project.json
+          vercel pull --yes --environment=production --token=$VERCEL_TOKEN
+          vercel build --prod --token=$VERCEL_TOKEN
+          vercel deploy --prebuilt --prod --token=$VERCEL_TOKEN
