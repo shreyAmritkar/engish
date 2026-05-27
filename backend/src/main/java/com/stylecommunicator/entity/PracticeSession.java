@@ -1,12 +1,18 @@
 package com.stylecommunicator.entity;
 
-import jakarta.persistence.*;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
+
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.time.Instant;
-import java.util.Map;
-import java.util.UUID;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "practice_session")
@@ -33,6 +39,16 @@ public class PracticeSession {
     @Column(columnDefinition = "jsonb")
     private Map<String, Object> feedback;
 
+    // ── Multi-turn additions ──────────────────────────────────────────────────
+    // Each element: { "role": "user"|"character", "text": "...", "timestamp": "..." }
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "conversation_history", columnDefinition = "jsonb")
+    private List<Map<String, Object>> conversationHistory;
+
+    @Column(name = "is_multi_turn", nullable = false)
+    private boolean multiTurn = false;
+    // ─────────────────────────────────────────────────────────────────────────
+
     @Column(name = "created_at")
     private Instant createdAt = Instant.now();
 
@@ -46,6 +62,7 @@ public class PracticeSession {
         }
     }
 
+    // existing getters/setters
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
     public UUID getUserId() { return userId; }
@@ -64,4 +81,12 @@ public class PracticeSession {
     public void setFeedback(Map<String, Object> feedback) { this.feedback = feedback; }
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    // multi-turn getters/setters
+    public List<Map<String, Object>> getConversationHistory() { return conversationHistory; }
+    public void setConversationHistory(List<Map<String, Object>> conversationHistory) {
+        this.conversationHistory = conversationHistory;
+    }
+    public boolean isMultiTurn() { return multiTurn; }
+    public void setMultiTurn(boolean multiTurn) { this.multiTurn = multiTurn; }
 }

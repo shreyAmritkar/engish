@@ -18,6 +18,22 @@ export type StyleProfile = {
   rawDescription?: string;
 };
 
+// ── Conversation types ────────────────────────────────────────────────────────
+
+export type ConversationTurn = {
+  role: "user" | "character";
+  text: string;
+  timestamp: string;
+};
+
+export type TurnResponse = {
+  characterReply: string;
+  history: ConversationTurn[];
+  maxReached: boolean;
+};
+
+// ── Session types ─────────────────────────────────────────────────────────────
+
 export type Session = {
   id: string;
   userId: string;
@@ -27,6 +43,8 @@ export type Session = {
   emotionalContext: string;
   userResponse?: string;
   feedback?: FeedbackPayload;
+  conversationHistory?: ConversationTurn[];
+  multiTurn?: boolean;
 };
 
 export type FeedbackPayload = {
@@ -35,6 +53,8 @@ export type FeedbackPayload = {
   misinterpretation_warnings: string[];
   rewrites?: { assertive: string; diplomatic: string };
   coaching_tip?: string;
+  /** Present only on multi-turn sessions */
+  conversation_summary?: string;
 };
 
 export type ProgressData = {
@@ -54,6 +74,8 @@ export type ProgressData = {
   }>;
 };
 
+// ── HTTP helper ───────────────────────────────────────────────────────────────
+
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   const userId = getUserId();
   const headers: HeadersInit = {
@@ -69,7 +91,10 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
   return res.json() as Promise<T>;
 }
 
+// ── API surface ───────────────────────────────────────────────────────────────
+
 export const api = {
+  // styles
   getStyles: (source = "COMMUNITY,PRESET,USER_DESCRIBED") =>
     request<StyleProfile[]>(`/api/styles/library?source=${encodeURIComponent(source)}`),
 
@@ -84,11 +109,7 @@ export const api = {
       "/api/styles/community/submit",
       {
         method: "POST",
-        body: JSON.stringify({
-          userId: getUserId(),
-          characterName,
-          excerpts,
-        }),
+        body: JSON.stringify({ userId: getUserId(), characterName, excerpts }),
       }
     ),
 
@@ -97,6 +118,7 @@ export const api = {
       method: "POST",
     }),
 
+  // sessions — single response (unchanged)
   startSession: (styleProfileId: string) =>
     request<Session>("/api/sessions/start", {
       method: "POST",
@@ -121,5 +143,27 @@ export const api = {
       method: "POST",
     }),
 
+  // sessions — multi-turn conversation (new)
+
+  /**
+   * Send a user message in a conversation session.
+   * Returns the character's reply + updated history + whether the turn cap is hit.
+   */
+  addTurn: (sessionId: string, message: string) =>
+    request<TurnResponse>(`/api/sessions/${sessionId}/turns`, {
+      method: "POST",
+      body: JSON.stringify({ message }),
+    }),
+
+  /**
+   * Score the full conversation and return feedback.
+   * After this, the session is immutable; use rewrites/coaching-tip as normal.
+   */
+  finishConversation: (sessionId: string) =>
+    request<Session>(`/api/sessions/${sessionId}/finish`, {
+      method: "POST",
+    }),
+
+  // progress
   getProgress: () => request<ProgressData>(`/api/progress/${getUserId()}`),
 };
