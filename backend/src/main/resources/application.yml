@@ -42,3 +42,7 @@ app:
   daily-session-cap: 10
   style-cache-ttl-minutes: 60
   similarity-threshold: 0.85
+
+situation:
+  news:
+    api-key: ${NEWSDATA_API_KEY:}
