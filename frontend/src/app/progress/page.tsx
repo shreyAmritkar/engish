@@ -3,21 +3,26 @@
 import { useEffect, useState } from "react";
 import { api, ProgressData } from "@/lib/api";
 import { ScoreRadar } from "@/components/ScoreRadar";
+import { useAuth } from "@/hooks/useAuth";
 
 const LEVEL_LABELS = ["Novice", "Developing", "Competent", "Advanced", "Expert"];
 
 export default function ProgressDashboard() {
+  const { ready } = useAuth();
   const [data, setData] = useState<ProgressData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    if (!ready) return;
     api
       .getProgress()
       .then(setData)
       .catch((e) => setError(e.message))
       .finally(() => setLoading(false));
-  }, []);
+  }, [ready]);
+
+  if (!ready) return null;
 
   if (loading) return <p className="text-slate">Loading progress…</p>;
   if (error) return <p className="text-red-600">{error}</p>;

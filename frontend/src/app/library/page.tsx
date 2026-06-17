@@ -15,11 +15,6 @@ export default function StyleLibraryPage() {
   const [extracted, setExtracted] = useState<StyleProfile | null>(null);
   const [creating, setCreating] = useState(false);
 
-  const [showCommunity, setShowCommunity] = useState(false);
-  const [characterName, setCharacterName] = useState("");
-  const [excerpts, setExcerpts] = useState("");
-  const [communityStatus, setCommunityStatus] = useState<string | null>(null);
-
   useEffect(() => {
     api
       .getStyles()
@@ -43,19 +38,6 @@ export default function StyleLibraryPage() {
     }
   }
 
-  async function handleCommunitySubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setError(null);
-    try {
-      const lines = excerpts.split("\n").map((l) => l.trim()).filter(Boolean);
-      const result = await api.submitCommunityStyle(characterName, lines);
-      setCommunityStatus(`Submitted "${characterName}" — status: ${result.status}`);
-      setShowCommunity(false);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Community submit failed");
-    }
-  }
-
   if (loading) {
     return <p className="text-slate">Loading styles…</p>;
   }
@@ -75,13 +57,6 @@ export default function StyleLibraryPage() {
           >
             Create your own
           </button>
-          <button
-            type="button"
-            onClick={() => setShowCommunity(true)}
-            className="px-4 py-2 rounded-lg border border-slate-300 text-ink font-medium hover:bg-white"
-          >
-            Submit community style
-          </button>
         </div>
       </section>
 
@@ -90,12 +65,6 @@ export default function StyleLibraryPage() {
           {error}
         </div>
       )}
-      {communityStatus && (
-        <div className="rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-900 px-4 py-3 text-sm">
-          {communityStatus}
-        </div>
-      )}
-
       <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {styles.map((style) => (
           <article
@@ -110,11 +79,6 @@ export default function StyleLibraryPage() {
               <span className="px-2 py-0.5 rounded-full bg-blue-50 text-accent">
                 Formal {style.formalityLevel}/10
               </span>
-              {style.communityVotes > 0 && (
-                <span className="px-2 py-0.5 rounded-full bg-amber-50 text-warning">
-                  {style.communityVotes} votes
-                </span>
-              )}
             </div>
             <p className="text-sm text-slate mt-3 line-clamp-2">
               {style.keyPatterns?.slice(0, 2).join(" · ") || "Practice this style"}
@@ -169,33 +133,6 @@ export default function StyleLibraryPage() {
                 </Link>
               </div>
             )}
-          </form>
-        </Modal>
-      )}
-
-      {showCommunity && (
-        <Modal title="Submit community style" onClose={() => setShowCommunity(false)}>
-          <form onSubmit={handleCommunitySubmit} className="space-y-4">
-            <input
-              className="w-full border rounded-lg px-3 py-2"
-              placeholder="Character name"
-              value={characterName}
-              onChange={(e) => setCharacterName(e.target.value)}
-              required
-            />
-            <textarea
-              className="w-full border rounded-lg px-3 py-2 min-h-[140px]"
-              placeholder="Paste dialogue excerpts (one per line)"
-              value={excerpts}
-              onChange={(e) => setExcerpts(e.target.value)}
-              required
-            />
-            <button
-              type="submit"
-              className="px-4 py-2 rounded-lg bg-accent text-white font-medium"
-            >
-              Submit for approval
-            </button>
           </form>
         </Modal>
       )}

@@ -3,7 +3,7 @@
 import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { api, ConversationTurn, Session } from "@/lib/api";
+import { api, Session } from "@/lib/api";
 import { ScoreRadar } from "@/components/ScoreRadar";
 
 function FeedbackContent() {
@@ -15,7 +15,6 @@ function FeedbackContent() {
   const [error, setError] = useState<string | null>(null);
   const [rewritesLoading, setRewritesLoading] = useState(false);
   const [tipLoading, setTipLoading] = useState(false);
-  const [transcriptOpen, setTranscriptOpen] = useState(false);
 
   useEffect(() => {
     if (!sessionId) {
@@ -32,8 +31,6 @@ function FeedbackContent() {
 
   const feedback = session?.feedback;
   const scores = feedback?.scores || {};
-  const isMultiTurn = session?.multiTurn ?? false;
-  const history: ConversationTurn[] = session?.conversationHistory ?? [];
 
   async function loadRewrites() {
     if (!sessionId) return;
@@ -71,24 +68,7 @@ function FeedbackContent() {
 
   return (
     <div className="space-y-8 max-w-4xl mx-auto">
-      <div className="flex items-center gap-3">
-        <h1 className="text-3xl font-bold text-ink">Session Feedback</h1>
-        {isMultiTurn && (
-          <span className="px-2 py-1 rounded-md bg-purple-100 text-purple-800 text-xs font-medium">
-            Conversation
-          </span>
-        )}
-      </div>
-
-      {/* Conversation summary — multi-turn only */}
-      {isMultiTurn && feedback.conversation_summary && (
-        <div className="rounded-xl border border-purple-200 bg-purple-50 p-5">
-          <p className="text-xs uppercase tracking-wide text-purple-600 font-medium mb-1">
-            How you handled it
-          </p>
-          <p className="text-ink leading-relaxed">{feedback.conversation_summary}</p>
-        </div>
-      )}
+      <h1 className="text-3xl font-bold text-ink">Session Feedback</h1>
 
       {/* Scores */}
       <div className="rounded-xl border bg-white p-6">
@@ -133,15 +113,6 @@ function FeedbackContent() {
         >
           {tipLoading ? "Loading…" : "Coach's tip"}
         </button>
-        {isMultiTurn && history.length > 0 && (
-          <button
-            type="button"
-            onClick={() => setTranscriptOpen((o) => !o)}
-            className="px-4 py-2 rounded-lg border border-slate-300 font-medium"
-          >
-            {transcriptOpen ? "Hide transcript" : "Review transcript"}
-          </button>
-        )}
       </div>
 
       {/* Rewrites */}
@@ -170,16 +141,6 @@ function FeedbackContent() {
         </div>
       )}
 
-      {/* Conversation transcript (multi-turn only, collapsible) */}
-      {isMultiTurn && transcriptOpen && history.length > 0 && (
-        <div className="rounded-xl border bg-white p-5 space-y-3">
-          <h3 className="font-semibold text-ink">Conversation transcript</h3>
-          {history.map((turn, i) => (
-            <TranscriptBubble key={i} turn={turn} />
-          ))}
-        </div>
-      )}
-
       {/* Navigation */}
       <div className="flex gap-4 pt-4">
         <Link
@@ -192,30 +153,6 @@ function FeedbackContent() {
           Try new style
         </Link>
       </div>
-    </div>
-  );
-}
-
-function TranscriptBubble({ turn }: { turn: ConversationTurn }) {
-  const isUser = turn.role === "user";
-  return (
-    <div className={`flex gap-3 ${isUser ? "flex-row-reverse" : ""}`}>
-      <div
-        className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0 ${
-          isUser ? "bg-accent text-white" : "bg-slate-200 text-slate-600"
-        }`}
-      >
-        {isUser ? "Y" : "O"}
-      </div>
-      <p
-        className={`max-w-[80%] text-sm leading-relaxed px-4 py-2 rounded-2xl ${
-          isUser
-            ? "bg-accent/10 text-ink rounded-br-sm"
-            : "bg-slate-100 text-ink rounded-bl-sm"
-        }`}
-      >
-        {turn.text}
-      </p>
     </div>
   );
 }

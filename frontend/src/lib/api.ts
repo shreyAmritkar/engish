@@ -1,12 +1,13 @@
-import { getUserId } from "./user";
+import { getToken, getAuthUser, saveAuth, AuthUser } from "./auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || "https://engish-gpsx.onrender.com";
+
+// ── Types ─────────────────────────────────────────────────────────────────────
 
 export type StyleProfile = {
   id: string;
   name: string;
   source: string;
-  communityVotes: number;
   vocabularyTier: string;
   sentenceStructure: string;
   emotionalRange: string;
@@ -18,22 +19,6 @@ export type StyleProfile = {
   rawDescription?: string;
 };
 
-// ── Conversation types ────────────────────────────────────────────────────────
-
-export type ConversationTurn = {
-  role: "user" | "character";
-  text: string;
-  timestamp: string;
-};
-
-export type TurnResponse = {
-  characterReply: string;
-  history: ConversationTurn[];
-  maxReached: boolean;
-};
-
-// ── Session types ─────────────────────────────────────────────────────────────
-
 export type Session = {
   id: string;
   userId: string;
@@ -43,8 +28,6 @@ export type Session = {
   emotionalContext: string;
   userResponse?: string;
   feedback?: FeedbackPayload;
-  conversationHistory?: ConversationTurn[];
-  multiTurn?: boolean;
 };
 
 export type FeedbackPayload = {
@@ -53,8 +36,6 @@ export type FeedbackPayload = {
   misinterpretation_warnings: string[];
   rewrites?: { assertive: string; diplomatic: string };
   coaching_tip?: string;
-  /** Present only on multi-turn sessions */
-  conversation_summary?: string;
 };
 
 export type ProgressData = {
@@ -74,61 +55,115 @@ export type ProgressData = {
   }>;
 };
 
+export type AuthResponse = {
+  token: string;
+  userId: string;
+  email: string;
+  role: string;
+};
+
+export type AdminUser = {
+  id: string;
+  email: string;
+  role: string;
+  createdAt: string;
+};
+
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
-async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
-  const userId = getUserId();
-  const headers: HeadersInit = {
+async function request<T>(path: string, options: RequestInit = {}, requiresAuth = true): Promise<T> {
+  const token = getToken();
+  const headers: Record<string, string> = {
     "Content-Type": "application/json",
-    ...(userId ? { "X-User-Id": userId } : {}),
-    ...(options.headers || {}),
+    ...(options.headers as Record<string, string> || {}),
   };
+
+  if (requiresAuth && token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+
   const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+
+  if (res.status === 401) {
+    // Token expired — clear and redirect to login
+    if (typeof window !== "undefined") {
+      import("./auth").then(m => m.clearAuth());
+      window.location.href = "/login";
+    }
+    throw new Error("Session expired. Please log in again.");
+  }
+
   if (!res.ok) {
     const text = await res.text();
     throw new Error(text || `Request failed: ${res.status}`);
   }
+
   return res.json() as Promise<T>;
 }
 
-// ── API surface ───────────────────────────────────────────────────────────────
+// ── Auth API ──────────────────────────────────────────────────────────────────
+
+export const authApi = {
+  register: async (email: string, password: string): Promise<AuthResponse> => {
+    const res = await request<AuthResponse>("/api/auth/register", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }, false);
+    saveAuth(res.token, { userId: res.userId, email: res.email, role: res.role });
+    return res;
+  },
+
+  login: async (email: string, password: string): Promise<AuthResponse> => {
+    const res = await request<AuthResponse>("/api/auth/login", {
+      method: "POST",
+      body: JSON.stringify({ email, password }),
+    }, false);
+    saveAuth(res.token, { userId: res.userId, email: res.email, role: res.role });
+    return res;
+  },
+
+  me: () => request<AuthResponse>("/api/auth/me"),
+};
+
+// ── Admin API ─────────────────────────────────────────────────────────────────
+
+export const adminApi = {
+  listUsers: () => request<AdminUser[]>("/api/admin/users"),
+
+  changeRole: (userId: string, role: string) =>
+    request<AdminUser>(`/api/admin/users/${userId}/role`, {
+      method: "PATCH",
+      body: JSON.stringify({ role }),
+    }),
+
+  deleteUser: (userId: string) =>
+    request<void>(`/api/admin/users/${userId}`, { method: "DELETE" }),
+};
+
+// ── Main API ──────────────────────────────────────────────────────────────────
 
 export const api = {
-  // styles
-  getStyles: (source = "COMMUNITY,PRESET,USER_DESCRIBED") =>
-    request<StyleProfile[]>(`/api/styles/library?source=${encodeURIComponent(source)}`),
+  // styles — library is public, creation requires auth
+  getStyles: (source = "PRESET,USER_DESCRIBED") =>
+    request<StyleProfile[]>(`/api/styles/library?source=${encodeURIComponent(source)}`, {}, false),
 
   createStyleFromDescription: (name: string, description: string) =>
     request<StyleProfile>("/api/styles/from-description", {
       method: "POST",
-      body: JSON.stringify({ userId: getUserId(), name, description }),
+      body: JSON.stringify({ name, description }),
     }),
 
-  submitCommunityStyle: (characterName: string, excerpts: string[]) =>
-    request<{ cardId: string; status: string; profile: StyleProfile }>(
-      "/api/styles/community/submit",
-      {
-        method: "POST",
-        body: JSON.stringify({ userId: getUserId(), characterName, excerpts }),
-      }
-    ),
-
-  voteCommunityCard: (cardId: string) =>
-    request<{ cardId: string; status: string }>(`/api/styles/community/${cardId}/vote`, {
-      method: "POST",
-    }),
-
-  // sessions — single response (unchanged)
+  // sessions
   startSession: (styleProfileId: string) =>
     request<Session>("/api/sessions/start", {
       method: "POST",
-      body: JSON.stringify({ userId: getUserId(), styleProfileId }),
+      body: JSON.stringify({ styleProfileId }),
     }),
 
   submitSession: (sessionId: string, userResponse: string) =>
     request<Session>(`/api/sessions/${sessionId}/submit`, {
       method: "POST",
-      body: JSON.stringify({ userId: getUserId(), userResponse }),
+      body: JSON.stringify({ userResponse }),
     }),
 
   getSession: (sessionId: string) => request<Session>(`/api/sessions/${sessionId}`),
@@ -143,27 +178,6 @@ export const api = {
       method: "POST",
     }),
 
-  // sessions — multi-turn conversation (new)
-
-  /**
-   * Send a user message in a conversation session.
-   * Returns the character's reply + updated history + whether the turn cap is hit.
-   */
-  addTurn: (sessionId: string, message: string) =>
-    request<TurnResponse>(`/api/sessions/${sessionId}/turns`, {
-      method: "POST",
-      body: JSON.stringify({ message }),
-    }),
-
-  /**
-   * Score the full conversation and return feedback.
-   * After this, the session is immutable; use rewrites/coaching-tip as normal.
-   */
-  finishConversation: (sessionId: string) =>
-    request<Session>(`/api/sessions/${sessionId}/finish`, {
-      method: "POST",
-    }),
-
   // progress
-  getProgress: () => request<ProgressData>(`/api/progress/${getUserId()}`),
+  getProgress: () => request<ProgressData>("/api/progress/me"),
 };
