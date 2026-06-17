@@ -84,6 +84,23 @@
             <version>0.12.6</version>
             <scope>runtime</scope>
         </dependency>
+        <!-- Exposes /actuator/metrics and the health/info endpoints -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+
+        <!-- Formats metrics in the Prometheus exposition format (needed by Micrometer OTLP) -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-prometheus</artifactId>
+        </dependency>
+
+        <!-- The OTLP push registry: formats metrics as OTLP protobuf and POSTs them on a schedule -->
+        <dependency>
+            <groupId>io.micrometer</groupId>
+            <artifactId>micrometer-registry-otlp</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
