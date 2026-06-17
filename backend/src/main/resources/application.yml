@@ -50,18 +50,19 @@ app:
   jwt-secret: ${JWT_SECRET:change-me-in-production-min-32-chars!!}
   jwt-expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
+# CORRECTED METRICS BLOCK FOR MICROMETER OTLP EXPORTER
 management:
   endpoints:
     web:
       exposure:
-        include: health,info,metrics,prometheus
-  metrics:
-    export:
-      otlp:
+        include: health,info,metrics,otlp
+  otlp:
+    metrics:
+      export:
         url: ${OTLP_METRICS_ENDPOINT}
         headers:
           Authorization: ${OTLP_METRICS_AUTH_HEADER}
-        step: 60s          # push interval; 60 s is a safe default for free-tier Grafana
+        step: 60s
         resource-attributes:
           service.name: style-communicator
           deployment.environment: production
