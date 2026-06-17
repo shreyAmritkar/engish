@@ -21,10 +21,13 @@ spring:
 server:
   port: ${PORT:10000}
 
+logging:
+  level:
+    org.springframework.security: DEBUG
+
 # One key: OPENROUTER_API_KEY — pick any model id (Gemini, DeepSeek, etc.) via LLM_FAST_MODEL / LLM_QUALITY_MODEL
 llm:
-  provider: ${LLM_PROVIDER:openrouter}
-  api-key: ${OPENROUTER_API_KEY:${LLM_API_KEY:${GEMINI_API_KEY:}}}
+  api-key: ${OPENROUTER_API_KEY:${LLM_API_KEY:}}
   fast-model: ${LLM_FAST_MODEL:google/gemini-2.0-flash-001}
   quality-model: ${LLM_QUALITY_MODEL:google/gemini-2.0-flash-001}
   fallback-models:
@@ -42,7 +45,7 @@ app:
   daily-session-cap: 10
   style-cache-ttl-minutes: 60
   similarity-threshold: 0.85
-
-situation:
-  news:
-    api-key: ${NEWSDATA_API_KEY:}
+  # Generate a strong random string for production (e.g. openssl rand -base64 48)
+  jwt-secret: ${JWT_SECRET:change-me-in-production-min-32-chars!!}
+  # 24 hours in ms
+  jwt-expiration-ms: ${JWT_EXPIRATION_MS:86400000}

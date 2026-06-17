@@ -11,7 +11,7 @@ import java.util.UUID;
 
 public interface StyleProfileRepository extends JpaRepository<StyleProfile, UUID> {
 
-    @Query("SELECT s FROM StyleProfile s WHERE s.source IN :sources ORDER BY s.communityVotes DESC, s.name ASC")
+    @Query("SELECT s FROM StyleProfile s WHERE s.source IN :sources ORDER BY s.name ASC")
     List<StyleProfile> findBySourceIn(@Param("sources") List<StyleSource> sources);
 
     List<StyleProfile> findAllByOrderByCreatedAtDesc();

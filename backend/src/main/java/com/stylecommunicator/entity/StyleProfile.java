@@ -25,9 +25,6 @@ public class StyleProfile {
     @Column(name = "created_by")
     private UUID createdBy;
 
-    @Column(name = "community_votes")
-    private int communityVotes;
-
     @Column(name = "vocabulary_tier")
     private String vocabularyTier;
 
@@ -82,8 +79,6 @@ public class StyleProfile {
     public void setSource(StyleSource source) { this.source = source; }
     public UUID getCreatedBy() { return createdBy; }
     public void setCreatedBy(UUID createdBy) { this.createdBy = createdBy; }
-    public int getCommunityVotes() { return communityVotes; }
-    public void setCommunityVotes(int communityVotes) { this.communityVotes = communityVotes; }
     public String getVocabularyTier() { return vocabularyTier; }
     public void setVocabularyTier(String vocabularyTier) { this.vocabularyTier = vocabularyTier; }
     public String getSentenceStructure() { return sentenceStructure; }

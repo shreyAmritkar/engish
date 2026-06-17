@@ -1,6 +1,7 @@
 package com.stylecommunicator.filter;
 
 import com.stylecommunicator.config.AppProperties;
+import com.stylecommunicator.security.JwtService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -18,11 +19,13 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RateLimitFilter implements Filter {
 
     private final AppProperties appProperties;
+    private final JwtService jwtService;
     private final Map<String, Integer> dailySessionCount = new ConcurrentHashMap<>();
     private volatile LocalDate currentDay = LocalDate.now();
 
-    public RateLimitFilter(AppProperties appProperties) {
+    public RateLimitFilter(AppProperties appProperties, JwtService jwtService) {
         this.appProperties = appProperties;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -35,19 +38,23 @@ public class RateLimitFilter implements Filter {
 
         String path = httpRequest.getRequestURI();
         if (path != null && path.endsWith("/api/sessions/start")) {
-            String userIdHeader = httpRequest.getHeader("X-User-Id");
-            if (userIdHeader != null && !userIdHeader.isBlank()) {
+            // Extract userId from JWT Bearer token
+            String authHeader = httpRequest.getHeader("Authorization");
+            if (authHeader != null && authHeader.startsWith("Bearer ")) {
+                String token = authHeader.substring(7);
                 try {
-                    UUID.fromString(userIdHeader);
-                    String key = currentDay + ":" + userIdHeader;
-                    int count = dailySessionCount.getOrDefault(key, 0);
-                    if (count >= appProperties.getDailySessionCap()) {
-                        httpResponse.sendError(429, "Daily limit reached. Try tomorrow.");
-                        return;
+                    if (jwtService.isValid(token)) {
+                        UUID userId = jwtService.extractUserId(token);
+                        String key = currentDay + ":" + userId;
+                        int count = dailySessionCount.getOrDefault(key, 0);
+                        if (count >= appProperties.getDailySessionCap()) {
+                            httpResponse.sendError(429, "Daily limit reached. Try tomorrow.");
+                            return;
+                        }
+                        dailySessionCount.put(key, count + 1);
                     }
-                    dailySessionCount.put(key, count + 1);
-                } catch (IllegalArgumentException ignored) {
-                    // invalid UUID — let controller validate
+                } catch (Exception ignored) {
+                    // Invalid token — let Spring Security handle it
                 }
             }
         }

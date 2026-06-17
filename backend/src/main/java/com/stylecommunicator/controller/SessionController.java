@@ -1,23 +1,15 @@
 package com.stylecommunicator.controller;
 
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
-
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.stylecommunicator.dto.StartSessionRequest;
 import com.stylecommunicator.dto.SubmitSessionRequest;
 import com.stylecommunicator.entity.PracticeSession;
 import com.stylecommunicator.service.SessionService;
-
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
+import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/sessions")
@@ -29,15 +21,22 @@ public class SessionController {
         this.sessionService = sessionService;
     }
 
+    private UUID userId(HttpServletRequest request) {
+        return (UUID) request.getAttribute("authenticatedUserId");
+    }
+
     @PostMapping("/start")
-    public SessionResponse start(@Valid @RequestBody StartSessionRequest request) {
-        PracticeSession session = sessionService.startSession(request.userId(), request.styleProfileId());
+    public SessionResponse start(@Valid @RequestBody StartSessionRequest body,
+                                 HttpServletRequest request) {
+        PracticeSession session = sessionService.startSession(userId(request), body.styleProfileId());
         return SessionResponse.from(session, false);
     }
 
     @PostMapping("/{id}/submit")
-    public SessionResponse submit(@PathVariable UUID id, @Valid @RequestBody SubmitSessionRequest request) {
-        PracticeSession session = sessionService.submitResponse(id, request.userId(), request.userResponse());
+    public SessionResponse submit(@PathVariable UUID id,
+                                  @Valid @RequestBody SubmitSessionRequest body,
+                                  HttpServletRequest request) {
+        PracticeSession session = sessionService.submitResponse(id, userId(request), body.userResponse());
         return SessionResponse.from(session, true);
     }
 
@@ -48,19 +47,15 @@ public class SessionController {
     }
 
     @PostMapping("/{id}/rewrites")
-    public Map<String, Object> rewrites(@PathVariable UUID id, @RequestHeader("X-User-Id") UUID userId) {
-        return sessionService.fetchRewrites(id, userId);
+    public Map<String, Object> rewrites(@PathVariable UUID id, HttpServletRequest request) {
+        return sessionService.fetchRewrites(id, userId(request));
     }
 
     @PostMapping("/{id}/coaching-tip")
-    public Map<String, String> coachingTip(@PathVariable UUID id, @RequestHeader("X-User-Id") UUID userId) {
-        String tip = sessionService.fetchCoachingTip(id, userId);
+    public Map<String, String> coachingTip(@PathVariable UUID id, HttpServletRequest request) {
+        String tip = sessionService.fetchCoachingTip(id, userId(request));
         return Map.of("coaching_tip", tip);
     }
-
-    // ── Response DTO ──────────────────────────────────────────────────────────
-    // conversationHistory and multiTurn added so the frontend can restore
-    // in-progress conversation state on page refresh.
 
     public record SessionResponse(
             UUID id,
@@ -70,9 +65,7 @@ public class SessionController {
             String requiredWord,
             String emotionalContext,
             String userResponse,
-            Map<String, Object> feedback,
-            List<Map<String, Object>> conversationHistory,
-            boolean multiTurn
+            Map<String, Object> feedback
     ) {
         static SessionResponse from(PracticeSession session, boolean includeFeedback) {
             return new SessionResponse(
@@ -83,9 +76,7 @@ public class SessionController {
                     session.getRequiredWord(),
                     session.getEmotionalContext(),
                     session.getUserResponse(),
-                    includeFeedback ? session.getFeedback() : null,
-                    session.getConversationHistory(),
-                    session.isMultiTurn()
+                    includeFeedback ? session.getFeedback() : null
             );
         }
     }

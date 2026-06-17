@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Last-resort source: asks the LLM to generate a batch of situations.
  *
- * This is ONLY invoked when all three external sources (News, AdviceSlip,
+ * This is ONLY invoked when both free external sources (AdviceSlip,
  * Wikipedia) returned fewer results than needed. It fires at most once
  * per replenishment cycle and uses the free/fast tier.
  */

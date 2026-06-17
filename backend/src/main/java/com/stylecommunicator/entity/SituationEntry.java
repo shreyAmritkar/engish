@@ -6,7 +6,7 @@ import java.util.UUID;
 
 /**
  * One row in the situation_bank table.
- * Sourced from: SEED (original JSON), NEWS, ADVICE, WIKIPEDIA, or LLM fallback.
+ * Sourced from: SEED (original JSON), ADVICE, WIKIPEDIA, or LLM fallback.
  */
 @Entity
 @Table(name = "situation_bank")
@@ -27,7 +27,7 @@ public class SituationEntry {
     @Column(nullable = false, length = 500)
     private String text;
 
-    /** SEED | NEWS | ADVICE | WIKIPEDIA | LLM */
+    /** SEED | ADVICE | WIKIPEDIA | LLM */
     @Column(nullable = false)
     private String source;
 

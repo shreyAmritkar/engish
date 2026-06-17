@@ -23,7 +23,7 @@ import java.util.UUID;
  *  - reads from situation_bank table (DB)
  *  - triggers async replenishment via SituationSourceRouter when stock
  *    drops below LOW_STOCK_THRESHOLD
- *  - the router tries AdviceSlip → Wikipedia → News → LLM in that order
+ *  - the router tries AdviceSlip → Wikipedia → LLM in that order
  */
 @Service
 public class SituationBankService {
@@ -47,16 +47,6 @@ public class SituationBankService {
         "however", "therefore", "specifically", "clearly", "respectfully",
         "directly", "together", "priority", "understand", "commit",
         "align", "decision", "timeline", "support", "outcome"
-    );
-
-    // ── Required words by level ───────────────────────────────────────────
-
-    private static final List<String> REQUIRED_WORDS_A1 = List.of(
-        "please", "sorry", "thank you", "help", "yes", "no", "need"
-    );
-
-    private static final List<String> REQUIRED_WORDS_A2 = List.of(
-        "please", "agree", "explain", "together", "support", "understand"
     );
 
     private final SituationRepository repository;
@@ -111,15 +101,6 @@ public class SituationBankService {
 
     public String pickRequiredWord() {
         return REQUIRED_WORDS.get(rng.nextInt(REQUIRED_WORDS.size()));
-    }
-
-    public String pickRequiredWord(String level) {
-        List<String> pool = switch (normalise(level, "B2")) {
-            case "A1" -> REQUIRED_WORDS_A1;
-            case "A2" -> REQUIRED_WORDS_A2;
-            default   -> REQUIRED_WORDS;
-        };
-        return pool.get(rng.nextInt(pool.size()));
     }
 
     public String pickEmotionalContext() {

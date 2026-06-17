@@ -176,26 +176,6 @@ class SituationBankServiceTest {
         }
     }
 
-    @Test
-    void pickRequiredWord_level_a1ReturnsSimpleWords() {
-        for (int i = 0; i < 10; i++) {
-            String word = service.pickRequiredWord("A1");
-            assertFalse(word.isBlank());
-            // A1 pool: please, sorry, thank you, help, yes, no, need
-            // Should not contain B2-only words like "stakeholder" or "align"
-            assertFalse(word.equalsIgnoreCase("align"),
-                "A1 pool must not contain B2 word 'align'");
-        }
-    }
-
-    @Test
-    void pickRequiredWord_level_nullFallsBackToB2() {
-        assertDoesNotThrow(() -> {
-            String word = service.pickRequiredWord(null);
-            assertFalse(word.isBlank());
-        });
-    }
-
     // ── pickEmotionalContext ──────────────────────────────────────────────
 
     @Test

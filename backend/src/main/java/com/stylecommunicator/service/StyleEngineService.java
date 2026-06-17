@@ -50,13 +50,6 @@ public class StyleEngineService {
         return saved;
     }
 
-    @Transactional
-    public StyleProfile extractFromScript(String characterName, List<String> excerpts, UUID submittedBy) {
-        String combined = String.join("\n", excerpts);
-        String description = "Character: " + characterName + "\nDialogue:\n" + combined;
-        return extractFromDescription(characterName, description, submittedBy, StyleSource.COMMUNITY);
-    }
-
     public String getCompressedPrompt(StyleProfile profile) {
         return stylePromptCache.get(profile.getId())
                 .orElseGet(() -> {

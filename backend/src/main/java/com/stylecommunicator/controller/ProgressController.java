@@ -4,6 +4,7 @@ import com.stylecommunicator.entity.PracticeSession;
 import com.stylecommunicator.entity.UserProgress;
 import com.stylecommunicator.repository.PracticeSessionRepository;
 import com.stylecommunicator.repository.UserProgressRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,15 +18,34 @@ public class ProgressController {
     private final UserProgressRepository userProgressRepository;
     private final PracticeSessionRepository practiceSessionRepository;
 
-    public ProgressController(
-            UserProgressRepository userProgressRepository,
-            PracticeSessionRepository practiceSessionRepository) {
+    public ProgressController(UserProgressRepository userProgressRepository,
+                               PracticeSessionRepository practiceSessionRepository) {
         this.userProgressRepository = userProgressRepository;
         this.practiceSessionRepository = practiceSessionRepository;
     }
 
+    /** Get the authenticated user's own progress */
+    @GetMapping("/me")
+    public ProgressResponse getMyProgress(HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
+        return buildProgress(userId);
+    }
+
+    /** Admin / legacy path — users can only access their own data */
     @GetMapping("/{userId}")
-    public ProgressResponse getProgress(@PathVariable UUID userId) {
+    public ProgressResponse getProgress(@PathVariable UUID userId,
+                                        HttpServletRequest request) {
+        UUID caller = (UUID) request.getAttribute("authenticatedUserId");
+        // Only allow if caller is the same user (admin bypass not needed here,
+        // but SecurityConfig already gates /api/admin/** separately)
+        if (!caller.equals(userId)) {
+            throw new org.springframework.web.server.ResponseStatusException(
+                    org.springframework.http.HttpStatus.FORBIDDEN, "Access denied");
+        }
+        return buildProgress(userId);
+    }
+
+    private ProgressResponse buildProgress(UUID userId) {
         UserProgress progress = userProgressRepository.findById(userId)
                 .orElseGet(() -> {
                     UserProgress p = new UserProgress();
@@ -37,7 +57,8 @@ public class ProgressController {
                     return p;
                 });
 
-        List<SessionSummary> history = practiceSessionRepository.findByUserIdOrderByCreatedAtDesc(userId)
+        List<SessionSummary> history = practiceSessionRepository
+                .findByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
                 .limit(20)
                 .map(SessionSummary::from)

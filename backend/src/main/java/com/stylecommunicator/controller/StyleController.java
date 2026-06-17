@@ -1,13 +1,12 @@
 package com.stylecommunicator.controller;
 
-import com.stylecommunicator.domain.CommunityCardStatus;
 import com.stylecommunicator.domain.StyleSource;
-import com.stylecommunicator.dto.*;
-import com.stylecommunicator.entity.CommunityStyleCard;
+import com.stylecommunicator.dto.CreateStyleRequest;
+import com.stylecommunicator.dto.StyleProfileDto;
 import com.stylecommunicator.entity.StyleProfile;
-import com.stylecommunicator.repository.CommunityStyleCardRepository;
 import com.stylecommunicator.repository.StyleProfileRepository;
 import com.stylecommunicator.service.StyleEngineService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -23,19 +22,15 @@ public class StyleController {
 
     private final StyleProfileRepository styleProfileRepository;
     private final StyleEngineService styleEngineService;
-    private final CommunityStyleCardRepository communityStyleCardRepository;
 
-    public StyleController(
-            StyleProfileRepository styleProfileRepository,
-            StyleEngineService styleEngineService,
-            CommunityStyleCardRepository communityStyleCardRepository) {
+    public StyleController(StyleProfileRepository styleProfileRepository,
+                           StyleEngineService styleEngineService) {
         this.styleProfileRepository = styleProfileRepository;
         this.styleEngineService = styleEngineService;
-        this.communityStyleCardRepository = communityStyleCardRepository;
     }
 
     @GetMapping("/library")
-    public List<StyleProfileDto> library(@RequestParam(defaultValue = "COMMUNITY,PRESET") String source) {
+    public List<StyleProfileDto> library(@RequestParam(defaultValue = "PRESET,USER_DESCRIBED") String source) {
         List<StyleSource> sources = Arrays.stream(source.split(","))
                 .map(String::trim)
                 .map(String::toUpperCase)
@@ -54,47 +49,15 @@ public class StyleController {
     }
 
     @PostMapping("/from-description")
-    public StyleProfileDto fromDescription(@Valid @RequestBody CreateStyleRequest request) {
+    public StyleProfileDto fromDescription(@Valid @RequestBody CreateStyleRequest body,
+                                           HttpServletRequest request) {
+        UUID userId = (UUID) request.getAttribute("authenticatedUserId");
         StyleProfile profile = styleEngineService.extractFromDescription(
-                request.name(),
-                request.description(),
-                request.userId(),
+                body.name(),
+                body.description(),
+                userId,
                 StyleSource.USER_DESCRIBED
         );
         return StyleProfileDto.from(profile);
     }
-
-    @PostMapping("/community/submit")
-    public CommunityCardResponse communitySubmit(@Valid @RequestBody CommunitySubmitRequest request) {
-        StyleProfile profile = styleEngineService.extractFromScript(
-                request.characterName(),
-                request.excerpts(),
-                request.userId()
-        );
-        CommunityStyleCard card = new CommunityStyleCard();
-        card.setSubmittedBy(request.userId());
-        card.setCharacterName(request.characterName());
-        card.setExcerpts(request.excerpts());
-        card.setAiExtractedProfileId(profile.getId());
-        card.setStatus(CommunityCardStatus.PENDING);
-        communityStyleCardRepository.save(card);
-        return new CommunityCardResponse(card.getId(), card.getStatus().name(), StyleProfileDto.from(profile));
-    }
-
-    @PostMapping("/community/{cardId}/vote")
-    public CommunityCardResponse vote(@PathVariable UUID cardId) {
-        CommunityStyleCard card = communityStyleCardRepository.findById(cardId)
-                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
-        card.setVotes(card.getVotes() + 1);
-        communityStyleCardRepository.save(card);
-        if (card.getAiExtractedProfileId() != null) {
-            styleProfileRepository.findById(card.getAiExtractedProfileId()).ifPresent(profile -> {
-                profile.setCommunityVotes(profile.getCommunityVotes() + 1);
-                styleProfileRepository.save(profile);
-            });
-        }
-        return new CommunityCardResponse(card.getId(), card.getStatus().name(), null);
-    }
-
-    public record CommunityCardResponse(UUID cardId, String status, StyleProfileDto profile) {}
 }

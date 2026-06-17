@@ -16,8 +16,7 @@ import java.util.List;
  *
  *   1. AdviceSlip  — always free, no key, keyword search
  *   2. Wikipedia   — always free, no key, curated article list
- *   3. News        — free 200/day, requires NEWSDATA_API_KEY (optional)
- *   4. LLM         — paid credits, last resort only
+ *   3. LLM         — paid credits, last resort only
  *
  * Called asynchronously by SituationBankService when stock drops below
  * LOW_STOCK_THRESHOLD, so it never blocks the user's session-start request.
@@ -33,19 +32,16 @@ public class SituationSourceRouter {
     private final SituationRepository repository;
     private final AdviceSlipSource adviceSlipSource;
     private final WikipediaSource wikipediaSource;
-    private final NewsSource newsSource;
     private final LlmSituationSource llmSource;
 
     public SituationSourceRouter(
             SituationRepository repository,
             AdviceSlipSource adviceSlipSource,
             WikipediaSource wikipediaSource,
-            NewsSource newsSource,
             LlmSituationSource llmSource) {
         this.repository       = repository;
         this.adviceSlipSource = adviceSlipSource;
         this.wikipediaSource  = wikipediaSource;
-        this.newsSource       = newsSource;
         this.llmSource        = llmSource;
     }
 
@@ -69,13 +65,7 @@ public class SituationSourceRouter {
                   texts, BATCH_SIZE, "Wikipedia");
         }
 
-        // 3. News — free with key (optional)
-        if (texts.size() < BATCH_SIZE) {
-            drain(newsSource.fetch(power, level, BATCH_SIZE - texts.size()),
-                  texts, BATCH_SIZE, "News");
-        }
-
-        // 4. LLM — last resort
+        // 3. LLM — last resort
         if (texts.size() < BATCH_SIZE) {
             int needed = BATCH_SIZE - texts.size();
             log.info("External sources yielded {} / {} — falling back to LLM for {} more",

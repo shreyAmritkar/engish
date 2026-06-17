@@ -1,6 +1,5 @@
 package com.stylecommunicator.config;
 
-import com.stylecommunicator.llm.LlmProvider;
 import com.stylecommunicator.llm.LlmTier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
@@ -13,10 +12,7 @@ import java.util.List;
 @ConfigurationProperties(prefix = "llm")
 public class LlmProperties {
 
-    /** openrouter (recommended) or gemini (direct Google API — legacy) */
-    private LlmProvider provider = LlmProvider.OPENROUTER;
-
-    /** OpenRouter: OPENROUTER_API_KEY. Gemini direct: GEMINI_API_KEY */
+    /** OpenRouter API key (OPENROUTER_API_KEY) */
     private String apiKey = "";
 
     /** Primary model for FAST tier (extraction, scoring, tips) */
@@ -35,14 +31,6 @@ public class LlmProperties {
     private long retryBackoffMs = 2000;
 
     private final OpenRouter openrouter = new OpenRouter();
-
-    public LlmProvider getProvider() {
-        return provider;
-    }
-
-    public void setProvider(LlmProvider provider) {
-        this.provider = provider;
-    }
 
     public String getApiKey() {
         return apiKey;

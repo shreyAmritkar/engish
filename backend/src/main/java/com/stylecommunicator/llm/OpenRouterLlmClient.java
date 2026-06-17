@@ -12,7 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,8 +20,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-@Component
-public class OpenRouterLlmClient {
+@Service
+public class OpenRouterLlmClient implements LlmClient {
 
     private static final Logger log = LoggerFactory.getLogger(OpenRouterLlmClient.class);
 
@@ -34,6 +34,7 @@ public class OpenRouterLlmClient {
         this.objectMapper = objectMapper;
     }
 
+    @Override
     public Optional<Map<String, Object>> generateJson(String prompt, LlmTier tier) {
         if (properties.getApiKey() == null || properties.getApiKey().isBlank()) {
             log.warn("OPENROUTER_API_KEY not set");
