@@ -94,8 +94,20 @@ async function request<T>(path: string, options: RequestInit = {}, requiresAuth 
   }
 
   if (!res.ok) {
-    const text = await res.text();
-    throw new Error(text || `Request failed: ${res.status}`);
+    // Try to parse the backend ErrorResponse JSON
+    try {
+      const errJson = await res.json();
+      const message = errJson?.message || errJson?.error || `Request failed: ${res.status}`;
+      const details: string[] = errJson?.details ?? [];
+      const full = details.length > 0 ? `${message}: ${details.join(", ")}` : message;
+      throw new Error(full);
+    } catch (parseErr) {
+      if (parseErr instanceof Error && parseErr.message !== `Request failed: ${res.status}`) {
+        throw parseErr;
+      }
+      const text = await res.text().catch(() => "");
+      throw new Error(text || `Request failed: ${res.status}`);
+    }
   }
 
   return res.json() as Promise<T>;

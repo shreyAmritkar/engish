@@ -35,10 +35,10 @@ public class OpenRouterLlmClient implements LlmClient {
     }
 
     @Override
-    public Optional<Map<String, Object>> generateJson(String prompt, LlmTier tier) {
+    public Map<String, Object> generateJson(String prompt, LlmTier tier) {
         if (properties.getApiKey() == null || properties.getApiKey().isBlank()) {
             log.warn("OPENROUTER_API_KEY not set");
-            return Optional.empty();
+            throw new com.stylecommunicator.exception.LlmUnavailableException("LLM API key not configured");
         }
 
         List<String> models = properties.modelsToTry(tier);
@@ -52,7 +52,7 @@ public class OpenRouterLlmClient implements LlmClient {
                         if (!model.equals(properties.modelFor(tier))) {
                             log.info("OpenRouter succeeded with fallback model: {}", model);
                         }
-                        return result;
+                        return result.get();
                     }
                 } catch (RateLimitedException e) {
                     log.warn("OpenRouter 429 on model {} (attempt {}/{}): {}",
@@ -75,8 +75,9 @@ public class OpenRouterLlmClient implements LlmClient {
             }
         }
 
-        log.error("All OpenRouter models exhausted for tier {} — using app fallbacks", tier);
-        return Optional.empty();
+        log.error("All OpenRouter models exhausted for tier {}", tier);
+        throw new com.stylecommunicator.exception.LlmUnavailableException(
+                "AI service is temporarily unavailable. All models exhausted for tier: " + tier);
     }
 
     private Optional<Map<String, Object>> callOnce(String prompt, String model) {

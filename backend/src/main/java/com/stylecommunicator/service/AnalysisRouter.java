@@ -6,15 +6,20 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import com.stylecommunicator.entity.PracticeSession;
 import com.stylecommunicator.entity.StyleProfile;
+import com.stylecommunicator.exception.LlmUnavailableException;
 import com.stylecommunicator.llm.LlmClient;
 import com.stylecommunicator.llm.LlmTier;
 
 @Service
 public class AnalysisRouter {
+
+    private static final Logger log = LoggerFactory.getLogger(AnalysisRouter.class);
 
     private static final List<String> SCORE_DIMENSIONS = List.of(
             "confidence", "tone", "persuasion", "emotional_control", "professionalism", "style_match"
@@ -32,8 +37,6 @@ public class AnalysisRouter {
         this.grammarCheckerService = grammarCheckerService;
         this.styleEngineService = styleEngineService;
     }
-
-    // ── Existing single-response analysis (unchanged) ─────────────────────────
 
     public Map<String, Object> analyze(PracticeSession session, StyleProfile style, String userResponse) {
         String compressed = styleEngineService.getCompressedPrompt(style);
@@ -54,8 +57,13 @@ public class AnalysisRouter {
                 escape(userResponse)
         );
 
-        Map<String, Object> result = llmClient.generateJson(prompt, LlmTier.FAST)
-                .orElseGet(this::defaultAnalysis);
+        Map<String, Object> result;
+        try {
+            result = llmClient.generateJson(prompt, LlmTier.FAST);
+        } catch (LlmUnavailableException e) {
+            log.warn("LLM unavailable for analysis, using defaults: {}", e.getMessage());
+            result = defaultAnalysis();
+        }
 
         List<String> ruleGrammar = grammarCheckerService.check(userResponse);
         @SuppressWarnings("unchecked")
@@ -86,10 +94,12 @@ public class AnalysisRouter {
                 style.getFormalityLevel() != null ? style.getFormalityLevel() : 5
         );
 
-        return llmClient.generateJson(prompt, LlmTier.QUALITY).orElse(Map.of(
-                "assertive", userResponse,
-                "diplomatic", userResponse
-        ));
+        try {
+            return llmClient.generateJson(prompt, LlmTier.QUALITY);
+        } catch (LlmUnavailableException e) {
+            log.warn("LLM unavailable for rewrites: {}", e.getMessage());
+            return Map.of("assertive", userResponse, "diplomatic", userResponse);
+        }
     }
 
     public String generateCoachingTip(PracticeSession session, StyleProfile style, Map<String, Object> feedback) {
@@ -106,12 +116,19 @@ public class AnalysisRouter {
                 findWeakest(scores),
                 session.getSituation()
         );
-        return llmClient.generateJson(prompt, LlmTier.FAST)
-                .map(m -> String.valueOf(m.getOrDefault("coaching_tip", "Focus on clarity and tone alignment with your target style.")))
-                .orElse("Focus on clarity and tone alignment with your target style.");
+
+        try {
+            Map<String, Object> result = llmClient.generateJson(prompt, LlmTier.FAST);
+            return String.valueOf(result.getOrDefault("coaching_tip", DEFAULT_TIP));
+        } catch (LlmUnavailableException e) {
+            log.warn("LLM unavailable for coaching tip: {}", e.getMessage());
+            return DEFAULT_TIP;
+        }
     }
 
-    // ── Shared helpers ────────────────────────────────────────────────────────
+    // ── Helpers ────────────────────────────────────────────────────────────────
+
+    private static final String DEFAULT_TIP = "Focus on clarity and tone alignment with your target style.";
 
     private Map<String, Object> defaultAnalysis() {
         Map<String, Integer> scores = new LinkedHashMap<>();

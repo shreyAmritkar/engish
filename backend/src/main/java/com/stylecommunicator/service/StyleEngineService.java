@@ -5,6 +5,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +21,8 @@ import com.stylecommunicator.util.StylePromptCompressor;
 
 @Service
 public class StyleEngineService {
+
+    private static final Logger log = LoggerFactory.getLogger(StyleEngineService.class);
 
     private final StyleProfileRepository styleProfileRepository;
     private final LlmClient llmClient;
@@ -79,8 +83,12 @@ public class StyleEngineService {
                 }
                 """.formatted(truncate(description, 1500));
 
-        return llmClient.generateJson(prompt, LlmTier.FAST)
-                .orElseGet(this::defaultExtraction);
+        try {
+            return llmClient.generateJson(prompt, LlmTier.FAST);
+        } catch (com.stylecommunicator.exception.LlmUnavailableException e) {
+            log.warn("LLM unavailable during style extraction, using defaults: {}", e.getMessage());
+            return defaultExtraction();
+        }
     }
 
     private Map<String, Object> defaultExtraction() {

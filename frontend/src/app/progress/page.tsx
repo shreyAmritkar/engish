@@ -4,6 +4,9 @@ import { useEffect, useState } from "react";
 import { api, ProgressData } from "@/lib/api";
 import { ScoreRadar } from "@/components/ScoreRadar";
 import { useAuth } from "@/hooks/useAuth";
+import { parseApiError } from "@/lib/errors";
+import { ErrorBanner } from "@/components/ui/ErrorBanner";
+import { Skeleton } from "@/components/ui/Skeleton";
 
 const LEVEL_LABELS = ["Novice", "Developing", "Competent", "Advanced", "Expert"];
 
@@ -15,17 +18,32 @@ export default function ProgressDashboard() {
 
   useEffect(() => {
     if (!ready) return;
-    api
-      .getProgress()
+    api.getProgress()
       .then(setData)
-      .catch((e) => setError(e.message))
+      .catch((e) => setError(parseApiError(e)))
       .finally(() => setLoading(false));
   }, [ready]);
 
   if (!ready) return null;
 
-  if (loading) return <p className="text-slate">Loading progress…</p>;
-  if (error) return <p className="text-red-600">{error}</p>;
+  if (loading) {
+    return (
+      <div className="space-y-8">
+        <div>
+          <Skeleton className="h-9 w-48" />
+          <Skeleton className="h-4 w-32 mt-2" />
+          <Skeleton className="h-3 max-w-md mt-4 rounded-full" />
+        </div>
+        <Skeleton className="h-64 w-full rounded-xl" />
+        <div className="grid sm:grid-cols-2 gap-4">
+          <Skeleton className="h-32 rounded-xl" />
+          <Skeleton className="h-32 rounded-xl" />
+        </div>
+      </div>
+    );
+  }
+
+  if (error) return <ErrorBanner message={error} onDismiss={() => setError(null)} />;
   if (!data) return null;
 
   const level = data.currentLevel;
@@ -48,67 +66,52 @@ export default function ProgressDashboard() {
       </section>
 
       {Object.keys(avgScores).length > 0 && (
-        <section className="rounded-xl border bg-white p-6 max-w-xl">
-          <h2 className="font-semibold mb-4">Overall scores</h2>
+        <section className="rounded-xl border bg-white p-6">
+          <h2 className="font-semibold text-ink mb-4">Average scores</h2>
           <ScoreRadar scores={avgScores} />
         </section>
       )}
 
-      {data.habitFlags?.length > 0 && (
-        <section className="grid sm:grid-cols-2 gap-4">
-          {data.habitFlags.map((flag) => (
-            <div key={flag} className="rounded-xl border-l-4 border-accent bg-white p-4 shadow-sm">
-              <p className="text-sm font-medium text-ink">Insight</p>
-              <p className="text-slate mt-1">{flag}</p>
-            </div>
-          ))}
+      <div className="grid sm:grid-cols-2 gap-4">
+        {data.strongAreas.length > 0 && (
+          <div className="rounded-xl border border-green-200 bg-green-50 p-4">
+            <h3 className="font-semibold text-green-900 mb-2">Strengths</h3>
+            <ul className="space-y-1">
+              {data.strongAreas.map((a) => (
+                <li key={a} className="text-sm text-green-800">✓ {a}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+        {data.weakAreas.length > 0 && (
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-4">
+            <h3 className="font-semibold text-amber-900 mb-2">Areas to improve</h3>
+            <ul className="space-y-1">
+              {data.weakAreas.map((a) => (
+                <li key={a} className="text-sm text-amber-800">→ {a}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+      </div>
+
+      {data.recentSessions.length > 0 && (
+        <section>
+          <h2 className="font-semibold text-ink mb-3">Recent sessions</h2>
+          <div className="space-y-2">
+            {data.recentSessions.map((s) => (
+              <div key={s.id} className="rounded-lg border bg-white px-4 py-3 text-sm flex justify-between items-center">
+                <span className="text-slate line-clamp-1 flex-1">{s.situation}</span>
+                {s.feedback?.scores && (
+                  <span className="ml-4 text-xs font-medium text-accent flex-shrink-0">
+                    avg {Math.round(Object.values(s.feedback.scores).reduce((a, b) => a + b, 0) / Object.values(s.feedback.scores).length)}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
         </section>
       )}
-
-      <section className="grid sm:grid-cols-2 gap-6">
-        <div>
-          <h3 className="font-semibold text-ink mb-2">Weak areas</h3>
-          <ul className="list-disc list-inside text-slate text-sm space-y-1">
-            {(data.weakAreas?.length ? data.weakAreas : ["None yet"]).map((a) => (
-              <li key={a}>{a}</li>
-            ))}
-          </ul>
-        </div>
-        <div>
-          <h3 className="font-semibold text-ink mb-2">Strong areas</h3>
-          <ul className="list-disc list-inside text-slate text-sm space-y-1">
-            {(data.strongAreas?.length ? data.strongAreas : ["Keep practicing"]).map((a) => (
-              <li key={a}>{a}</li>
-            ))}
-          </ul>
-        </div>
-      </section>
-
-      <section>
-        <h2 className="font-semibold text-ink mb-4">Recent sessions</h2>
-        <div className="space-y-3">
-          {data.recentSessions?.length ? (
-            data.recentSessions.map((s) => {
-              const avg = s.feedback?.scores
-                ? Math.round(
-                    Object.values(s.feedback.scores).reduce((a, b) => a + b, 0) /
-                      Object.values(s.feedback.scores).length
-                  )
-                : null;
-              return (
-                <article key={s.id} className="rounded-lg border bg-white p-4 text-sm">
-                  <p className="text-ink font-medium line-clamp-1">{s.situation}</p>
-                  <p className="text-slate mt-1">
-                    {avg != null ? `Avg score: ${avg}` : "No scores"} · {s.createdAt?.slice(0, 10)}
-                  </p>
-                </article>
-              );
-            })
-          ) : (
-            <p className="text-slate text-sm">No sessions yet. Start practicing from the library.</p>
-          )}
-        </div>
-      </section>
     </div>
   );
 }

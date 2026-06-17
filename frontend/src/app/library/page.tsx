@@ -3,8 +3,13 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { api, StyleProfile } from "@/lib/api";
+import { parseApiError } from "@/lib/errors";
+import { ErrorBanner } from "@/components/ui/ErrorBanner";
+import { PageSkeleton } from "@/components/ui/Skeleton";
+import { useToast } from "@/components/ui/Toast";
 
 export default function StyleLibraryPage() {
+  const { toast } = useToast();
   const [styles, setStyles] = useState<StyleProfile[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -14,33 +19,34 @@ export default function StyleLibraryPage() {
   const [createDesc, setCreateDesc] = useState("");
   const [extracted, setExtracted] = useState<StyleProfile | null>(null);
   const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
 
   useEffect(() => {
-    api
-      .getStyles()
+    api.getStyles()
       .then(setStyles)
-      .catch((e) => setError(e.message))
+      .catch((e) => setError(parseApiError(e)))
       .finally(() => setLoading(false));
   }, []);
 
   async function handleCreateStyle(e: React.FormEvent) {
     e.preventDefault();
     setCreating(true);
-    setError(null);
+    setCreateError(null);
     try {
       const profile = await api.createStyleFromDescription(createName, createDesc);
       setExtracted(profile);
       setStyles((prev) => [profile, ...prev.filter((s) => s.id !== profile.id)]);
+      toast("success", "Style created", profile.name);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Failed to create style");
+      const msg = parseApiError(err);
+      setCreateError(msg);
+      toast("error", "Failed to create style", msg);
     } finally {
       setCreating(false);
     }
   }
 
-  if (loading) {
-    return <p className="text-slate">Loading styles…</p>;
-  }
+  if (loading) return <PageSkeleton rows={6} />;
 
   return (
     <div className="space-y-8">
@@ -60,11 +66,8 @@ export default function StyleLibraryPage() {
         </div>
       </section>
 
-      {error && (
-        <div className="rounded-lg bg-red-50 border border-red-200 text-red-800 px-4 py-3 text-sm">
-          {error}
-        </div>
-      )}
+      <ErrorBanner message={error} onDismiss={() => setError(null)} />
+
       <section className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {styles.map((style) => (
           <article
@@ -94,22 +97,23 @@ export default function StyleLibraryPage() {
       </section>
 
       {showCreate && (
-        <Modal title="Create style from description" onClose={() => setShowCreate(false)}>
+        <Modal title="Create style from description" onClose={() => { setShowCreate(false); setCreateError(null); setExtracted(null); }}>
           <form onSubmit={handleCreateStyle} className="space-y-4">
             <input
-              className="w-full border rounded-lg px-3 py-2"
+              className="w-full border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-accent"
               placeholder="Style name (e.g. Harvey Specter)"
               value={createName}
               onChange={(e) => setCreateName(e.target.value)}
               required
             />
             <textarea
-              className="w-full border rounded-lg px-3 py-2 min-h-[120px]"
+              className="w-full border rounded-lg px-3 py-2 min-h-[120px] focus:outline-none focus:ring-2 focus:ring-accent"
               placeholder="Describe the style or paste character dialogue…"
               value={createDesc}
               onChange={(e) => setCreateDesc(e.target.value)}
               required
             />
+            <ErrorBanner message={createError} onDismiss={() => setCreateError(null)} />
             <button
               type="submit"
               disabled={creating}
@@ -118,7 +122,7 @@ export default function StyleLibraryPage() {
               {creating ? "Extracting…" : "Extract style"}
             </button>
             {extracted && (
-              <div className="rounded-lg bg-surface border p-4 text-sm space-y-2">
+              <div className="rounded-lg bg-slate-50 border p-4 text-sm space-y-2">
                 <p className="font-medium text-ink">Extracted summary</p>
                 <p>
                   {extracted.powerDynamic} · Formal {extracted.formalityLevel} ·{" "}
