@@ -61,7 +61,7 @@ management:
       export:
         url: ${OTLP_METRICS_ENDPOINT}
         headers:
-          Authorization: ${OTLP_METRICS_AUTH_HEADER}
+          Authorization: "Basic ${OTLP_AUTH_BASE64}"
         step: 60s
         resource-attributes:
           service.name: style-communicator
