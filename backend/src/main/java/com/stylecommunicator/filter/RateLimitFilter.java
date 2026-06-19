@@ -2,7 +2,9 @@ package com.stylecommunicator.filter;
 
 import com.stylecommunicator.config.AppProperties;
 import com.stylecommunicator.security.JwtService;
+import com.stylecommunicator.util.CookieUtil;
 import jakarta.servlet.*;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.core.annotation.Order;
@@ -38,28 +40,43 @@ public class RateLimitFilter implements Filter {
 
         String path = httpRequest.getRequestURI();
         if (path != null && path.endsWith("/api/sessions/start")) {
-            // Extract userId from JWT Bearer token
-            String authHeader = httpRequest.getHeader("Authorization");
-            if (authHeader != null && authHeader.startsWith("Bearer ")) {
-                String token = authHeader.substring(7);
+            String token = extractToken(httpRequest);
+            if (token != null) {
                 try {
                     if (jwtService.isValid(token)) {
                         UUID userId = jwtService.extractUserId(token);
                         String key = currentDay + ":" + userId;
                         int count = dailySessionCount.getOrDefault(key, 0);
                         if (count >= appProperties.getDailySessionCap()) {
-                            httpResponse.sendError(429, "Daily limit reached. Try tomorrow.");
+                            httpResponse.sendError(429, "Daily session limit reached. Try again tomorrow.");
                             return;
                         }
                         dailySessionCount.put(key, count + 1);
                     }
                 } catch (Exception ignored) {
-                    // Invalid token — let Spring Security handle it
+                    // Invalid token — let JwtAuthFilter / SecurityConfig handle the 401
                 }
             }
         }
 
         chain.doFilter(request, response);
+    }
+
+    /** Same priority as JwtAuthFilter: cookie first, header fallback. */
+    private String extractToken(HttpServletRequest request) {
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (CookieUtil.COOKIE_NAME.equals(cookie.getName())) {
+                    String value = cookie.getValue();
+                    return (value != null && !value.isBlank()) ? value : null;
+                }
+            }
+        }
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+        return null;
     }
 
     private void resetIfNewDay() {

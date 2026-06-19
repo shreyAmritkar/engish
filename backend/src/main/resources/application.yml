@@ -17,17 +17,15 @@ spring:
           time_zone: UTC
   flyway:
     enabled: true
-  output:
-    ansi:
-      enabled: ${ANSI_ENABLED:DETECT}   # ALWAYS locally, NEVER on Render
 
 server:
   port: ${PORT:10000}
 
 logging:
   level:
-    org.springframework.security: ${LOG_LEVEL_SECURITY:INFO}   # DEBUG locally, INFO on Render
+    org.springframework.security: DEBUG
 
+# One key: OPENROUTER_API_KEY — pick any model id (Gemini, DeepSeek, etc.) via LLM_FAST_MODEL / LLM_QUALITY_MODEL
 llm:
   api-key: ${OPENROUTER_API_KEY:${LLM_API_KEY:}}
   fast-model: ${LLM_FAST_MODEL:google/gemini-2.0-flash-001}
@@ -47,5 +45,9 @@ app:
   daily-session-cap: 10
   style-cache-ttl-minutes: 60
   similarity-threshold: 0.85
+  # Generate a strong random string for production (e.g. openssl rand -base64 48)
   jwt-secret: ${JWT_SECRET:change-me-in-production-min-32-chars!!}
+  # 24 hours in ms
   jwt-expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+  # Set to true on production (HTTPS). false for local HTTP dev.
+  cookie-secure: ${COOKIE_SECURE:false}

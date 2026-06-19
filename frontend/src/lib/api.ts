@@ -1,4 +1,4 @@
-import { getToken, getAuthUser, saveAuth, AuthUser } from "./auth";
+import { saveAuth, clearAuth, AuthUser } from "./auth";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL?.replace(/\/$/, '') || "https://engish-gpsx.onrender.com";
 
@@ -55,8 +55,11 @@ export type ProgressData = {
   }>;
 };
 
+/**
+ * Token is no longer in the response body — it's in an HttpOnly cookie.
+ * We only receive the user profile for UI rendering.
+ */
 export type AuthResponse = {
-  token: string;
   userId: string;
   email: string;
   role: string;
@@ -71,44 +74,44 @@ export type AdminUser = {
 
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
-async function request<T>(path: string, options: RequestInit = {}, requiresAuth = true): Promise<T> {
-  const token = getToken();
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-    ...(options.headers as Record<string, string> || {}),
-  };
-
-  if (requiresAuth && token) {
-    headers["Authorization"] = `Bearer ${token}`;
-  }
-
-  const res = await fetch(`${API_URL}${path}`, { ...options, headers });
+async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
+  const res = await fetch(`${API_URL}${path}`, {
+    ...options,
+    // credentials: "include" tells the browser to send the HttpOnly cookie
+    // automatically on every request — no manual token handling needed
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      ...(options.headers as Record<string, string> || {}),
+    },
+  });
 
   if (res.status === 401) {
-    // Token expired — clear and redirect to login
+    // Cookie expired or invalid — clear local profile and go to login
+    clearAuth();
     if (typeof window !== "undefined") {
-      import("./auth").then(m => m.clearAuth());
       window.location.href = "/login";
     }
-    throw new Error("Session expired. Please log in again.");
+    throw new Error("Session expired. Please sign in again.");
   }
 
   if (!res.ok) {
-    // Try to parse the backend ErrorResponse JSON
     try {
       const errJson = await res.json();
       const message = errJson?.message || errJson?.error || `Request failed: ${res.status}`;
       const details: string[] = errJson?.details ?? [];
-      const full = details.length > 0 ? `${message}: ${details.join(", ")}` : message;
-      throw new Error(full);
+      throw new Error(details.length > 0 ? `${message}: ${details.join(", ")}` : message);
     } catch (parseErr) {
-      if (parseErr instanceof Error && parseErr.message !== `Request failed: ${res.status}`) {
+      if (parseErr instanceof Error && !parseErr.message.startsWith("Request failed:")) {
         throw parseErr;
       }
       const text = await res.text().catch(() => "");
       throw new Error(text || `Request failed: ${res.status}`);
     }
   }
+
+  // 204 No Content — don't try to parse body
+  if (res.status === 204) return undefined as T;
 
   return res.json() as Promise<T>;
 }
@@ -120,8 +123,9 @@ export const authApi = {
     const res = await request<AuthResponse>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify({ email, password }),
-    }, false);
-    saveAuth(res.token, { userId: res.userId, email: res.email, role: res.role });
+    });
+    // Save user profile for UI — token is in the cookie, not here
+    saveAuth({ userId: res.userId, email: res.email, role: res.role });
     return res;
   },
 
@@ -129,9 +133,18 @@ export const authApi = {
     const res = await request<AuthResponse>("/api/auth/login", {
       method: "POST",
       body: JSON.stringify({ email, password }),
-    }, false);
-    saveAuth(res.token, { userId: res.userId, email: res.email, role: res.role });
+    });
+    saveAuth({ userId: res.userId, email: res.email, role: res.role });
     return res;
+  },
+
+  /**
+   * Real logout — hits the server so it clears the HttpOnly cookie.
+   * Then clears the local user profile.
+   */
+  logout: async (): Promise<void> => {
+    await request<void>("/api/auth/logout", { method: "POST" });
+    clearAuth();
   },
 
   me: () => request<AuthResponse>("/api/auth/me"),
@@ -155,9 +168,8 @@ export const adminApi = {
 // ── Main API ──────────────────────────────────────────────────────────────────
 
 export const api = {
-  // styles — library is public, creation requires auth
   getStyles: (source = "PRESET,USER_DESCRIBED") =>
-    request<StyleProfile[]>(`/api/styles/library?source=${encodeURIComponent(source)}`, {}, false),
+    request<StyleProfile[]>(`/api/styles/library?source=${encodeURIComponent(source)}`),
 
   createStyleFromDescription: (name: string, description: string) =>
     request<StyleProfile>("/api/styles/from-description", {
@@ -165,7 +177,6 @@ export const api = {
       body: JSON.stringify({ name, description }),
     }),
 
-  // sessions
   startSession: (styleProfileId: string) =>
     request<Session>("/api/sessions/start", {
       method: "POST",
@@ -190,6 +201,5 @@ export const api = {
       method: "POST",
     }),
 
-  // progress
   getProgress: () => request<ProgressData>("/api/progress/me"),
 };

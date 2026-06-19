@@ -1,8 +1,10 @@
 package com.stylecommunicator.security;
 
+import com.stylecommunicator.util.CookieUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -31,14 +33,9 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                                     FilterChain chain)
             throws ServletException, IOException {
 
-        String authHeader = request.getHeader("Authorization");
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            chain.doFilter(request, response);
-            return;
-        }
+        String token = extractToken(request);
 
-        String token = authHeader.substring(7);
-        if (!jwtService.isValid(token)) {
+        if (token == null || !jwtService.isValid(token)) {
             chain.doFilter(request, response);
             return;
         }
@@ -47,7 +44,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         UUID userId = UUID.fromString(claims.getSubject());
         String role = claims.get("role", String.class);
 
-        // Attach userId to request for controllers to use
         request.setAttribute("authenticatedUserId", userId);
 
         var auth = new UsernamePasswordAuthenticationToken(
@@ -59,5 +55,30 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         chain.doFilter(request, response);
+    }
+
+    /**
+     * Token extraction priority:
+     * 1. HttpOnly cookie  — preferred, JS-inaccessible
+     * 2. Authorization header — fallback for API / curl clients
+     */
+    private String extractToken(HttpServletRequest request) {
+        // 1. Cookie
+        if (request.getCookies() != null) {
+            for (Cookie cookie : request.getCookies()) {
+                if (CookieUtil.COOKIE_NAME.equals(cookie.getName())) {
+                    String value = cookie.getValue();
+                    return (value != null && !value.isBlank()) ? value : null;
+                }
+            }
+        }
+
+        // 2. Authorization: Bearer header (API fallback)
+        String header = request.getHeader("Authorization");
+        if (header != null && header.startsWith("Bearer ")) {
+            return header.substring(7);
+        }
+
+        return null;
     }
 }

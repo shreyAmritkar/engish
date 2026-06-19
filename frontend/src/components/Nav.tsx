@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getAuthUser, clearAuth, AuthUser } from "@/lib/auth";
+import { authApi } from "@/lib/api";
 
 const navLinks = [
   { href: "/library", label: "Library" },
@@ -17,11 +18,16 @@ export function Nav() {
 
   useEffect(() => {
     setUser(getAuthUser());
-    // Re-read on route changes
   }, [pathname]);
 
-  function logout() {
-    clearAuth();
+  async function logout() {
+    try {
+      await authApi.logout(); // clears HttpOnly cookie server-side
+    } catch {
+      // If the request fails (e.g. already expired), still clear locally
+      clearAuth();
+    }
+    setUser(null);
     router.push("/login");
   }
 
