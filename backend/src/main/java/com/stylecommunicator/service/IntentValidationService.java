@@ -10,7 +10,7 @@ import org.springframework.stereotype.Service;
 import java.util.Map;
 import java.util.Set;
 import java.util.regex.Pattern;
-
+import java.util.Arrays;
 /**
  * Gate that runs BEFORE AnalysisRouter.analyze(). Rejects responses that
  * are not a genuine attempt to respond to the situation — keyboard mash,
@@ -71,10 +71,10 @@ public class IntentValidationService {
             );
         }
 
-        long distinctWords = Set.of(words).stream()
-                .map(String::toLowerCase)
-                .distinct()
-                .count();
+        long distinctWords = Arrays.stream(words)
+                                    .map(String::toLowerCase)
+                                    .distinct()
+                                    .count();
         if (distinctWords < MIN_DISTINCT_WORDS) {
             return ValidationResult.fail(
                 "Your response needs more variety. Try writing a genuine reply " +
@@ -82,7 +82,7 @@ public class IntentValidationService {
             );
         }
 
-        long signalCount = Set.of(words).stream()
+        long signalCount = Arrays.stream(words)
                 .map(w -> w.toLowerCase().replaceAll("[^a-z]", ""))
                 .filter(WORKPLACE_SIGNALS::contains)
                 .count();
