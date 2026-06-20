@@ -1,6 +1,8 @@
 package com.stylecommunicator.service;
 
+import com.stylecommunicator.entity.PracticeSession;
 import com.stylecommunicator.entity.SituationEntry;
+import com.stylecommunicator.repository.PracticeSessionRepository;
 import com.stylecommunicator.repository.SituationRepository;
 import com.stylecommunicator.service.situation.SituationSourceRouter;
 import org.slf4j.Logger;
@@ -9,8 +11,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 
 /**
@@ -31,7 +35,7 @@ public class SituationBankService {
     private static final Logger log = LoggerFactory.getLogger(SituationBankService.class);
 
     /** Trigger async replenishment when fewer than this many situations exist. */
-    private static final int LOW_STOCK_THRESHOLD = 6;
+    private static final int LOW_STOCK_THRESHOLD = 40;
 
     /** Fetch this many candidates from DB when picking (least-used first). */
     private static final int CANDIDATE_POOL = 20;
@@ -50,11 +54,15 @@ public class SituationBankService {
     );
 
     private final SituationRepository repository;
+    private final PracticeSessionRepository practiceSessionRepository;
     private final SituationSourceRouter router;
     private final Random rng = new Random();
 
-    public SituationBankService(SituationRepository repository, SituationSourceRouter router) {
+    public SituationBankService(SituationRepository repository,
+                                 PracticeSessionRepository practiceSessionRepository,
+                                 SituationSourceRouter router) {
         this.repository = repository;
+        this.practiceSessionRepository = practiceSessionRepository;
         this.router     = router;
     }
 
@@ -91,9 +99,21 @@ public class SituationBankService {
             return inlineFallback(p);
         }
 
-        // Pick least-used, with a small random offset so it doesn't always repeat
-        int pick = rng.nextInt(Math.min(candidates.size(), 5));
-        SituationEntry chosen = candidates.get(pick);
+        // Avoid repeating any situation this user has seen in their last
+        // RECENT_HISTORY_SIZE sessions, so two consecutive sessions never
+        // hand back the same text. If filtering leaves nothing, fall back
+        // to the unfiltered candidate list rather than blocking the user.
+        Set<String> recentlySeen = recentlySeenTexts(userId);
+        List<SituationEntry> unseen = candidates.stream()
+            .filter(c -> !recentlySeen.contains(c.getText()))
+            .toList();
+        List<SituationEntry> pool = unseen.isEmpty() ? candidates : unseen;
+
+        // Pick from a wider random window (up to the whole fetched pool)
+        // rather than always the 5 least-used, so repeated visits are
+        // less likely to land on the same handful of entries.
+        int window = Math.min(pool.size(), CANDIDATE_POOL);
+        SituationEntry chosen = pool.get(rng.nextInt(window));
         chosen.setUseCount(chosen.getUseCount() + 1);
         repository.save(chosen);
         return chosen.getText();
@@ -108,6 +128,19 @@ public class SituationBankService {
     }
 
     // ── Helpers ───────────────────────────────────────────────────────────
+
+    /** How many of the user's most recent sessions to check for repeats. */
+    private static final int RECENT_HISTORY_SIZE = 20;
+
+    private Set<String> recentlySeenTexts(UUID userId) {
+        List<PracticeSession> recent =
+            practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(userId);
+        Set<String> texts = new HashSet<>();
+        for (PracticeSession s : recent) {
+            if (s.getSituation() != null) texts.add(s.getSituation());
+        }
+        return texts;
+    }
 
     private String normalise(String value, String defaultVal) {
         return (value == null || value.isBlank()) ? defaultVal : value.trim().toUpperCase();

@@ -1,6 +1,7 @@
 package com.stylecommunicator.service;
 
 import com.stylecommunicator.entity.SituationEntry;
+import com.stylecommunicator.repository.PracticeSessionRepository;
 import com.stylecommunicator.repository.SituationRepository;
 import com.stylecommunicator.service.situation.SituationSourceRouter;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +20,14 @@ import static org.mockito.Mockito.*;
 
 /**
  * Tests SituationBankService: DB pick logic, low-stock trigger, fallback strings,
- * required word / emotional context selection.
+ * required word / emotional context selection, and recent-repeat avoidance.
  */
 @ExtendWith(MockitoExtension.class)
 class SituationBankServiceTest {
 
-    @Mock private SituationRepository   repository;
-    @Mock private SituationSourceRouter router;
+    @Mock private SituationRepository        repository;
+    @Mock private PracticeSessionRepository  practiceSessionRepository;
+    @Mock private SituationSourceRouter      router;
 
     private SituationBankService service;
 
@@ -33,7 +35,10 @@ class SituationBankServiceTest {
 
     @BeforeEach
     void setUp() {
-        service = new SituationBankService(repository, router);
+        service = new SituationBankService(repository, practiceSessionRepository, router);
+        // Default: user has no session history unless a test overrides this.
+        lenient().when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(any()))
+            .thenReturn(List.of());
     }
 
     // ── Happy-path: returns text from DB entry ────────────────────────────
@@ -94,8 +99,8 @@ class SituationBankServiceTest {
 
     @Test
     void pickSituation_triggersReplenishWhenStockBelowThreshold() {
-        // Stock = 3, threshold = 6 → should trigger async replenish
-        when(repository.countByPowerAndLevel("EQUAL", "B1")).thenReturn(3L);
+        // Stock = 10, threshold = 40 → should trigger async replenish
+        when(repository.countByPowerAndLevel("EQUAL", "B1")).thenReturn(10L);
         when(repository.findCandidates(anyString(), anyString(), any(Pageable.class)))
             .thenReturn(List.of(entry("EQUAL", "B1", "Resolve peer disagreement.")));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -107,7 +112,7 @@ class SituationBankServiceTest {
 
     @Test
     void pickSituation_doesNotTriggerReplenishWhenStockAdequate() {
-        when(repository.countByPowerAndLevel("DOMINANT", "B2")).thenReturn(20L);
+        when(repository.countByPowerAndLevel("DOMINANT", "B2")).thenReturn(50L);
         when(repository.findCandidates(anyString(), anyString(), any(Pageable.class)))
             .thenReturn(List.of(entry("DOMINANT", "B2", "Address a junior's pushback.")));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
@@ -146,6 +151,53 @@ class SituationBankServiceTest {
         assertNotEquals(dominant, submissive);
         assertNotEquals(dominant, equal);
         assertNotEquals(submissive, equal);
+    }
+
+    // ── Avoids repeating a situation the user just saw ────────────────────
+
+    @Test
+    void pickSituation_excludesSituationsUserRecentlySaw() {
+        SituationEntry seen  = entry("EQUAL", "B2", "Already seen this one.");
+        SituationEntry fresh = entry("EQUAL", "B2", "Brand new situation.");
+
+        com.stylecommunicator.entity.PracticeSession priorSession =
+            new com.stylecommunicator.entity.PracticeSession();
+        priorSession.setSituation("Already seen this one.");
+
+        when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(USER))
+            .thenReturn(List.of(priorSession));
+        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(50L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+            .thenReturn(List.of(seen, fresh));
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // Run many times — should never return the already-seen text
+        // since "fresh" is the only entry left after filtering.
+        for (int i = 0; i < 10; i++) {
+            String result = service.pickSituation("EQUAL", "B2", USER);
+            assertEquals("Brand new situation.", result);
+        }
+    }
+
+    @Test
+    void pickSituation_fallsBackToFullPoolWhenEverythingWasRecentlySeen() {
+        SituationEntry onlyOption = entry("EQUAL", "B2", "Only situation available.");
+
+        com.stylecommunicator.entity.PracticeSession priorSession =
+            new com.stylecommunicator.entity.PracticeSession();
+        priorSession.setSituation("Only situation available.");
+
+        when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(USER))
+            .thenReturn(List.of(priorSession));
+        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(50L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+            .thenReturn(List.of(onlyOption));
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        // Even though the user has "seen" it, it's the only option in the
+        // pool, so the service must still return it rather than fail.
+        String result = service.pickSituation("EQUAL", "B2", USER);
+        assertEquals("Only situation available.", result);
     }
 
     // ── Use count incremented ─────────────────────────────────────────────

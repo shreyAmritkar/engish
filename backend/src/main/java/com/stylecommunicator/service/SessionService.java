@@ -42,10 +42,30 @@ public class SessionService {
         PracticeSession session = new PracticeSession();
         session.setUserId(userId);
         session.setStyleProfileId(styleProfileId);
-        session.setSituation(situationBankService.pickSituation(style.getPowerDynamic(), userId));
+        session.setSituation(situationBankService.pickSituation(
+                style.getPowerDynamic(), toCefrLevel(style.getVocabularyTier()), userId));
         session.setRequiredWord(situationBankService.pickRequiredWord());
         session.setEmotionalContext(situationBankService.pickEmotionalContext());
         return practiceSessionRepository.save(session);
+    }
+
+    /**
+     * Maps the style profile's vocabulary tier (SIMPLE / INTERMEDIATE /
+     * ADVANCED / TECHNICAL — produced by the LLM style-extraction prompt)
+     * to the CEFR level codes the situation_bank table actually stores
+     * (A1 / A2 / B1 / B2). These are two different vocabularies for two
+     * different purposes and must never be passed through unmapped —
+     * doing so violates the situation_bank_level_check DB constraint.
+     */
+    private String toCefrLevel(String vocabularyTier) {
+        if (vocabularyTier == null) return "B2";
+        return switch (vocabularyTier.trim().toUpperCase()) {
+            case "SIMPLE"       -> "A1";
+            case "INTERMEDIATE" -> "B1";
+            case "ADVANCED"     -> "B2";
+            case "TECHNICAL"    -> "B2";
+            default             -> "B2";
+        };
     }
 
     @Transactional

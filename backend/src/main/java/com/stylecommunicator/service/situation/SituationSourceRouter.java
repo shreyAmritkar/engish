@@ -57,21 +57,21 @@ public class SituationSourceRouter {
         List<String> texts = new ArrayList<>();
 
         // 1. AdviceSlip — free, no key
-        drain(adviceSlipSource.fetch(power, level, BATCH_SIZE), texts, BATCH_SIZE, "AdviceSlip");
+        // drain(adviceSlipSource.fetch(power, level, BATCH_SIZE), texts, BATCH_SIZE, "AdviceSlip");
 
-        // 2. Wikipedia — free, no key
-        if (texts.size() < BATCH_SIZE) {
-            drain(wikipediaSource.fetch(power, level, BATCH_SIZE - texts.size()),
-                  texts, BATCH_SIZE, "Wikipedia");
-        }
+        // // 2. Wikipedia — free, no key
+        // if (texts.size() < BATCH_SIZE) {
+        //     drain(wikipediaSource.fetch(power, level, BATCH_SIZE - texts.size()),
+        //           texts, BATCH_SIZE, "Wikipedia");
+        // }
 
         // 3. LLM — last resort
-        if (texts.size() < BATCH_SIZE) {
-            int needed = BATCH_SIZE - texts.size();
+        // if (texts.size() < BATCH_SIZE) {
+        //     int needed = BATCH_SIZE - texts.size();
             log.info("External sources yielded {} / {} — falling back to LLM for {} more",
-                     texts.size(), BATCH_SIZE, needed);
-            drain(llmSource.fetch(power, level, needed), texts, BATCH_SIZE, "LLM");
-        }
+                     texts.size(), BATCH_SIZE, BATCH_SIZE );
+            drain(llmSource.fetch(power, level, BATCH_SIZE), texts, BATCH_SIZE, "LLM");
+        // }
 
         if (texts.isEmpty()) {
             log.warn("All sources exhausted for power={} level={} — no new situations stored", power, level);
