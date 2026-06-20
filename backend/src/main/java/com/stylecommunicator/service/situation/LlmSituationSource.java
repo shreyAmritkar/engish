@@ -1,5 +1,6 @@
 package com.stylecommunicator.service.situation;
 
+import com.stylecommunicator.exception.LlmUnavailableException;
 import com.stylecommunicator.llm.LlmClient;
 import com.stylecommunicator.llm.LlmTier;
 import org.slf4j.Logger;
@@ -10,13 +11,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Last-resort source: asks the LLM to generate a batch of situations.
- *
- * This is ONLY invoked when both free external sources (AdviceSlip,
- * Wikipedia) returned fewer results than needed. It fires at most once
- * per replenishment cycle and uses the free/fast tier.
- */
 @Component
 public class LlmSituationSource {
 
@@ -28,80 +22,80 @@ public class LlmSituationSource {
         this.llmClient = llmClient;
     }
 
+    /** Backward-compatible — defaults to PROFESSIONAL context. */
     public List<String> fetch(String power, String level, int count) {
-        log.info("LlmSituationSource: generating {} situations (power={}, level={})",
-                count, power, level);
-
-        String prompt = buildPrompt(power, level, count);
-
-        Map<String, Object> json = llmClient.generateJson(prompt, LlmTier.FAST);
-
-        if (json == null || json.isEmpty()) {
-            log.warn("LlmSituationSource: LLM returned empty — no fallback available");
-            return List.of();
-        }
-
-        return extractList(json);
+        return fetch(power, level, "PROFESSIONAL", count);
     }
 
-    // ── Prompt ────────────────────────────────────────────────────────────
+    public List<String> fetch(String power, String level, String context, int count) {
+        log.info("LlmSituationSource: generating {} situations (power={} level={} context={})",
+                 count, power, level, context);
+        try {
+            Map<String, Object> json = llmClient.generateJson(
+                buildPrompt(power, level, context, count), LlmTier.FAST);
+            return extractList(json);
+        } catch (LlmUnavailableException e) {
+            log.warn("LLM unavailable for situation generation: {}", e.getMessage());
+            return List.of();
+        }
+    }
 
-    private String buildPrompt(String power, String level, int count) {
+    private String buildPrompt(String power, String level, String context, int count) {
         String levelDesc = switch (level.toUpperCase()) {
-            case "A1" -> "very simple English, short plain sentences, everyday workplace vocabulary";
-            case "A2" -> "simple English, basic professional vocabulary";
-            case "B1" -> "intermediate English, common workplace vocabulary";
-            default   -> "advanced English, natural professional phrasing";
+            case "A1" -> "very simple English, short sentences, everyday vocabulary";
+            case "A2" -> "simple English, basic sentences, common words";
+            case "B1" -> "intermediate English, some complexity, clear structure";
+            default   -> "advanced English, complex situations, nuanced language";
         };
+
         String powerDesc = switch (power.toUpperCase()) {
-            case "DOMINANT"   -> "the user is in a position of authority or leadership over the other person";
-            case "SUBMISSIVE" -> "the user must make a request or pushback to someone above them";
-            default           -> "the user and the other person are colleagues or peers at the same level";
+            case "DOMINANT"   -> "The user is the leader, team lead, or senior person. The other person is pushing back or causing a problem.";
+            case "SUBMISSIVE" -> "The user is junior or mid-level. The other person is a manager or someone with authority. The user needs to push back or ask for something difficult.";
+            default           -> "The user and the other person are peers at the same level. There is a disagreement or tension between them.";
+        };
+
+        String contextDesc = switch (context.toUpperCase()) {
+            case "CASUAL" -> """
+                Tone: casual, everyday, social. NOT workplace or professional.
+                Settings: friends, family, social groups, personal life.
+                Examples: "your friend is about to make a bad decision",
+                          "someone in your group keeps ignoring your input",
+                          "you need to call out a friend without losing them".
+                Keep it real and relatable — not corporate.""";
+            case "DRAMATIC" -> """
+                Tone: high-stakes, emotionally charged, larger-than-life.
+                Settings: any — but the stakes feel significant. Something important is at risk.
+                Examples: "everything your group built is at risk because of one bad call",
+                          "your closest ally is about to make an irreversible mistake",
+                          "you've stayed silent too long — it's now or never".
+                Use vivid, urgent language. Make it feel meaningful.""";
+            default -> """
+                Tone: professional, workplace, formal or semi-formal.
+                Settings: office, team meetings, work emails, corporate environments.
+                Examples: "a colleague challenges your decision in front of the team",
+                          "your manager asks you to take on work outside your role",
+                          "you need to push back on a deadline without damaging the relationship".""";
         };
 
         return """
-            Generate %d unique, realistic workplace scenarios for a roleplay
-            exercise. A learner will read each one and then write what they
-            would actually say or write in response — so each scenario must
-            give them enough concrete context to picture the situation and
-            know exactly what they're responding to.
-
-            Each scenario must include, in 2-3 short sentences:
-            1. WHO is involved (their role, e.g. "your manager", "a teammate",
-               "a client") — never just "someone" or "a colleague" with no detail.
-            2. WHAT just happened or was just said — a specific, concrete event,
-               not an abstract description of a task category.
-            3. WHAT the user now needs to do or respond to — make the expected
-               action obvious from the scenario itself.
-
-            Power dynamic: %s.
+            Generate %d unique communication practice scenarios.
             Language level: %s.
+            Power dynamic: %s
+            Context and tone:
+            %s
 
-            Bad example (too abstract, reads like an instruction, not a scene):
-            "You must diplomatically decline a senior executive's request for
-            an unrealistic deadline."
-
-            Good example (concrete, sets a scene, learner knows exactly what's
-            happening):
-            "Your VP just messaged you asking if the project can be finished by
-            Friday — two weeks earlier than your team agreed on. She's waiting
-            on your reply before the client call in an hour. You don't think
-            it's realistic. Respond to her message."
+            FORMAT — every scenario must follow this exact structure:
+            "You are the [user role]. Your [their role] [their name] just [action + medium]: \\"[what they said].\\" Write your reply. Goal: [what the user needs to accomplish]."
 
             Rules:
-            - Each scenario must be 2-3 sentences, max 45 words total.
-            - No numbering. No bullet points inside the text.
-            - Each scenario must be different. No duplicates.
-            - End each scenario with a clear instruction of what the user
-              should do (e.g. "Respond to her message.", "Reply to your
-              teammate.", "Write what you'd say in the meeting.").
-
-            Return JSON only, no markdown:
-            {"situations": ["scenario 1", "scenario 2", ...]}
-            """.formatted(count, powerDesc, levelDesc);
+            - Match the context tone exactly — do NOT generate corporate situations for CASUAL/DRAMATIC
+            - [user role] and [their role] should fit the context (friend/teammate for casual, ally/rival for dramatic, manager/colleague for professional)
+            - [their name]: a realistic first name
+            - Keep each scenario to 2–3 sentences max
+            - Each scenario must be unique
+            - Return JSON only, no markdown: {"situations": ["...", "..."]}
+            """.formatted(count, levelDesc, powerDesc, contextDesc);
     }
-
-    // ── Parsing ───────────────────────────────────────────────────────────
 
     @SuppressWarnings("unchecked")
     private List<String> extractList(Map<String, Object> json) {

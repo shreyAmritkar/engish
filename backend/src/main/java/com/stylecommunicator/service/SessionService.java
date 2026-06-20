@@ -2,8 +2,10 @@ package com.stylecommunicator.service;
 
 import com.stylecommunicator.entity.PracticeSession;
 import com.stylecommunicator.entity.StyleProfile;
+import com.stylecommunicator.entity.UserProgress;
 import com.stylecommunicator.repository.PracticeSessionRepository;
 import com.stylecommunicator.repository.StyleProfileRepository;
+import com.stylecommunicator.repository.UserProgressRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,6 +23,7 @@ public class SessionService {
     private final AnalysisRouter analysisRouter;
     private final ProgressTracker progressTracker;
     private final IntentValidationService intentValidationService;
+    private final UserProgressRepository userProgressRepository;
 
     public SessionService(
             PracticeSessionRepository practiceSessionRepository,
@@ -28,13 +31,15 @@ public class SessionService {
             SituationBankService situationBankService,
             AnalysisRouter analysisRouter,
             ProgressTracker progressTracker,
-            IntentValidationService intentValidationService) {
+            IntentValidationService intentValidationService,
+            UserProgressRepository userProgressRepository) {
         this.practiceSessionRepository = practiceSessionRepository;
-        this.styleProfileRepository = styleProfileRepository;
-        this.situationBankService = situationBankService;
-        this.analysisRouter = analysisRouter;
-        this.progressTracker = progressTracker;
-        this.intentValidationService = intentValidationService;
+        this.styleProfileRepository    = styleProfileRepository;
+        this.situationBankService      = situationBankService;
+        this.analysisRouter            = analysisRouter;
+        this.progressTracker           = progressTracker;
+        this.intentValidationService   = intentValidationService;
+        this.userProgressRepository    = userProgressRepository;
     }
 
     @Transactional
@@ -42,32 +47,58 @@ public class SessionService {
         StyleProfile style = styleProfileRepository.findById(styleProfileId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Style not found"));
 
+        String cefrLevel = resolveLevel(userId, style.getVocabularyTier());
+        int formality = style.getFormalityLevel() != null ? style.getFormalityLevel() : 7;
+        String emotionalRange = style.getEmotionalRange() != null ? style.getEmotionalRange() : "MODERATE";
+
         PracticeSession session = new PracticeSession();
         session.setUserId(userId);
         session.setStyleProfileId(styleProfileId);
         session.setSituation(situationBankService.pickSituation(
-                style.getPowerDynamic(), toCefrLevel(style.getVocabularyTier()), userId));
+                style.getPowerDynamic(), cefrLevel, userId, formality, emotionalRange));
         session.setRequiredWord(situationBankService.pickRequiredWord());
         session.setEmotionalContext(situationBankService.pickEmotionalContext());
         return practiceSessionRepository.save(session);
     }
 
     /**
-     * Maps the style profile's vocabulary tier (SIMPLE / INTERMEDIATE /
-     * ADVANCED / TECHNICAL — produced by the LLM style-extraction prompt)
-     * to the CEFR level codes the situation_bank table actually stores
-     * (A1 / A2 / B1 / B2). These are two different vocabularies for two
-     * different purposes and must never be passed through unmapped —
-     * doing so violates the situation_bank_level_check DB constraint.
+     * Resolves the CEFR difficulty level for a new session.
+     *
+     * Logic:
+     *  - The style's vocabularyTier gives a BASE level (the difficulty the
+     *    user signed up for by picking that style).
+     *  - The user's currentLevel (1–5, tracked by ProgressTracker) acts as
+     *    an OFFSET: if they're consistently performing well (+2 levels above
+     *    base) we nudge them up one CEFR step; if they're struggling (-2 below
+     *    base) we nudge them down one step.
+     *  - New users (no progress record yet) get exactly the style's base level.
+     *
+     * CEFR ladder: A1 → A2 → B1 → B2
+     * currentLevel ladder: 1 (weakest) → 5 (strongest)
+     * Base currentLevel for each style tier:
+     *   SIMPLE=1, INTERMEDIATE=2-3, ADVANCED/TECHNICAL=4-5
      */
-    private String toCefrLevel(String vocabularyTier) {
-        if (vocabularyTier == null) return "B2";
-        return switch (vocabularyTier.trim().toUpperCase()) {
-            case "SIMPLE"       -> "A1";
-            case "INTERMEDIATE" -> "B1";
-            case "ADVANCED"     -> "B2";
-            case "TECHNICAL"    -> "B2";
-            default             -> "B2";
+    /**
+     * Resolves CEFR difficulty purely from the user's performance level.
+     * Style profile determines WHAT they practice (power dynamic, topic domain),
+     * not HOW HARD — so every user starts at A1 and earns harder situations
+     * through consistent good scores, regardless of which style they picked.
+     *
+     * currentLevel → CEFR:
+     *   1 (new / struggling) → A1
+     *   2                    → A2
+     *   3                    → B1
+     *   4–5 (excelling)      → B2
+     */
+    private String resolveLevel(UUID userId, String vocabularyTier) {
+        UserProgress progress = userProgressRepository.findById(userId).orElse(null);
+        if (progress == null) return "A1"; // brand new user always starts easy
+
+        return switch (progress.getCurrentLevel()) {
+            case 1  -> "A1";
+            case 2  -> "A2";
+            case 3  -> "B1";
+            default -> "B2"; // level 4 and 5
         };
     }
 

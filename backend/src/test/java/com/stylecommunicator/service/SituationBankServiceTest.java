@@ -18,17 +18,12 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests SituationBankService: DB pick logic, low-stock trigger, fallback strings,
- * required word / emotional context selection, and recent-repeat avoidance.
- */
 @ExtendWith(MockitoExtension.class)
 class SituationBankServiceTest {
 
-    @Mock private SituationRepository        repository;
-    @Mock private PracticeSessionRepository  practiceSessionRepository;
-    @Mock private SituationSourceRouter      router;
-
+    @Mock private SituationRepository       repository;
+    @Mock private PracticeSessionRepository practiceSessionRepository;
+    @Mock private SituationSourceRouter     router;
     private SituationBankService service;
 
     private final UUID USER = UUID.randomUUID();
@@ -36,7 +31,6 @@ class SituationBankServiceTest {
     @BeforeEach
     void setUp() {
         service = new SituationBankService(repository, practiceSessionRepository, router);
-        // Default: user has no session history unless a test overrides this.
         lenient().when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(any()))
             .thenReturn(List.of());
     }
@@ -46,27 +40,27 @@ class SituationBankServiceTest {
     @Test
     void pickSituation_returnsTextFromDbEntry() {
         SituationEntry entry = entry("EQUAL", "B2", "You disagree with a peer on priorities.");
-        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(10L);
-        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B2", "PROFESSIONAL")).thenReturn(10L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        String result = service.pickSituation("EQUAL", "B2", USER);
+        String result = service.pickSituation("EQUAL", "B2", USER, 7, "MODERATE");
 
         assertEquals("You disagree with a peer on priorities.", result);
     }
 
-    // ── Backward-compat overload defaults to B2 ──────────────────────────
+    // ── Backward-compat overload defaults to PROFESSIONAL context ─────────
 
     @Test
-    void pickSituation_twoArgOverloadDefaultsToB2() {
+    void pickSituation_threeArgOverloadUsesDefaultContext() {
         SituationEntry entry = entry("DOMINANT", "B2", "A client pushes back.");
-        when(repository.countByPowerAndLevel("DOMINANT", "B2")).thenReturn(10L);
-        when(repository.findCandidates(eq("DOMINANT"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("DOMINANT", "B2", "PROFESSIONAL")).thenReturn(10L);
+        when(repository.findCandidates(eq("DOMINANT"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        String result = service.pickSituation("DOMINANT", USER);
+        String result = service.pickSituation("DOMINANT", "B2", USER);
 
         assertEquals("A client pushes back.", result);
     }
@@ -76,78 +70,95 @@ class SituationBankServiceTest {
     @Test
     void pickSituation_nullPowerNormalisesToEqual() {
         SituationEntry entry = entry("EQUAL", "B2", "Collaborate with a peer.");
-        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(10L);
-        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B2", "PROFESSIONAL")).thenReturn(10L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        assertDoesNotThrow(() -> service.pickSituation(null, "B2", USER));
+        assertDoesNotThrow(() -> service.pickSituation(null, "B2", USER, 7, "MODERATE"));
     }
 
     @Test
     void pickSituation_nullLevelNormalisesToB2() {
         SituationEntry entry = entry("DOMINANT", "B2", "Lead the meeting.");
-        when(repository.countByPowerAndLevel("DOMINANT", "B2")).thenReturn(10L);
-        when(repository.findCandidates(eq("DOMINANT"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("DOMINANT", "B2", "PROFESSIONAL")).thenReturn(10L);
+        when(repository.findCandidates(eq("DOMINANT"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        assertDoesNotThrow(() -> service.pickSituation("DOMINANT", null, USER));
+        assertDoesNotThrow(() -> service.pickSituation("DOMINANT", null, USER, 7, "MODERATE"));
     }
 
     // ── Replenishment trigger ─────────────────────────────────────────────
 
     @Test
     void pickSituation_triggersReplenishWhenStockBelowThreshold() {
-        // Stock = 10, threshold = 40 → should trigger async replenish
-        when(repository.countByPowerAndLevel("EQUAL", "B1")).thenReturn(10L);
-        when(repository.findCandidates(anyString(), anyString(), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B1", "PROFESSIONAL")).thenReturn(10L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B1"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry("EQUAL", "B1", "Resolve peer disagreement.")));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        service.pickSituation("EQUAL", "B1", USER);
+        service.pickSituation("EQUAL", "B1", USER, 7, "MODERATE");
 
-        verify(router, times(1)).replenishAsync("EQUAL", "B1");
+        verify(router, times(1)).replenishAsync("EQUAL", "B1", "PROFESSIONAL");
     }
 
     @Test
     void pickSituation_doesNotTriggerReplenishWhenStockAdequate() {
-        when(repository.countByPowerAndLevel("DOMINANT", "B2")).thenReturn(50L);
-        when(repository.findCandidates(anyString(), anyString(), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("DOMINANT", "B2", "PROFESSIONAL")).thenReturn(50L);
+        when(repository.findCandidates(eq("DOMINANT"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry("DOMINANT", "B2", "Address a junior's pushback.")));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        service.pickSituation("DOMINANT", "B2", USER);
+        service.pickSituation("DOMINANT", "B2", USER, 7, "MODERATE");
 
-        verify(router, never()).replenishAsync(anyString(), anyString());
+        verify(router, never()).replenishAsync(anyString(), anyString(), anyString());
     }
 
-    // ── Fallback when DB is empty ─────────────────────────────────────────
+    // ── Context-specific pool empty → fallback to any-context ────────────
+
+    @Test
+    void pickSituation_fallsBackToAnyContextWhenContextPoolEmpty() {
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B2", "DRAMATIC")).thenReturn(0L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), eq("DRAMATIC"), any(Pageable.class)))
+            .thenReturn(List.of()); // dramatic pool empty
+        when(repository.findCandidatesAnyContext(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+            .thenReturn(List.of(entry("EQUAL", "B2", "Fallback professional situation.")));
+        when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        String result = service.pickSituation("EQUAL", "B2", USER, 2, "EXPRESSIVE");
+
+        assertEquals("Fallback professional situation.", result);
+    }
+
+    // ── Fallback when DB is completely empty ──────────────────────────────
 
     @Test
     void pickSituation_returnsInlineFallbackWhenDbEmpty() {
-        when(repository.countByPowerAndLevel(anyString(), anyString())).thenReturn(0L);
-        when(repository.findCandidates(anyString(), anyString(), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext(anyString(), anyString(), anyString())).thenReturn(0L);
+        when(repository.findCandidates(anyString(), anyString(), anyString(), any(Pageable.class)))
+            .thenReturn(List.of());
+        when(repository.findCandidatesAnyContext(anyString(), anyString(), any(Pageable.class)))
             .thenReturn(List.of());
 
-        String result = service.pickSituation("DOMINANT", "B2", USER);
+        String result = service.pickSituation("DOMINANT", "B2", USER, 7, "MODERATE");
 
         assertFalse(result.isBlank(), "Inline fallback must not be blank");
-        // Replenishment should have been triggered
-        verify(router, times(1)).replenishAsync(anyString(), anyString());
+        verify(router, times(1)).replenishAsync(anyString(), anyString(), anyString());
     }
 
     @Test
     void pickSituation_inlineFallbackIsDifferentPerPower() {
-        when(repository.countByPowerAndLevel(anyString(), anyString())).thenReturn(0L);
-        when(repository.findCandidates(anyString(), anyString(), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext(anyString(), anyString(), anyString())).thenReturn(0L);
+        when(repository.findCandidates(anyString(), anyString(), anyString(), any(Pageable.class)))
+            .thenReturn(List.of());
+        when(repository.findCandidatesAnyContext(anyString(), anyString(), any(Pageable.class)))
             .thenReturn(List.of());
 
-        String dominant   = service.pickSituation("DOMINANT",   "B2", USER);
-        String submissive = service.pickSituation("SUBMISSIVE", "B2", USER);
-        String equal      = service.pickSituation("EQUAL",      "B2", USER);
+        String dominant   = service.pickSituation("DOMINANT",   "B2", USER, 7, "MODERATE");
+        String submissive = service.pickSituation("SUBMISSIVE", "B2", USER, 7, "MODERATE");
+        String equal      = service.pickSituation("EQUAL",      "B2", USER, 7, "MODERATE");
 
-        // All three should be different
         assertNotEquals(dominant, submissive);
         assertNotEquals(dominant, equal);
         assertNotEquals(submissive, equal);
@@ -166,15 +177,13 @@ class SituationBankServiceTest {
 
         when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(USER))
             .thenReturn(List.of(priorSession));
-        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(50L);
-        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B2", "PROFESSIONAL")).thenReturn(50L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(seen, fresh));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        // Run many times — should never return the already-seen text
-        // since "fresh" is the only entry left after filtering.
         for (int i = 0; i < 10; i++) {
-            String result = service.pickSituation("EQUAL", "B2", USER);
+            String result = service.pickSituation("EQUAL", "B2", USER, 7, "MODERATE");
             assertEquals("Brand new situation.", result);
         }
     }
@@ -189,14 +198,12 @@ class SituationBankServiceTest {
 
         when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(USER))
             .thenReturn(List.of(priorSession));
-        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(50L);
-        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B2", "PROFESSIONAL")).thenReturn(50L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(onlyOption));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        // Even though the user has "seen" it, it's the only option in the
-        // pool, so the service must still return it rather than fail.
-        String result = service.pickSituation("EQUAL", "B2", USER);
+        String result = service.pickSituation("EQUAL", "B2", USER, 7, "MODERATE");
         assertEquals("Only situation available.", result);
     }
 
@@ -207,35 +214,28 @@ class SituationBankServiceTest {
         SituationEntry entry = entry("EQUAL", "B2", "Handle a peer conflict.");
         entry.setUseCount(3);
 
-        when(repository.countByPowerAndLevel("EQUAL", "B2")).thenReturn(10L);
-        when(repository.findCandidates(eq("EQUAL"), eq("B2"), any(Pageable.class)))
+        when(repository.countByPowerAndLevelAndContext("EQUAL", "B2", "PROFESSIONAL")).thenReturn(10L);
+        when(repository.findCandidates(eq("EQUAL"), eq("B2"), eq("PROFESSIONAL"), any(Pageable.class)))
             .thenReturn(List.of(entry));
         when(repository.save(any())).thenAnswer(i -> i.getArgument(0));
 
-        service.pickSituation("EQUAL", "B2", USER);
+        service.pickSituation("EQUAL", "B2", USER, 7, "MODERATE");
 
-        // useCount should have been incremented to 4
-        assertEquals(4, entry.getUseCount(), "useCount should be incremented after pick");
+        assertEquals(4, entry.getUseCount());
     }
 
-    // ── pickRequiredWord ──────────────────────────────────────────────────
+    // ── pickRequiredWord & pickEmotionalContext ───────────────────────────
 
     @Test
     void pickRequiredWord_neverReturnsBlank() {
-        for (int i = 0; i < 20; i++) {
-            assertFalse(service.pickRequiredWord().isBlank(),
-                "pickRequiredWord() returned blank on iteration " + i);
-        }
+        for (int i = 0; i < 20; i++)
+            assertFalse(service.pickRequiredWord().isBlank());
     }
-
-    // ── pickEmotionalContext ──────────────────────────────────────────────
 
     @Test
     void pickEmotionalContext_neverReturnsBlank() {
-        for (int i = 0; i < 20; i++) {
-            assertFalse(service.pickEmotionalContext().isBlank(),
-                "pickEmotionalContext() returned blank on iteration " + i);
-        }
+        for (int i = 0; i < 20; i++)
+            assertFalse(service.pickEmotionalContext().isBlank());
     }
 
     // ── Helper ────────────────────────────────────────────────────────────
@@ -246,6 +246,7 @@ class SituationBankServiceTest {
         e.setLevel(level);
         e.setText(text);
         e.setSource("SEED");
+        e.setContext("PROFESSIONAL");
         e.setUseCount(0);
         return e;
     }

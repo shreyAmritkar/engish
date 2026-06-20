@@ -10,24 +10,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-/**
- * Generates a batch of situations via the LLM source and persists them.
- *
- * AdviceSlip and Wikipedia were dropped: their raw text had no inherent
- * power dynamic or difficulty tier, and template-substituting a phrase
- * from either source into a sentence template produced scenarios that
- * were frequently awkward or barely related to a real workplace situation.
- * The LLM source alone is the single source of truth for situation text.
- *
- * Called asynchronously by SituationBankService when stock drops below
- * LOW_STOCK_THRESHOLD, so it never blocks the user's session-start request.
- */
 @Component
 public class SituationSourceRouter {
 
     private static final Logger log = LoggerFactory.getLogger(SituationSourceRouter.class);
-
-    /** How many situations to generate in one replenishment cycle. */
     static final int BATCH_SIZE = 12;
 
     private final SituationRepository repository;
@@ -38,19 +24,22 @@ public class SituationSourceRouter {
         this.llmSource  = llmSource;
     }
 
-    /**
-     * Async: generates and persists a batch of situations for the given
-     * power + level combination. Does NOT block the calling thread.
-     */
+    /** Backward-compatible — defaults to PROFESSIONAL context. */
     @Async("situationReplenishExecutor")
     @Transactional
     public void replenishAsync(String power, String level) {
-        log.info("Replenishing situations: power={} level={}", power, level);
+        replenishAsync(power, level, "PROFESSIONAL");
+    }
 
-        List<String> texts = llmSource.fetch(power, level, BATCH_SIZE);
+    @Async("situationReplenishExecutor")
+    @Transactional
+    public void replenishAsync(String power, String level, String context) {
+        log.info("Replenishing: power={} level={} context={}", power, level, context);
+
+        List<String> texts = llmSource.fetch(power, level, context, BATCH_SIZE);
 
         if (texts.isEmpty()) {
-            log.warn("LLM source returned no situations for power={} level={} — nothing stored", power, level);
+            log.warn("LLM returned no situations for power={} level={} context={}", power, level, context);
             return;
         }
 
@@ -59,6 +48,7 @@ public class SituationSourceRouter {
                 SituationEntry e = new SituationEntry();
                 e.setPower(power);
                 e.setLevel(level);
+                e.setContext(context);
                 e.setText(text);
                 e.setSource("LLM");
                 return e;
@@ -66,6 +56,6 @@ public class SituationSourceRouter {
             .toList();
 
         repository.saveAll(entries);
-        log.info("Stored {} new situations for power={} level={}", entries.size(), power, level);
+        log.info("Stored {} situations for power={} level={} context={}", entries.size(), power, level, context);
     }
 }

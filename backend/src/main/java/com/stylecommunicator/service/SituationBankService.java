@@ -17,30 +17,13 @@ import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 
-/**
- * Drop-in replacement for the original SituationBankService.
- *
- * Public API is identical: pickSituation(power, userId) still works.
- * Added:  pickSituation(power, level, userId) for level-aware callers.
- *
- * Internally:
- *  - reads from situation_bank table (DB)
- *  - triggers async replenishment via SituationSourceRouter when stock
- *    drops below LOW_STOCK_THRESHOLD
- *  - the router tries AdviceSlip → Wikipedia → LLM in that order
- */
 @Service
 public class SituationBankService {
 
     private static final Logger log = LoggerFactory.getLogger(SituationBankService.class);
-
-    /** Trigger async replenishment when fewer than this many situations exist. */
     private static final int LOW_STOCK_THRESHOLD = 40;
-
-    /** Fetch this many candidates from DB when picking (least-used first). */
-    private static final int CANDIDATE_POOL = 20;
-
-    // ── Hardcoded lists (unchanged — these are tiny and never scale) ──────
+    private static final int CANDIDATE_POOL      = 20;
+    private static final int RECENT_HISTORY_SIZE = 20;
 
     private static final List<String> EMOTIONAL_CONTEXTS = List.of(
         "calm but firm", "under pressure", "frustrated but professional",
@@ -59,59 +42,59 @@ public class SituationBankService {
     private final Random rng = new Random();
 
     public SituationBankService(SituationRepository repository,
-                                 PracticeSessionRepository practiceSessionRepository,
-                                 SituationSourceRouter router) {
+                                PracticeSessionRepository practiceSessionRepository,
+                                SituationSourceRouter router) {
         this.repository = repository;
         this.practiceSessionRepository = practiceSessionRepository;
-        this.router     = router;
+        this.router = router;
     }
 
-    // ── Public API ────────────────────────────────────────────────────────
+    // ── Backward-compatible overload ──────────────────────────────────────
 
-    /**
-     * Backward-compatible overload used by SessionService.
-     * Defaults level to B2 to match the original behaviour.
-     */
     public String pickSituation(String power, UUID userId) {
-        return pickSituation(power, "B2", userId);
+        return pickSituation(power, "B2", userId, 7, "MODERATE");
     }
 
-    /**
-     * Level-aware pick. Used when the session carries an explicit level.
-     */
-    @Transactional
     public String pickSituation(String power, String level, UUID userId) {
-        String p = normalise(power,  "EQUAL");
-        String l = normalise(level,  "B2");
+        return pickSituation(power, level, userId, 7, "MODERATE");
+    }
 
-        // Trigger async top-up if running low (non-blocking)
-        if (repository.countByPowerAndLevel(p, l) < LOW_STOCK_THRESHOLD) {
-            log.info("Stock low for power={} level={} — triggering async replenishment", p, l);
-            router.replenishAsync(p, l);
+    // ── Main pick — context-aware ─────────────────────────────────────────
+
+    @Transactional
+    public String pickSituation(String power, String level, UUID userId,
+                                int formalityLevel, String emotionalRange) {
+        String p = normalise(power, "EQUAL");
+        String l = normalise(level, "B2");
+        String context = resolveContext(formalityLevel, emotionalRange);
+
+        // Trigger replenishment if this context pool is low
+        if (repository.countByPowerAndLevelAndContext(p, l, context) < LOW_STOCK_THRESHOLD) {
+            log.info("Stock low for power={} level={} context={} — triggering async replenishment", p, l, context);
+            router.replenishAsync(p, l, context);
         }
 
+        // Try context-specific pool first
         List<SituationEntry> candidates =
-            repository.findCandidates(p, l, PageRequest.of(0, CANDIDATE_POOL));
+            repository.findCandidates(p, l, context, PageRequest.of(0, CANDIDATE_POOL));
+
+        // Fallback: any context for this power+level if context pool is empty
+        if (candidates.isEmpty()) {
+            log.info("No {} situations for power={} level={} — falling back to any context", context, p, l);
+            candidates = repository.findCandidatesAnyContext(p, l, PageRequest.of(0, CANDIDATE_POOL));
+        }
 
         if (candidates.isEmpty()) {
-            // replenishment is running but nothing in DB yet — use a safe hardcoded fallback
-            log.warn("No situations in DB for power={} level={} — using inline fallback", p, l);
-            return inlineFallback(p);
+            log.warn("No situations at all for power={} level={} — using inline fallback", p, l);
+            return inlineFallback(p, context);
         }
 
-        // Avoid repeating any situation this user has seen in their last
-        // RECENT_HISTORY_SIZE sessions, so two consecutive sessions never
-        // hand back the same text. If filtering leaves nothing, fall back
-        // to the unfiltered candidate list rather than blocking the user.
         Set<String> recentlySeen = recentlySeenTexts(userId);
         List<SituationEntry> unseen = candidates.stream()
             .filter(c -> !recentlySeen.contains(c.getText()))
             .toList();
         List<SituationEntry> pool = unseen.isEmpty() ? candidates : unseen;
 
-        // Pick from a wider random window (up to the whole fetched pool)
-        // rather than always the 5 least-used, so repeated visits are
-        // less likely to land on the same handful of entries.
         int window = Math.min(pool.size(), CANDIDATE_POOL);
         SituationEntry chosen = pool.get(rng.nextInt(window));
         chosen.setUseCount(chosen.getUseCount() + 1);
@@ -129,9 +112,6 @@ public class SituationBankService {
 
     // ── Helpers ───────────────────────────────────────────────────────────
 
-    /** How many of the user's most recent sessions to check for repeats. */
-    private static final int RECENT_HISTORY_SIZE = 20;
-
     private Set<String> recentlySeenTexts(UUID userId) {
         List<PracticeSession> recent =
             practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(userId);
@@ -146,7 +126,27 @@ public class SituationBankService {
         return (value == null || value.isBlank()) ? defaultVal : value.trim().toUpperCase();
     }
 
-    private String inlineFallback(String power) {
+    private String resolveContext(int formalityLevel, String emotionalRange) {
+        if ("EXPRESSIVE".equalsIgnoreCase(emotionalRange)) return "DRAMATIC";
+        if (formalityLevel <= 4) return "CASUAL";
+        return "PROFESSIONAL";
+    }
+
+    private String inlineFallback(String power, String context) {
+        if ("CASUAL".equals(context)) {
+            return switch (power) {
+                case "DOMINANT"   -> "Your friend is about to make a bad decision. Talk them out of it.";
+                case "SUBMISSIVE" -> "You need to ask a favour from someone who might say no.";
+                default           -> "You and a close friend disagree. Neither of you is backing down.";
+            };
+        }
+        if ("DRAMATIC".equals(context)) {
+            return switch (power) {
+                case "DOMINANT"   -> "Everything is at risk. You have one chance to turn it around. Speak.";
+                case "SUBMISSIVE" -> "You've stayed quiet for too long. It's now or never.";
+                default           -> "Your closest ally is making a terrible mistake. Stop them.";
+            };
+        }
         return switch (power) {
             case "DOMINANT"   -> "A team member challenges your decision. Respond as the team lead.";
             case "SUBMISSIVE" -> "You need to ask your manager for more time on a task.";

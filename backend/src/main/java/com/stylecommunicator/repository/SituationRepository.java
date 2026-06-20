@@ -11,15 +11,22 @@ import java.util.UUID;
 
 public interface SituationRepository extends JpaRepository<SituationEntry, UUID> {
 
-    /**
-     * Fetch candidates ordered by use_count ascending — least-used first.
-     * Pageable lets callers cap how many rows they want (e.g. top 20).
-     */
+    /** Fetch candidates for a specific context (PROFESSIONAL/CASUAL/DRAMATIC). */
     @Query("SELECT s FROM SituationEntry s WHERE s.power = :power AND s.level = :level " +
-           "ORDER BY s.useCount ASC, s.createdAt DESC")
+           "AND s.context = :context ORDER BY s.useCount ASC, s.createdAt DESC")
     List<SituationEntry> findCandidates(@Param("power") String power,
                                         @Param("level") String level,
+                                        @Param("context") String context,
                                         Pageable pageable);
+
+    /** Fallback — ignores context, used when context-specific pool is empty. */
+    @Query("SELECT s FROM SituationEntry s WHERE s.power = :power AND s.level = :level " +
+           "ORDER BY s.useCount ASC, s.createdAt DESC")
+    List<SituationEntry> findCandidatesAnyContext(@Param("power") String power,
+                                                  @Param("level") String level,
+                                                  Pageable pageable);
+
+    long countByPowerAndLevelAndContext(String power, String level, String context);
 
     long countByPowerAndLevel(String power, String level);
 }

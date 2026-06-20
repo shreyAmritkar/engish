@@ -69,7 +69,24 @@ public class StyleEngineService {
 
     private Map<String, Object> extractDna(String description) {
         String prompt = """
-                Extract communication style from: "%s"
+                Analyse the communication style in the text below and extract a profile.
+                The text may be fictional dialogue, character descriptions, or real speech samples.
+
+                Text: "%s"
+
+                For power_dynamic, judge how this person positions themselves RELATIVE TO OTHERS
+                in conversation — not how confident, dramatic, or strong they sound in isolation.
+                  DOMINANT   = directs, commands, or controls others. Sets rules for people around them.
+                               Examples: a boss, a strict mentor, a villain giving orders.
+                  EQUAL      = speaks as a peer. May be bold or emotional but does not seek to lead or
+                               control others. Protects, jokes, argues, or collaborates at the same level.
+                               Examples: a loyal friend, a rival, a sarcastic colleague, a funny sidekick.
+                  SUBMISSIVE = defers, seeks approval, avoids conflict, follows others' lead.
+                               Examples: an anxious new employee, someone people-pleasing.
+
+                Key rule: strong language, dramatic tone, or high confidence does NOT mean DOMINANT.
+                Ask: does this person try to CONTROL others, or do they act AS AN EQUAL alongside them?
+
                 Return JSON only:
                 {
                   "vocabulary_tier": "SIMPLE|INTERMEDIATE|ADVANCED|TECHNICAL",

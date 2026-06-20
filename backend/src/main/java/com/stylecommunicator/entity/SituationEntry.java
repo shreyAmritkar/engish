@@ -31,6 +31,10 @@ public class SituationEntry {
     @Column(nullable = false)
     private String source;
 
+    /** PROFESSIONAL | CASUAL | DRAMATIC */
+    @Column(nullable = false)
+    private String context = "PROFESSIONAL";
+
     @Column(name = "use_count", nullable = false)
     private int useCount = 0;
 
@@ -64,4 +68,7 @@ public class SituationEntry {
 
     public Instant getCreatedAt()             { return createdAt; }
     public void setCreatedAt(Instant t)       { this.createdAt = t; }
+
+    public String getContext()                { return context; }
+    public void setContext(String context)    { this.context = context; }
 }
