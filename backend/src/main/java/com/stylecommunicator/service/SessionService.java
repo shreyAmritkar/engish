@@ -20,18 +20,21 @@ public class SessionService {
     private final SituationBankService situationBankService;
     private final AnalysisRouter analysisRouter;
     private final ProgressTracker progressTracker;
+    private final IntentValidationService intentValidationService;
 
     public SessionService(
             PracticeSessionRepository practiceSessionRepository,
             StyleProfileRepository styleProfileRepository,
             SituationBankService situationBankService,
             AnalysisRouter analysisRouter,
-            ProgressTracker progressTracker) {
+            ProgressTracker progressTracker,
+            IntentValidationService intentValidationService) {
         this.practiceSessionRepository = practiceSessionRepository;
         this.styleProfileRepository = styleProfileRepository;
         this.situationBankService = situationBankService;
         this.analysisRouter = analysisRouter;
         this.progressTracker = progressTracker;
+        this.intentValidationService = intentValidationService;
     }
 
     @Transactional
@@ -77,6 +80,12 @@ public class SessionService {
         }
         StyleProfile style = styleProfileRepository.findById(session.getStyleProfileId())
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Style not found"));
+
+        IntentValidationService.ValidationResult validation =
+                intentValidationService.validate(userResponse, session.getSituation());
+        if (!validation.valid()) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, validation.reason());
+        }
 
         session.setUserResponse(userResponse);
         Map<String, Object> feedback = analysisRouter.analyze(session, style, userResponse);

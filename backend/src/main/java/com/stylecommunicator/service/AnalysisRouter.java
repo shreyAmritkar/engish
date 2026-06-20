@@ -42,11 +42,27 @@ public class AnalysisRouter {
         String compressed = styleEngineService.getCompressedPrompt(style);
         String prompt = """
                 %s
+
+                The style above is the TARGET the user is deliberately practicing —
+                it is not a generic "professional" baseline. Score every dimension
+                relative to that target style, not against generic corporate norms.
+
+                For example: if the target style is blunt, sarcastic, or
+                confrontational (e.g. a "roaster" persona), a response that is
+                blunt and sarcastic should score HIGH on professionalism and
+                emotional_control if it executes that style well and stays
+                purposeful — do not penalize it for lacking diplomacy or warmth
+                it was never meant to have. Only score those dimensions low if
+                the response is genuinely out of control, incoherent, or
+                actually undermines the user's own goal in the situation —
+                not simply because it doesn't sound polite.
+
                 Situation: %s
                 Required word: "%s"
                 Emotional context: %s
                 User: "%s"
-                Score 0-100: confidence, tone, persuasion, emotional_control, professionalism, style_match.
+                Score 0-100 relative to the target style above: confidence, tone,
+                persuasion, emotional_control, professionalism, style_match.
                 Return JSON:
                 {"scores":{"confidence":85},"grammar_notes":[],"misinterpretation_warnings":[]}
                 """.formatted(
