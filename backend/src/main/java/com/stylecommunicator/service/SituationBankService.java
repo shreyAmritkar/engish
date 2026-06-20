@@ -35,7 +35,7 @@ public class SituationBankService {
     private static final Logger log = LoggerFactory.getLogger(SituationBankService.class);
 
     /** Trigger async replenishment when fewer than this many situations exist. */
-    private static final int LOW_STOCK_THRESHOLD = 10;
+    private static final int LOW_STOCK_THRESHOLD = 40;
 
     /** Fetch this many candidates from DB when picking (least-used first). */
     private static final int CANDIDATE_POOL = 20;
