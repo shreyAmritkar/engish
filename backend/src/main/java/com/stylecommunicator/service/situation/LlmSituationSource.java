@@ -48,28 +48,57 @@ public class LlmSituationSource {
 
     private String buildPrompt(String power, String level, int count) {
         String levelDesc = switch (level.toUpperCase()) {
-            case "A1" -> "very simple English, everyday workplace, one short sentence each";
-            case "A2" -> "simple English, basic professional situations";
-            case "B1" -> "intermediate English, common workplace challenges";
-            default   -> "advanced English, complex professional and leadership situations";
+            case "A1" -> "very simple English, short plain sentences, everyday workplace vocabulary";
+            case "A2" -> "simple English, basic professional vocabulary";
+            case "B1" -> "intermediate English, common workplace vocabulary";
+            default   -> "advanced English, natural professional phrasing";
         };
         String powerDesc = switch (power.toUpperCase()) {
-            case "DOMINANT"   -> "where the user is in a position of authority or leadership over others";
-            case "SUBMISSIVE" -> "where the user must make a request or pushback to someone above them";
-            default           -> "between colleagues or peers at the same level";
+            case "DOMINANT"   -> "the user is in a position of authority or leadership over the other person";
+            case "SUBMISSIVE" -> "the user must make a request or pushback to someone above them";
+            default           -> "the user and the other person are colleagues or peers at the same level";
         };
 
         return """
-            Generate %d unique, realistic workplace communication scenarios.
+            Generate %d unique, realistic workplace scenarios for a roleplay
+            exercise. A learner will read each one and then write what they
+            would actually say or write in response — so each scenario must
+            give them enough concrete context to picture the situation and
+            know exactly what they're responding to.
+
+            Each scenario must include, in 2-3 short sentences:
+            1. WHO is involved (their role, e.g. "your manager", "a teammate",
+               "a client") — never just "someone" or "a colleague" with no detail.
+            2. WHAT just happened or was just said — a specific, concrete event,
+               not an abstract description of a task category.
+            3. WHAT the user now needs to do or respond to — make the expected
+               action obvious from the scenario itself.
+
+            Power dynamic: %s.
             Language level: %s.
-            Power dynamic: each scenario should be a situation %s.
+
+            Bad example (too abstract, reads like an instruction, not a scene):
+            "You must diplomatically decline a senior executive's request for
+            an unrealistic deadline."
+
+            Good example (concrete, sets a scene, learner knows exactly what's
+            happening):
+            "Your VP just messaged you asking if the project can be finished by
+            Friday — two weeks earlier than your team agreed on. She's waiting
+            on your reply before the client call in an hour. You don't think
+            it's realistic. Respond to her message."
+
             Rules:
-            - Each scenario must be one sentence, max 25 words.
+            - Each scenario must be 2-3 sentences, max 45 words total.
             - No numbering. No bullet points inside the text.
             - Each scenario must be different. No duplicates.
+            - End each scenario with a clear instruction of what the user
+              should do (e.g. "Respond to her message.", "Reply to your
+              teammate.", "Write what you'd say in the meeting.").
+
             Return JSON only, no markdown:
             {"situations": ["scenario 1", "scenario 2", ...]}
-            """.formatted(count, levelDesc, powerDesc);
+            """.formatted(count, powerDesc, levelDesc);
     }
 
     // ── Parsing ───────────────────────────────────────────────────────────
