@@ -16,12 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-/**
- * Tests SituationSourceRouter: LLM fetch + persistence.
- *
- * AdviceSlip and Wikipedia were removed — LLM is now the sole source.
- * Repository and LlmSituationSource are mocked — no DB, no network.
- */
 @ExtendWith(MockitoExtension.class)
 class SituationSourceRouterTest {
 
@@ -35,40 +29,40 @@ class SituationSourceRouterTest {
         router = new SituationSourceRouter(repository, llmSource);
     }
 
-    // ── Happy path: LLM fills the batch ───────────────────────────────────
+    // ── Happy path ────────────────────────────────────────────────────────
 
     @Test
     void replenishAsync_fetchesFromLlmAndPersists() {
-        List<String> batch = nSituations(SituationSourceRouter.BATCH_SIZE);
-        when(llmSource.fetch(eq("DOMINANT"), eq("B2"), eq(SituationSourceRouter.BATCH_SIZE)))
-            .thenReturn(batch);
+        when(llmSource.fetch("DOMINANT", "B2", "PROFESSIONAL", SituationSourceRouter.BATCH_SIZE))
+            .thenReturn(nSituations(SituationSourceRouter.BATCH_SIZE));
 
-        router.replenishAsync("DOMINANT", "B2");
+        router.replenishAsync("DOMINANT", "B2", "PROFESSIONAL");
 
-        verify(llmSource, times(1)).fetch("DOMINANT", "B2", SituationSourceRouter.BATCH_SIZE);
-        verify(repository, times(1)).saveAll(anyList());
+        verify(llmSource).fetch("DOMINANT", "B2", "PROFESSIONAL", SituationSourceRouter.BATCH_SIZE);
+        verify(repository).saveAll(anyList());
     }
 
-    // ── LLM returns empty → nothing persisted ─────────────────────────────
+    // ── LLM empty → nothing saved ─────────────────────────────────────────
 
     @Test
     void replenishAsync_persistsNothingWhenLlmReturnsEmpty() {
-        when(llmSource.fetch(anyString(), anyString(), anyInt())).thenReturn(Collections.emptyList());
+        when(llmSource.fetch(anyString(), anyString(), anyString(), anyInt()))
+            .thenReturn(Collections.emptyList());
 
-        router.replenishAsync("DOMINANT", "B2");
+        router.replenishAsync("DOMINANT", "B2", "PROFESSIONAL");
 
         verifyNoInteractions(repository);
     }
 
-    // ── Persistence: entries are saved with correct metadata ──────────────
+    // ── Entries saved with correct metadata ──────────────────────────────
 
     @Test
     @SuppressWarnings("unchecked")
-    void replenishAsync_persistsSituationsWithCorrectPowerLevelAndSource() {
-        List<String> batch = nSituations(3);
-        when(llmSource.fetch(eq("DOMINANT"), eq("B2"), anyInt())).thenReturn(batch);
+    void replenishAsync_savesEntriesWithCorrectFields() {
+        when(llmSource.fetch(eq("EQUAL"), eq("B1"), eq("CASUAL"), anyInt()))
+            .thenReturn(nSituations(3));
 
-        router.replenishAsync("DOMINANT", "B2");
+        router.replenishAsync("EQUAL", "B1", "CASUAL");
 
         ArgumentCaptor<List<SituationEntry>> captor = ArgumentCaptor.forClass(List.class);
         verify(repository).saveAll(captor.capture());
@@ -76,23 +70,41 @@ class SituationSourceRouterTest {
         List<SituationEntry> saved = captor.getValue();
         assertEquals(3, saved.size());
         saved.forEach(e -> {
-            assertEquals("DOMINANT", e.getPower());
-            assertEquals("B2", e.getLevel());
-            assertEquals("LLM", e.getSource());
+            assertEquals("EQUAL",   e.getPower());
+            assertEquals("B1",      e.getLevel());
+            assertEquals("CASUAL",  e.getContext());
+            assertEquals("LLM",     e.getSource());
             assertNotNull(e.getText());
+            assertFalse(e.getText().isBlank());
         });
     }
 
-    // ── Correct batch size requested from LLM ─────────────────────────────
+    // ── Context is passed to LLM ──────────────────────────────────────────
 
     @Test
-    void replenishAsync_requestsFullBatchSizeFromLlm() {
-        when(llmSource.fetch(anyString(), anyString(), anyInt()))
+    void replenishAsync_passesDramaticContextToLlm() {
+        when(llmSource.fetch("SUBMISSIVE", "A2", "DRAMATIC", SituationSourceRouter.BATCH_SIZE))
             .thenReturn(nSituations(SituationSourceRouter.BATCH_SIZE));
 
-        router.replenishAsync("SUBMISSIVE", "A2");
+        router.replenishAsync("SUBMISSIVE", "A2", "DRAMATIC");
 
-        verify(llmSource).fetch("SUBMISSIVE", "A2", SituationSourceRouter.BATCH_SIZE);
+        verify(llmSource).fetch("SUBMISSIVE", "A2", "DRAMATIC", SituationSourceRouter.BATCH_SIZE);
+    }
+
+    // ── Backward-compat two-arg overload defaults to PROFESSIONAL ─────────
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void replenishAsync_twoArgOverloadDefaultsToProfessional() {
+        when(llmSource.fetch(eq("DOMINANT"), eq("B2"), eq("PROFESSIONAL"), anyInt()))
+            .thenReturn(nSituations(2));
+
+        router.replenishAsync("DOMINANT", "B2");
+
+        ArgumentCaptor<List<SituationEntry>> captor = ArgumentCaptor.forClass(List.class);
+        verify(repository).saveAll(captor.capture());
+        captor.getValue().forEach(e ->
+            assertEquals("PROFESSIONAL", e.getContext()));
     }
 
     // ── Helper ────────────────────────────────────────────────────────────
