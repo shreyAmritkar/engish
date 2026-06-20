@@ -17,108 +17,42 @@ import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
 /**
- * Tests SituationSourceRouter priority order, fallback chaining, and persistence.
+ * Tests SituationSourceRouter: LLM fetch + persistence.
  *
- * All sources and the repository are mocked — no DB, no network.
+ * AdviceSlip and Wikipedia were removed — LLM is now the sole source.
+ * Repository and LlmSituationSource are mocked — no DB, no network.
  */
 @ExtendWith(MockitoExtension.class)
 class SituationSourceRouterTest {
 
     @Mock private SituationRepository repository;
-    @Mock private AdviceSlipSource     adviceSlipSource;
-    @Mock private WikipediaSource      wikipediaSource;
-    @Mock private LlmSituationSource   llmSource;
+    @Mock private LlmSituationSource  llmSource;
 
     private SituationSourceRouter router;
 
     @BeforeEach
     void setUp() {
-        router = new SituationSourceRouter(
-            repository, adviceSlipSource, wikipediaSource, llmSource
-        );
+        router = new SituationSourceRouter(repository, llmSource);
     }
 
-    // ── Priority: AdviceSlip fills the batch alone ────────────────────────
+    // ── Happy path: LLM fills the batch ───────────────────────────────────
 
     @Test
-    void replenishAsync_usesAdviceSlipFirstAndSkipsOtherSources() {
-        List<String> fullBatch = nSituations(SituationSourceRouter.BATCH_SIZE);
-        when(adviceSlipSource.fetch(eq("DOMINANT"), eq("B2"), anyInt())).thenReturn(fullBatch);
+    void replenishAsync_fetchesFromLlmAndPersists() {
+        List<String> batch = nSituations(SituationSourceRouter.BATCH_SIZE);
+        when(llmSource.fetch(eq("DOMINANT"), eq("B2"), eq(SituationSourceRouter.BATCH_SIZE)))
+            .thenReturn(batch);
 
         router.replenishAsync("DOMINANT", "B2");
 
-        // AdviceSlip filled everything — Wikipedia/LLM must NOT be called
-        verifyNoInteractions(wikipediaSource);
-        verifyNoInteractions(llmSource);
+        verify(llmSource, times(1)).fetch("DOMINANT", "B2", SituationSourceRouter.BATCH_SIZE);
+        verify(repository, times(1)).saveAll(anyList());
     }
 
-    // ── Fallback: AdviceSlip partial → Wikipedia fills the rest ──────────
+    // ── LLM returns empty → nothing persisted ─────────────────────────────
 
     @Test
-    void replenishAsync_fallsBackToWikipediaWhenAdviceSlipPartial() {
-        int partial = SituationSourceRouter.BATCH_SIZE / 2;
-        when(adviceSlipSource.fetch(anyString(), anyString(), anyInt()))
-            .thenReturn(nSituations(partial));
-        when(wikipediaSource.fetch(anyString(), anyString(), anyInt()))
-            .thenReturn(nSituations(SituationSourceRouter.BATCH_SIZE - partial));
-
-        router.replenishAsync("EQUAL", "B1");
-
-        verify(adviceSlipSource, times(1)).fetch(anyString(), anyString(), anyInt());
-        verify(wikipediaSource,  times(1)).fetch(anyString(), anyString(), anyInt());
-        verifyNoInteractions(llmSource);
-    }
-
-    // ── Complete failure: AdviceSlip fails → Wikipedia called ─────────────
-
-    @Test
-    void replenishAsync_callsWikipediaWhenAdviceSlipReturnsEmpty() {
-        when(adviceSlipSource.fetch(anyString(), anyString(), anyInt())).thenReturn(List.of());
-        when(wikipediaSource.fetch(anyString(), anyString(), anyInt()))
-            .thenReturn(nSituations(SituationSourceRouter.BATCH_SIZE));
-
-        router.replenishAsync("SUBMISSIVE", "A2");
-
-        verify(wikipediaSource, times(1)).fetch(anyString(), anyString(), anyInt());
-        verifyNoInteractions(llmSource);
-    }
-
-    // ── Correct shortfall passed to Wikipedia ────────────────────────────
-
-    @Test
-    void replenishAsync_passesCorrectShortfallToWikipedia() {
-        int adviceCount = 4;
-        int expected = SituationSourceRouter.BATCH_SIZE - adviceCount;
-        when(adviceSlipSource.fetch(anyString(), anyString(), anyInt()))
-            .thenReturn(nSituations(adviceCount));
-        when(wikipediaSource.fetch(anyString(), anyString(), eq(expected)))
-            .thenReturn(nSituations(expected));
-
-        router.replenishAsync("DOMINANT", "C1");
-
-        verify(wikipediaSource).fetch(anyString(), anyString(), eq(expected));
-    }
-
-    // ── LLM last-resort: both free sources fail ───────────────────────────
-
-    @Test
-    void replenishAsync_usesLlmWhenAllFreeSourcesFail() {
-        when(adviceSlipSource.fetch(anyString(), anyString(), anyInt())).thenReturn(List.of());
-        when(wikipediaSource.fetch(anyString(), anyString(), anyInt())).thenReturn(List.of());
-        when(llmSource.fetch(anyString(), anyString(), anyInt()))
-            .thenReturn(nSituations(SituationSourceRouter.BATCH_SIZE));
-
-        router.replenishAsync("EQUAL", "B2");
-
-        verify(llmSource, times(1)).fetch(anyString(), anyString(), anyInt());
-    }
-
-    // ── All sources exhausted → nothing persisted ─────────────────────────
-
-    @Test
-    void replenishAsync_persistsNothingWhenAllSourcesExhausted() {
-        when(adviceSlipSource.fetch(anyString(), anyString(), anyInt())).thenReturn(List.of());
-        when(wikipediaSource.fetch(anyString(), anyString(), anyInt())).thenReturn(List.of());
+    void replenishAsync_persistsNothingWhenLlmReturnsEmpty() {
         when(llmSource.fetch(anyString(), anyString(), anyInt())).thenReturn(Collections.emptyList());
 
         router.replenishAsync("DOMINANT", "B2");
@@ -130,9 +64,9 @@ class SituationSourceRouterTest {
 
     @Test
     @SuppressWarnings("unchecked")
-    void replenishAsync_persistsSituationsWithCorrectPowerAndLevel() {
+    void replenishAsync_persistsSituationsWithCorrectPowerLevelAndSource() {
         List<String> batch = nSituations(3);
-        when(adviceSlipSource.fetch(eq("DOMINANT"), eq("B2"), anyInt())).thenReturn(batch);
+        when(llmSource.fetch(eq("DOMINANT"), eq("B2"), anyInt())).thenReturn(batch);
 
         router.replenishAsync("DOMINANT", "B2");
 
@@ -144,8 +78,21 @@ class SituationSourceRouterTest {
         saved.forEach(e -> {
             assertEquals("DOMINANT", e.getPower());
             assertEquals("B2", e.getLevel());
+            assertEquals("LLM", e.getSource());
             assertNotNull(e.getText());
         });
+    }
+
+    // ── Correct batch size requested from LLM ─────────────────────────────
+
+    @Test
+    void replenishAsync_requestsFullBatchSizeFromLlm() {
+        when(llmSource.fetch(anyString(), anyString(), anyInt()))
+            .thenReturn(nSituations(SituationSourceRouter.BATCH_SIZE));
+
+        router.replenishAsync("SUBMISSIVE", "A2");
+
+        verify(llmSource).fetch("SUBMISSIVE", "A2", SituationSourceRouter.BATCH_SIZE);
     }
 
     // ── Helper ────────────────────────────────────────────────────────────
