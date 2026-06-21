@@ -30,17 +30,22 @@ public class GlobalExceptionHandler {
     public record ErrorResponse(
             int status,
             String error,
+            String errorCode,
             String message,
             List<String> details,
             String path,
             Instant timestamp
     ) {
         static ErrorResponse of(HttpStatus status, String message, String path) {
-            return new ErrorResponse(status.value(), status.getReasonPhrase(), message, List.of(), path, Instant.now());
+            return new ErrorResponse(status.value(), status.getReasonPhrase(), null, message, List.of(), path, Instant.now());
         }
 
         static ErrorResponse of(HttpStatus status, String message, List<String> details, String path) {
-            return new ErrorResponse(status.value(), status.getReasonPhrase(), message, details, path, Instant.now());
+            return new ErrorResponse(status.value(), status.getReasonPhrase(), null, message, details, path, Instant.now());
+        }
+
+        static ErrorResponse of(HttpStatus status, String errorCode, String message, String path) {
+            return new ErrorResponse(status.value(), status.getReasonPhrase(), errorCode, message, List.of(), path, Instant.now());
         }
     }
 
@@ -157,6 +162,19 @@ public class GlobalExceptionHandler {
             RateLimitException ex, HttpServletRequest req) {
         return ResponseEntity.status(HttpStatus.TOO_MANY_REQUESTS)
                 .body(ErrorResponse.of(HttpStatus.TOO_MANY_REQUESTS, ex.getMessage(), req.getRequestURI()));
+    }
+
+    // ── Intent validation failed ──────────────────────────────────────────────
+
+    @ExceptionHandler(IntentValidationException.class)
+    public ResponseEntity<ErrorResponse> handleIntentValidation(
+            IntentValidationException ex, HttpServletRequest req) {
+        return ResponseEntity.status(HttpStatus.UNPROCESSABLE_ENTITY)
+                .body(ErrorResponse.of(
+                        HttpStatus.UNPROCESSABLE_ENTITY,
+                        "INTENT_VALIDATION_FAILED",
+                        ex.getMessage(),
+                        req.getRequestURI()));
     }
 
     // ── Catch-all — hide internal details from client ─────────────────────────

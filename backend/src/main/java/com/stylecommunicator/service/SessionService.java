@@ -1,6 +1,7 @@
 package com.stylecommunicator.service;
 
 import com.stylecommunicator.entity.PracticeSession;
+import com.stylecommunicator.exception.IntentValidationException;
 import com.stylecommunicator.entity.StyleProfile;
 import com.stylecommunicator.entity.UserProgress;
 import com.stylecommunicator.repository.PracticeSessionRepository;
@@ -115,7 +116,7 @@ public class SessionService {
         IntentValidationService.ValidationResult validation =
                 intentValidationService.validate(userResponse, session.getSituation());
         if (!validation.valid()) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, validation.reason());
+            throw new IntentValidationException(validation.reason());
         }
 
         session.setUserResponse(userResponse);

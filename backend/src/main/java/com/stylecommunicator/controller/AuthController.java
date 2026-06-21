@@ -106,6 +106,9 @@ public class AuthController {
     @GetMapping("/me")
     public AuthResponse me(HttpServletRequest request) {
         UUID userId = (UUID) request.getAttribute("authenticatedUserId");
+        if (userId == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Not authenticated");
+        }
         AppUser user = userRepository.findById(userId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.UNAUTHORIZED, "User not found"));
         return new AuthResponse(user.getId(), user.getEmail(), user.getRole());
