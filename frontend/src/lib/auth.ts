@@ -28,7 +28,6 @@ export function getAuthUser(): AuthUser | null {
   if (typeof window === "undefined") return null;
   const raw = localStorage.getItem(USER_KEY);
   return raw ? (JSON.parse(raw) as AuthUser) : null;
-  
 }
 
 /**

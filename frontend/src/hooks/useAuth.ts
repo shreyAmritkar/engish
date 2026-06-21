@@ -2,20 +2,18 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { getAuthUser, saveAuth, clearAuth, AuthUser } from "@/lib/auth";
-import { authApi } from "@/lib/api";
+import { getAuthUser, AuthUser } from "@/lib/auth";
 
 /**
  * Route guard hook.
  *
- * Two-phase verification:
- * 1. Check localStorage for a stored user profile (instant — no flicker)
- * 2. Verify the HttpOnly cookie is still valid via GET /api/auth/me
- *    If the server restarted or token expired, we catch the 401 here
- *    (api.ts already redirects on 401 — this is just belt-and-suspenders)
+ * The token is in an HttpOnly cookie — we can't read it in JS.
+ * We use the stored user profile (email, role) to guard routes and
+ * render the UI. The backend enforces real security on every request
+ * via the cookie automatically.
  *
- * ready=true only after BOTH checks pass so pages never render
- * with stale auth state.
+ * If there's no user profile, we redirect to /login.
+ * If requireAdmin is true and the user isn't ADMIN, we redirect to /library.
  */
 export function useAuth(requireAdmin = false) {
   const router = useRouter();
@@ -23,32 +21,20 @@ export function useAuth(requireAdmin = false) {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    const stored = getAuthUser();
+    const u = getAuthUser();
 
-    // No local profile → go to login immediately (no flicker)
-    if (!stored) {
+    if (!u) {
       router.replace("/login");
       return;
     }
 
-    // Admin guard on local profile first (instant)
-    if (requireAdmin && stored.role !== "ADMIN") {
+    if (requireAdmin && u.role !== "ADMIN") {
       router.replace("/library");
       return;
     }
 
-    // Verify cookie is still valid with the server
-    authApi.me()
-      .then((fresh) => {
-        // Update local profile in case role changed server-side
-        saveAuth({ userId: fresh.userId, email: fresh.email, role: fresh.role });
-        setUser({ userId: fresh.userId, email: fresh.email, role: fresh.role });
-        setReady(true);
-      })
-      .catch(() => {
-        // 401 → api.ts already calls clearAuth() + redirects to /login
-        // This catch just prevents unhandled promise rejection noise
-      });
+    setUser(u);
+    setReady(true);
   }, [router, requireAdmin]);
 
   return { user, ready };
