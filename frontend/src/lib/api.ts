@@ -86,7 +86,7 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
     },
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 || res.status === 403 ) {
     // Cookie expired or invalid — clear local profile and go to login
     clearAuth();
     if (typeof window !== "undefined") {
@@ -100,7 +100,11 @@ async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
       const errJson = await res.json();
       const message = errJson?.message || errJson?.error || `Request failed: ${res.status}`;
       const details: string[] = errJson?.details ?? [];
-      throw new Error(details.length > 0 ? `${message}: ${details.join(", ")}` : message);
+      const errorCode: string | undefined = errJson?.errorCode;
+      // Attach errorCode to the error object so callers can branch on it
+      const err = new Error(details.length > 0 ? `${message}: ${details.join(", ")}` : message) as Error & { errorCode?: string };
+      err.errorCode = errorCode;
+      throw err;
     } catch (parseErr) {
       if (parseErr instanceof Error && !parseErr.message.startsWith("Request failed:")) {
         throw parseErr;
