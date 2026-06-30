@@ -2,6 +2,7 @@ package com.stylecommunicator.controller;
 
 import com.stylecommunicator.entity.AppUser;
 import com.stylecommunicator.repository.AppUserRepository;
+import com.stylecommunicator.service.RivalLeaderboardJob;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
@@ -9,6 +10,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RestController
@@ -17,9 +19,11 @@ import java.util.UUID;
 public class AdminController {
 
     private final AppUserRepository userRepository;
+    private final RivalLeaderboardJob rivalLeaderboardJob;
 
-    public AdminController(AppUserRepository userRepository) {
+    public AdminController(AppUserRepository userRepository, RivalLeaderboardJob rivalLeaderboardJob) {
         this.userRepository = userRepository;
+        this.rivalLeaderboardJob = rivalLeaderboardJob;
     }
 
     public record UserSummary(UUID id, String email, String role, Instant createdAt) {
@@ -58,5 +62,17 @@ public class AdminController {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "User not found");
         }
         userRepository.deleteById(userId);
+    }
+
+    /**
+     * TEMPORARY — manual trigger for the rival leaderboard cron job, for testing.
+     * Delete this endpoint once the feature is verified working in production;
+     * the cron schedule (3 AM daily) is the real trigger going forward.
+     */
+    @PostMapping("/leaderboard/rebuild")
+    public Map<String, String> rebuildLeaderboard() {
+        rivalLeaderboardJob.rebuild();
+        return Map.of("status", "rebuild triggered — per-dimension leaderboards rebuilt inline, " +
+                "per-user rival lists rebuilding asynchronously");
     }
 }

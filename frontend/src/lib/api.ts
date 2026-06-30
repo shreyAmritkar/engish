@@ -72,6 +72,13 @@ export type AdminUser = {
   createdAt: string;
 };
 
+export type RivalEntry = {
+  rivalUserId: string;
+  email: string;
+  dimension: string;
+  sharedBestScore: number;
+};
+
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -206,4 +213,6 @@ export const api = {
     }),
 
   getProgress: () => request<ProgressData>("/api/progress/me"),
+
+  getRivals: () => request<RivalEntry[]>("/api/leaderboard/rivals"),
 };

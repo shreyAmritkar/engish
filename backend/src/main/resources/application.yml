@@ -7,6 +7,9 @@ spring:
     url: ${DATABASE_URL}
     username: ${DB_USER}
     password: ${DB_PASSWORD}
+  data:
+    redis:
+      url: ${REDIS_URL:redis://localhost:6379}
   jpa:
     hibernate:
       ddl-auto: validate

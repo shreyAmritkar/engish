@@ -9,6 +9,7 @@ import { authApi } from "@/lib/api";
 const navLinks = [
   { href: "/library", label: "Library" },
   { href: "/progress", label: "Progress" },
+  { href: "/rivals", label: "Rivals" },
 ];
 
 export function Nav() {
