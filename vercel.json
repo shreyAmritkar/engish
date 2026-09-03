@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "https://engish-gpsx.onrender.com/api/$1"
+    }
+  ]
+}
