@@ -28,7 +28,18 @@ public class StyleController {
         this.styleProfileRepository = styleProfileRepository;
         this.styleEngineService = styleEngineService;
     }
-
+//     frontend/src/app/library/page.tsx
+//         │  on component mount:
+//         ▼
+// useEffect(() => { api.getStyles().then(setStyles)... }, [])
+//         │
+//         ▼
+// frontend/src/lib/api.ts
+//    getStyles: (source = "PRESET,USER_DESCRIBED") =>
+//      request<StyleProfile[]>(`/api/styles/library?source=${source}`)
+//         │  fetch() with credentials: "include" (JWT cookie attached automatically)
+//         ▼
+// StyleController.library(source)  →  styleProfileRepository.findBySourceIn(...)
     @GetMapping("/library")
     public List<StyleProfileDto> library(@RequestParam(defaultValue = "PRESET,USER_DESCRIBED") String source) {
         List<StyleSource> sources = Arrays.stream(source.split(","))
@@ -40,7 +51,7 @@ public class StyleController {
                 .map(StyleProfileDto::from)
                 .toList();
     }
-
+    // not un use
     @GetMapping("/{id}")
     public StyleProfileDto getById(@PathVariable UUID id) {
         return styleProfileRepository.findById(id)
@@ -48,6 +59,28 @@ public class StyleController {
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
     }
 
+//     frontend/src/app/library/page.tsx
+//         │  user fills in createName + createDesc, submits the "create style" form
+//         ▼
+// handleCreateStyle(e) → api.createStyleFromDescription(createName, createDesc)
+//         │
+//         ▼
+// frontend/src/lib/api.ts
+//    createStyleFromDescription: (name, description) =>
+//      request<StyleProfile>("/api/styles/from-description", {
+//        method: "POST",
+//        body: JSON.stringify({ name, description }),
+//      })
+//         │
+//         ▼
+// StyleController.fromDescription(body, request)  →  styleEngineService.extractFromDescription(...)
+//         │
+//         ▼
+// response (new or deduped StyleProfile) comes back
+//         │
+//         ▼
+// setStyles(prev => [profile, ...prev])  — new style prepended to the visible list immediately,
+//                                           no page refetch needed
     @PostMapping("/from-description")
     public StyleProfileDto fromDescription(@Valid @RequestBody CreateStyleRequest body,
                                            HttpServletRequest request) {

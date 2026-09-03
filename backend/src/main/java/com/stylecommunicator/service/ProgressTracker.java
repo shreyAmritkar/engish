@@ -15,8 +15,7 @@ import java.util.stream.Collectors;
 public class ProgressTracker {
 
     private static final List<String> DIMENSIONS = List.of(
-            "confidence", "tone", "persuasion", "emotional_control", "professionalism", "style_match"
-    );
+            "confidence", "tone", "persuasion", "emotional_control", "professionalism", "style_match");
 
     private static final double EMA_OLD = 0.7;
     private static final double EMA_NEW = 0.3;
@@ -59,11 +58,16 @@ public class ProgressTracker {
         progress.setWeakAreas(findWeakAreas(averages));
         progress.setStrongAreas(findStrongAreas(averages));
 
+        List<PracticeSession> recentSessions = practiceSessionRepository
+                .findTop20ByUserIdOrderByCreatedAtDesc(userId);
+
         if (progress.getTotalSessions() % 5 == 0) {
-            progress.setHabitFlags(detectHabits(userId, averages));
+            progress.setHabitFlags(
+                    detectHabits(recentSessions, averages));
         }
 
-        progress.setCurrentLevel(calculateLevel(userId));
+        progress.setCurrentLevel(
+                calculateLevel(recentSessions));
         userProgressRepository.save(progress);
         return progress;
     }
@@ -86,8 +90,7 @@ public class ProgressTracker {
                 .collect(Collectors.toList());
     }
 
-    private List<String> detectHabits(UUID userId, Map<String, Double> averages) {
-        List<PracticeSession> sessions = practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(userId);
+    private List<String> detectHabits(List<PracticeSession> sessions, Map<String, Double> averages) {
         if (sessions.size() < 5) {
             return List.of();
         }
@@ -99,7 +102,8 @@ public class ProgressTracker {
                     .map(s -> scoreFromFeedback(s, dim))
                     .filter(Objects::nonNull)
                     .toList();
-            if (series.size() < 5) continue;
+            if (series.size() < 5)
+                continue;
 
             double trend = StatsUtil.linearRegressionSlope(series);
             double variance = StatsUtil.variance(series);
@@ -118,10 +122,10 @@ public class ProgressTracker {
         return flags.stream().distinct().toList();
     }
 
-    private int calculateLevel(UUID userId) {
-        List<PracticeSession> recent = practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(userId);
-        List<PracticeSession> lastTen = recent.stream().limit(10).toList();
-        if (lastTen.isEmpty()) return 1;
+    private int calculateLevel(List<PracticeSession> recentSessions) {
+        List<PracticeSession> lastTen = recentSessions.stream().limit(10).toList();
+        if (lastTen.isEmpty())
+            return 1;
 
         List<Double> compositeScores = new ArrayList<>();
         for (PracticeSession session : lastTen) {
@@ -133,10 +137,14 @@ public class ProgressTracker {
         double consistencyBonus = 1.0 - Math.min(1.0, StatsUtil.stdDev(compositeScores) / 100.0);
         double finalScore = weighted * (0.9 + 0.1 * consistencyBonus);
 
-        if (finalScore >= 85) return 5;
-        if (finalScore >= 75) return 4;
-        if (finalScore >= 60) return 3;
-        if (finalScore >= 40) return 2;
+        if (finalScore >= 85)
+            return 5;
+        if (finalScore >= 75)
+            return 4;
+        if (finalScore >= 60)
+            return 3;
+        if (finalScore >= 40)
+            return 2;
         return 1;
     }
 
@@ -162,5 +170,9 @@ public class ProgressTracker {
             return n.doubleValue();
         }
         return null;
+    }
+
+    public UserProgress currentLevelFor(UUID userId) {
+        return userProgressRepository.findById(userId).orElse(null);
     }
 }

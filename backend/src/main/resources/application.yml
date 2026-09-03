@@ -31,13 +31,22 @@ logging:
 # One key: OPENROUTER_API_KEY — pick any model id (Gemini, DeepSeek, etc.) via LLM_FAST_MODEL / LLM_QUALITY_MODEL
 llm:
   api-key: ${OPENROUTER_API_KEY:${LLM_API_KEY:}}
-  fast-model: ${LLM_FAST_MODEL:google/gemini-2.0-flash-001}
-  quality-model: ${LLM_QUALITY_MODEL:google/gemini-2.0-flash-001}
+  # Primary model
+  fast-model: ${LLM_FAST_MODEL:google/gemma-4-26b-a4b-it:free}
+
+  # Higher-quality model
+  quality-model: ${LLM_QUALITY_MODEL:google/gemma-4-31b-it:free}
+
+  # Used when the primary/quality model fails
   fallback-models:
-    - google/gemini-2.0-flash-001
-    - openai/gpt-4o-mini
+    - google/gemma-4-31b-it:free
+    - minimax/minimax-m3:free
+    - nvidia/nemotron-3-super:free
+    - zai/glm-5.2:free
+
   retry-max-attempts: ${LLM_RETRY_MAX:3}
   retry-backoff-ms: ${LLM_RETRY_BACKOFF_MS:2000}
+
   openrouter:
     base-url: https://openrouter.ai/api/v1
     site-url: ${OPENROUTER_SITE_URL:http://localhost:3000}

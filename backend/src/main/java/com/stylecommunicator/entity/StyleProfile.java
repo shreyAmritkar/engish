@@ -25,6 +25,16 @@ public class StyleProfile {
     @Column(name = "created_by")
     private UUID createdBy;
 
+    /**
+     * Nullable — PRESET styles have no creator (see V9 migration: ON DELETE
+     * SET NULL, not CASCADE, since a style shouldn't disappear just because
+     * its original author's account is deleted while other users still
+     * practice it).
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "created_by", insertable = false, updatable = false)
+    private AppUser creator;
+
     @Column(name = "vocabulary_tier")
     private String vocabularyTier;
 
@@ -79,6 +89,7 @@ public class StyleProfile {
     public void setSource(StyleSource source) { this.source = source; }
     public UUID getCreatedBy() { return createdBy; }
     public void setCreatedBy(UUID createdBy) { this.createdBy = createdBy; }
+    public AppUser getCreator() { return creator; }
     public String getVocabularyTier() { return vocabularyTier; }
     public void setVocabularyTier(String vocabularyTier) { this.vocabularyTier = vocabularyTier; }
     public String getSentenceStructure() { return sentenceStructure; }

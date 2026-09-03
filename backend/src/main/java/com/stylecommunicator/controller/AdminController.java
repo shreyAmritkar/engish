@@ -75,4 +75,4 @@ public class AdminController {
         return Map.of("status", "rebuild triggered — per-dimension leaderboards rebuilt inline, " +
                 "per-user rival lists rebuilding asynchronously");
     }
-}
+}                 

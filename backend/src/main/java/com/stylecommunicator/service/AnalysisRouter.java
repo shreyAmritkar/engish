@@ -5,6 +5,7 @@ import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,20 +23,22 @@ public class AnalysisRouter {
     private static final Logger log = LoggerFactory.getLogger(AnalysisRouter.class);
 
     private static final List<String> SCORE_DIMENSIONS = List.of(
-            "confidence", "tone", "persuasion", "emotional_control", "professionalism", "style_match"
-    );
+            "confidence", "tone", "persuasion", "emotional_control", "professionalism", "style_match");
 
     private final LlmClient llmClient;
     private final GrammarCheckerService grammarCheckerService;
     private final StyleEngineService styleEngineService;
+    private final CoachingTipCache coachingTipCache;
 
     public AnalysisRouter(
             LlmClient llmClient,
             GrammarCheckerService grammarCheckerService,
+            CoachingTipCache coachingTipCache,
             StyleEngineService styleEngineService) {
         this.llmClient = llmClient;
         this.grammarCheckerService = grammarCheckerService;
         this.styleEngineService = styleEngineService;
+        this.coachingTipCache = coachingTipCache;
     }
 
     public Map<String, Object> analyze(PracticeSession session, StyleProfile style, String userResponse) {
@@ -70,8 +73,7 @@ public class AnalysisRouter {
                 session.getSituation(),
                 session.getRequiredWord(),
                 session.getEmotionalContext(),
-                escape(userResponse)
-        );
+                escape(userResponse));
 
         Map<String, Object> result;
         try {
@@ -107,8 +109,7 @@ public class AnalysisRouter {
                 """.formatted(
                 escape(userResponse),
                 style.getPowerDynamic(),
-                style.getFormalityLevel() != null ? style.getFormalityLevel() : 5
-        );
+                style.getFormalityLevel() != null ? style.getFormalityLevel() : 5);
 
         try {
             return llmClient.generateJson(prompt, LlmTier.QUALITY);
@@ -123,15 +124,21 @@ public class AnalysisRouter {
         Map<String, Object> scores = feedback.get("scores") instanceof Map<?, ?> m
                 ? (Map<String, Object>) m
                 : Map.of();
+
+        String powerDynamic = style.getPowerDynamic();
+        String weakest = findWeakest(scores);
+        String situation = session.getSituation();
+
+        Optional<String> cached = coachingTipCache.get(powerDynamic, weakest, situation);
+        if (cached.isPresent()) {
+            return cached.get();
+        }
+
         String prompt = """
                 Give one short coaching tip (max 2 sentences) for improving workplace communication.
                 Style: %s. Weakest score dimension: %s. Situation: %s
                 Return JSON: {"coaching_tip":"..."}
-                """.formatted(
-                style.getPowerDynamic(),
-                findWeakest(scores),
-                session.getSituation()
-        );
+                """.formatted(powerDynamic, weakest, situation);
 
         try {
             Map<String, Object> result = llmClient.generateJson(prompt, LlmTier.FAST);
@@ -154,8 +161,7 @@ public class AnalysisRouter {
         return Map.of(
                 "scores", scores,
                 "grammar_notes", List.of("AI scoring unavailable — default scores applied."),
-                "misinterpretation_warnings", List.of()
-        );
+                "misinterpretation_warnings", List.of());
     }
 
     @SuppressWarnings("unchecked")

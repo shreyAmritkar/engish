@@ -17,6 +17,20 @@ public class UserProgress {
     @Column(name = "user_id")
     private UUID userId;
 
+    /**
+     * Read-only navigation to the owning AppUser, mapped onto the same
+     * user_id column. userId above remains the actual @Id and stays the
+     * primary way this entity is looked up (findById(userId) etc,
+     * unchanged everywhere it's already used) — this association exists so
+     * the one-to-one relationship is explicit in the object model too, not
+     * only enforced by the FK constraint added in V9. insertable/updatable
+     * are false because userId (via the plain @Id field) remains the single
+     * source of truth for writes; this field is populated on read only.
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", insertable = false, updatable = false)
+    private AppUser user;
+
     @Column(name = "current_level")
     private int currentLevel = 1;
 
@@ -48,8 +62,12 @@ public class UserProgress {
         lastUpdated = Instant.now();
     }
 
+    @Version
+    private Long version;
+
     public UUID getUserId() { return userId; }
     public void setUserId(UUID userId) { this.userId = userId; }
+    public AppUser getUser() { return user; }
     public int getCurrentLevel() { return currentLevel; }
     public void setCurrentLevel(int currentLevel) { this.currentLevel = currentLevel; }
     public int getTotalSessions() { return totalSessions; }
