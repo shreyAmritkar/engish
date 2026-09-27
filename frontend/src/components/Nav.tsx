@@ -7,9 +7,9 @@ import { getAuthUser, clearAuth, AuthUser } from "@/lib/auth";
 import { authApi } from "@/lib/api";
 
 const navLinks = [
-  { href: "/library", label: "Library" },
+  { href: "/practice", label: "Practice" },
   { href: "/progress", label: "Progress" },
-  { href: "/rivals", label: "Rivals" },
+  { href: "/library", label: "Styles" },
 ];
 
 export function Nav() {

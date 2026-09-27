@@ -1,0 +1,59 @@
+spring:
+  application:
+    name: style-communicator (PROD)
+  
+  # ============ Database - Production ============
+  datasource:
+    # Use environment variables for sensitive data
+    url: ${DATABASE_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 30
+      minimum-idle: 10
+      connection-timeout: 20000
+      idle-timeout: 300000
+      max-lifetime: 1200000
+      leak-detection-threshold: 60000
+  
+  # ============ JPA - Optimized for Production ============
+  jpa:
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: false
+        jdbc:
+          batch_size: 50
+          fetch_size: 100
+        order_inserts: true
+        order_updates: true
+
+# ============ Logging - Info Level Only, stdout only ============
+# No file appender in prod — see logback-spring.xml's prod profile for why
+# (non-root container user, ephemeral filesystem on Render). Render captures
+# stdout automatically, which is what actually carries these logs in prod.
+logging:
+  level:
+    root: WARN
+    com.stylecommunicator: INFO
+    org.springframework: WARN
+    org.springframework.security: WARN
+
+# ============ Server - Hide Error Details ============
+server:
+  error:
+    include-message: never
+    include-binding-errors: never
+    include-exception: false
+    include-stacktrace: never
+  port: ${PORT:8080}
+  compression:
+    enabled: true
+    min-response-size: 1024
+  tomcat:
+    threads:
+      max: 300
+      min-spare: 20
+    max-connections: 20000
+    accept-count: 200

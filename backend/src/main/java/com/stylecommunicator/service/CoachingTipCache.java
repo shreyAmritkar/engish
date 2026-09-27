@@ -1,56 +1,73 @@
 package com.stylecommunicator.service;
 
-import org.springframework.data.redis.core.StringRedisTemplate;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
-import java.nio.charset.StandardCharsets;
-import java.security.MessageDigest;
-import java.time.Duration;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * Simplified coaching tip cache using in-memory storage.
+ * 
  * Caches coaching tips keyed on (power_dynamic, weakest_dimension, situation).
- * Safe because none of those three inputs are free-typed user text — situations
+ * Uses LRU (Least Recently Used) eviction with max 1000 entries.
+ * 
+ * Safe because none of the three inputs are free-typed user text — situations
  * are drawn from a bounded, reused DB pool, so the same triple recurs across
  * many different users and sessions.
- *
- * Do NOT reuse this pattern for scoring or rewrites: those prompts embed the
- * user's own response verbatim and essentially never repeat.
+ * 
+ * Note: Not suitable for distributed systems. For multi-instance deployments,
+ * consider external cache (Redis/Memcached) or database cache.
  */
 @Component
 public class CoachingTipCache {
 
-    private static final String PREFIX = "llm:coach:";
-    private static final Duration TTL = Duration.ofHours(24);
+    private static final Logger log = LoggerFactory.getLogger(CoachingTipCache.class);
+    private static final int MAX_ENTRIES = 1000;
 
-    private final StringRedisTemplate redis;
-
-    public CoachingTipCache(StringRedisTemplate redis) {
-        this.redis = redis;
-    }
+    private final Map<String, String> cache = new ConcurrentHashMap<>();
+    private final LinkedList<String> accessOrder = new LinkedList<>();
 
     public Optional<String> get(String powerDynamic, String weakestDimension, String situation) {
-        return Optional.ofNullable(redis.opsForValue().get(key(powerDynamic, weakestDimension, situation)));
+        String key = buildKey(powerDynamic, weakestDimension, situation);
+        String value = cache.get(key);
+        
+        if (value != null) {
+            // Update access order for LRU
+            accessOrder.remove(key);
+            accessOrder.addLast(key);
+        }
+        
+        return Optional.ofNullable(value);
     }
 
     public void put(String powerDynamic, String weakestDimension, String situation, String tip) {
-        redis.opsForValue().set(key(powerDynamic, weakestDimension, situation), tip, TTL);
-    }
-
-    private String key(String powerDynamic, String weakestDimension, String situation) {
-        String norm = (powerDynamic + "|" + weakestDimension + "|" + situation.trim().toLowerCase());
-        return PREFIX + hash(norm);
-    }
-
-    private String hash(String text) {
-        try {
-            MessageDigest digest = MessageDigest.getInstance("SHA-256");
-            byte[] bytes = digest.digest(text.getBytes(StandardCharsets.UTF_8));
-            StringBuilder sb = new StringBuilder();
-            for (byte b : bytes) sb.append(String.format("%02x", b));
-            return sb.toString();
-        } catch (Exception e) {
-            return String.valueOf(text.hashCode()); // never let hashing itself break caching
+        String key = buildKey(powerDynamic, weakestDimension, situation);
+        
+        // Evict LRU entry if at capacity
+        if (cache.size() >= MAX_ENTRIES && !cache.containsKey(key)) {
+            String lruKey = accessOrder.removeFirst();
+            cache.remove(lruKey);
+            log.debug("Evicted LRU coaching tip cache entry");
         }
+        
+        cache.put(key, tip);
+        accessOrder.remove(key);
+        accessOrder.addLast(key);
+    }
+
+    private String buildKey(String powerDynamic, String weakestDimension, String situation) {
+        return powerDynamic + "|" + weakestDimension + "|" + situation.trim().toLowerCase();
+    }
+
+    public int getCacheSize() {
+        return cache.size();
+    }
+
+    public void clear() {
+        cache.clear();
+        accessOrder.clear();
+        log.info("Coaching tip cache cleared");
     }
 }

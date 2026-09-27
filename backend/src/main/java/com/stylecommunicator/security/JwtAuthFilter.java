@@ -1,5 +1,7 @@
 package com.stylecommunicator.security;
 
+import com.stylecommunicator.entity.AppUser;
+import com.stylecommunicator.repository.AppUserRepository;
 import com.stylecommunicator.util.CookieUtil;
 import io.jsonwebtoken.Claims;
 import jakarta.servlet.FilterChain;
@@ -22,9 +24,11 @@ import java.util.UUID;
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtService jwtService;
+    private final AppUserRepository userRepository;
 
-    public JwtAuthFilter(JwtService jwtService) {
+    public JwtAuthFilter(JwtService jwtService, AppUserRepository userRepository) {
         this.jwtService = jwtService;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -43,6 +47,16 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         Claims claims = jwtService.parseToken(token);
         UUID userId = UUID.fromString(claims.getSubject());
         String role = claims.get("role", String.class);
+
+        // Deactivation takes effect immediately, not just at next login — a
+        // token issued before an admin disables the account must stop
+        // working on the very next request, not silently keep it valid
+        // until it expires.
+        AppUser user = userRepository.findById(userId).orElse(null);
+        if (user == null || !user.isActive()) {
+            response.sendError(HttpServletResponse.SC_FORBIDDEN, "This account has been deactivated");
+            return;
+        }
 
         request.setAttribute("authenticatedUserId", userId);
 

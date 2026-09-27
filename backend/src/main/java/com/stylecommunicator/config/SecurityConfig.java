@@ -3,6 +3,8 @@ package com.stylecommunicator.config;
 import com.stylecommunicator.security.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
+import org.springframework.core.env.Profiles;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
@@ -32,14 +34,19 @@ public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
     private final AppProperties appProperties;
+    private final Environment environment;
 
-    public SecurityConfig(JwtAuthFilter jwtAuthFilter, AppProperties appProperties) {
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter, AppProperties appProperties, Environment environment) {
         this.jwtAuthFilter = jwtAuthFilter;
         this.appProperties = appProperties;
+        this.environment = environment;
     }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        boolean isProd = environment.acceptsProfiles(Profiles.of("prod"));
+        String[] apiDocsPaths = {"/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"};
+
         http
             .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             .csrf(AbstractHttpConfigurer::disable)
@@ -47,15 +54,23 @@ public class SecurityConfig {
             .formLogin(AbstractHttpConfigurer::disable)
             .logout(AbstractHttpConfigurer::disable)
             .sessionManagement(s -> s.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-            .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout").permitAll()
-                .requestMatchers("/api/auth/me").authenticated() 
-                .requestMatchers("/api/health").permitAll()
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/styles/library").permitAll()
-                .requestMatchers("/api/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
+            .authorizeHttpRequests(auth -> {
+                auth.requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/logout").permitAll()
+                    .requestMatchers("/api/auth/me").authenticated()
+                    .requestMatchers("/api/health").permitAll()
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/api/styles/library").permitAll()
+                    .requestMatchers("/actuator/**").hasRole("ADMIN");
+                // Docs describe the full API surface, admin endpoints included —
+                // open for local exploration, admin-only once actually deployed.
+                if (isProd) {
+                    auth.requestMatchers(apiDocsPaths).hasRole("ADMIN");
+                } else {
+                    auth.requestMatchers(apiDocsPaths).permitAll();
+                }
+                auth.requestMatchers("/api/admin/**").hasRole("ADMIN")
+                    .anyRequest().authenticated();
+            })
             .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();

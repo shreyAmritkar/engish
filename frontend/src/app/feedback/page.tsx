@@ -155,10 +155,13 @@ function FeedbackContent() {
 
       <div className="flex gap-4 pt-4">
         <Link href={`/practice?styleId=${session.styleProfileId}`} className="px-4 py-2 rounded-lg bg-accent text-white font-medium">
-          Try again
+          Try again with same style
         </Link>
         <Link href="/library" className="px-4 py-2 rounded-lg border font-medium">
-          Try new style
+          Browse all styles
+        </Link>
+        <Link href="/progress" className="px-4 py-2 rounded-lg border font-medium">
+          View progress
         </Link>
       </div>
     </div>

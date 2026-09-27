@@ -1,5 +1,7 @@
 package com.stylecommunicator.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.stylecommunicator.entity.PracticeSession;
 import com.stylecommunicator.entity.UserProgress;
 import com.stylecommunicator.repository.PracticeSessionRepository;
@@ -11,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Tag(name = "Progress", description = "EMA scores, level, and session history.")
 @RestController
 @RequestMapping("/api/progress")
 public class ProgressController {
@@ -54,12 +57,17 @@ public class ProgressController {
                     p.setWeakAreas(List.of());
                     p.setStrongAreas(List.of());
                     p.setHabitFlags(List.of());
+                    p.setTotalSessions(0);
+                    p.setCurrentLevel(1);
                     return p;
                 });
 
+        // Only get sessions with feedback (completed sessions)
+        // Ignore draft/incomplete sessions
         List<SessionSummary> history = practiceSessionRepository
                 .findByUserIdOrderByCreatedAtDesc(userId)
                 .stream()
+                .filter(session -> session.getFeedback() != null && !session.getFeedback().isEmpty())
                 .limit(20)
                 .map(SessionSummary::from)
                 .toList();

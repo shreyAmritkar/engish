@@ -1,5 +1,7 @@
 package com.stylecommunicator.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.stylecommunicator.domain.StyleSource;
 import com.stylecommunicator.dto.CreateStyleRequest;
 import com.stylecommunicator.dto.StyleProfileDto;
@@ -16,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+@Tag(name = "Styles", description = "Style library and style-from-description extraction.")
 @RestController
 @RequestMapping("/api/styles")
 public class StyleController {

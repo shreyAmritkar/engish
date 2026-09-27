@@ -1,0 +1,2841 @@
+2026-09-27 10:59:03.024 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-09-27 10:59:03.207 [main] INFO  c.s.StyleCommunicatorApplication - Starting StyleCommunicatorApplication v0.1.0 using Java 21.0.12.1 with PID 1 (/app/app.jar started by appuser in /app)
+2026-09-27 10:59:03.216 [main] DEBUG c.s.StyleCommunicatorApplication - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-09-27 10:59:03.224 [main] INFO  c.s.StyleCommunicatorApplication - The following 1 profile is active: "dev"
+2026-09-27 10:59:09.427 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-10000"]
+2026-09-27 10:59:09.468 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-27 10:59:09.472 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-09-27 10:59:09.584 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-09-27 10:59:11.132 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Starting...
+2026-09-27 10:59:11.780 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-StyleCommunicator - Added connection org.postgresql.jdbc.PgConnection@5de335cf
+2026-09-27 10:59:11.854 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Start completed.
+2026-09-27 10:59:11.974 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://db:5432/stylecommunicator (PostgreSQL 16.14)
+2026-09-27 10:59:12.140 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory - Schema history table "public"."flyway_schema_history" does not exist yet
+2026-09-27 10:59:12.162 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 9 migrations (execution time 00:00.095s)
+2026-09-27 10:59:12.325 [main] INFO  o.f.c.i.s.JdbcTableSchemaHistory - Creating Schema History table "public"."flyway_schema_history" ...
+2026-09-27 10:59:12.456 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": << Empty Schema >>
+2026-09-27 10:59:12.591 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "1 - schema"
+2026-09-27 10:59:12.748 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "2 - add conversation"
+2026-09-27 10:59:12.929 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "3 - situation bank"
+2026-09-27 10:59:13.052 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "4 - remove cut features"
+2026-09-27 10:59:13.142 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "5 - add users"
+2026-09-27 10:59:13.228 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "7 - situation context"
+2026-09-27 10:59:13.285 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "8 - add missing user foreign key"
+2026-09-27 10:59:13.337 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "9 - optimistic locking"
+2026-09-27 10:59:13.368 [main] INFO  o.f.core.internal.command.DbMigrate - Migrating schema "public" to version "10 - add user active flag"
+2026-09-27 10:59:13.408 [main] INFO  o.f.core.internal.command.DbMigrate - Successfully applied 9 migrations to schema "public", now at version v10 (execution time 00:00.467s)
+2026-09-27 10:59:13.739 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-27 10:59:13.946 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-09-27 10:59:14.204 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-09-27 10:59:15.074 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-StyleCommunicator)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-27 10:59:17.172 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-27 10:59:18.119 [main] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2026-09-27 10:59:18.172 [main] DEBUG c.s.security.JwtAuthFilter - Filter 'jwtAuthFilter' configured for use
+2026-09-27 10:59:20.563 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-09-27 10:59:21.091 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 34 mappings in 'requestMappingHandlerMapping'
+2026-09-27 10:59:21.195 [main] DEBUG o.s.w.s.c.a.WebMvcConfigurer - Default resource handling disabled
+2026-09-27 10:59:21.262 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-09-27 10:59:21.868 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-09-27 10:59:22.269 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-09-27 10:59:22.510 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-09-27 10:59:23.516 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-10000"]
+2026-09-27 10:59:23.609 [main] INFO  c.s.StyleCommunicatorApplication - Started StyleCommunicatorApplication in 22.235 seconds (process running for 23.626)
+2026-09-27 11:09:16.415 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Shutdown initiated...
+2026-09-27 11:09:16.439 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Shutdown completed.
+2026-09-27 11:10:37.703 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-09-27 11:10:37.888 [main] INFO  c.s.StyleCommunicatorApplication - Starting StyleCommunicatorApplication v0.1.0 using Java 21.0.12.1 with PID 1 (/app/app.jar started by appuser in /app)
+2026-09-27 11:10:37.895 [main] DEBUG c.s.StyleCommunicatorApplication - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-09-27 11:10:37.903 [main] INFO  c.s.StyleCommunicatorApplication - The following 1 profile is active: "dev"
+2026-09-27 11:10:45.227 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-09-27 11:10:45.239 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-27 11:10:45.244 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-09-27 11:10:45.351 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-09-27 11:10:46.838 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Starting...
+2026-09-27 11:10:47.343 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-StyleCommunicator - Added connection org.postgresql.jdbc.PgConnection@50e8ed74
+2026-09-27 11:10:47.349 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Start completed.
+2026-09-27 11:10:47.451 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://db:5432/stylecommunicator (PostgreSQL 16.14)
+2026-09-27 11:10:47.616 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 9 migrations (execution time 00:00.087s)
+2026-09-27 11:10:47.682 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 10
+2026-09-27 11:10:47.695 [main] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-09-27 11:10:47.953 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-27 11:10:48.174 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-09-27 11:10:48.347 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-09-27 11:10:49.604 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-StyleCommunicator)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-27 11:10:52.587 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-27 11:10:53.988 [main] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2026-09-27 11:10:54.009 [main] DEBUG c.s.security.JwtAuthFilter - Filter 'jwtAuthFilter' configured for use
+2026-09-27 11:10:56.895 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-09-27 11:10:57.450 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 34 mappings in 'requestMappingHandlerMapping'
+2026-09-27 11:10:57.598 [main] DEBUG o.s.w.s.c.a.WebMvcConfigurer - Default resource handling disabled
+2026-09-27 11:10:57.640 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-09-27 11:10:58.511 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-09-27 11:10:58.965 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-09-27 11:10:59.207 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-09-27 11:11:00.320 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-09-27 11:11:00.486 [main] INFO  c.s.StyleCommunicatorApplication - Started StyleCommunicatorApplication in 24.953 seconds (process running for 26.418)
+2026-09-27 11:11:13.395 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-27 11:11:13.400 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-27 11:11:13.405 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2026-09-27 11:11:13.411 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2026-09-27 11:11:13.416 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2026-09-27 11:11:13.427 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@3c6f363
+2026-09-27 11:11:13.436 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@70fd1f5c
+2026-09-27 11:11:13.446 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-09-27 11:11:13.452 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 48 ms
+2026-09-27 11:11:13.570 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/health
+2026-09-27 11:11:13.996 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:14.065 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/health
+2026-09-27 11:11:14.086 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/health", parameters={}
+2026-09-27 11:11:14.103 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.HealthController#health()
+2026-09-27 11:11:14.214 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:11:14.221 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{status=ok}]
+2026-09-27 11:11:14.277 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:36.909 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui.html
+2026-09-27 11:11:36.916 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:36.925 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui.html
+2026-09-27 11:11:36.936 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui.html", parameters={}
+2026-09-27 11:11:36.959 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.ui.SwaggerWelcomeWebMvc#redirectToUi(HttpServletRequest)
+2026-09-27 11:11:37.070 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json;q=0.8', given [text/html, application/xhtml+xml, image/avif, image/webp, image/apng, application/xml;q=0.9, */*;q=0.8] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:11:37.077 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Nothing to write: null body
+2026-09-27 11:11:37.082 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 302 FOUND
+2026-09-27 11:11:37.120 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/index.html
+2026-09-27 11:11:37.127 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:37.132 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/index.html
+2026-09-27 11:11:37.136 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.html", parameters={}
+2026-09-27 11:11:37.146 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:37.168 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:37.274 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-ui.css
+2026-09-27 11:11:37.284 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/index.css
+2026-09-27 11:11:37.285 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:37.287 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-09-27 11:11:37.298 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-09-27 11:11:37.300 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-initializer.js
+2026-09-27 11:11:37.300 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:37.304 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-ui.css
+2026-09-27 11:11:37.315 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:37.318 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:37.329 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:37.336 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/index.css
+2026-09-27 11:11:37.351 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui.css", parameters={}
+2026-09-27 11:11:37.362 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-09-27 11:11:37.381 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-09-27 11:11:37.443 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-initializer.js
+2026-09-27 11:11:37.490 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.css", parameters={}
+2026-09-27 11:11:37.526 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:37.559 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2026-09-27 11:11:37.586 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2026-09-27 11:11:37.611 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-initializer.js", parameters={}
+2026-09-27 11:11:37.640 [http-nio-8080-exec-5] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:37.672 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:37.689 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:37.728 [http-nio-8080-exec-7] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:37.744 [http-nio-8080-exec-8] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:37.768 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:37.953 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:37.978 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:37.995 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:38.318 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /v3/api-docs/swagger-config
+2026-09-27 11:11:38.327 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/favicon-32x32.png
+2026-09-27 11:11:38.337 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:38.356 [http-nio-8080-exec-10] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:38.372 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /v3/api-docs/swagger-config
+2026-09-27 11:11:38.403 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/favicon-32x32.png
+2026-09-27 11:11:38.415 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs/swagger-config", parameters={}
+2026-09-27 11:11:38.425 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/favicon-32x32.png", parameters={}
+2026-09-27 11:11:38.435 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2026-09-27 11:11:38.447 [http-nio-8080-exec-10] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:11:38.458 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json]
+2026-09-27 11:11:38.475 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:38.479 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8080/swagger-ui/oauth2-re (truncated)...]
+2026-09-27 11:11:38.487 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:11:38.519 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /v3/api-docs
+2026-09-27 11:11:38.531 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:11:38.537 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /v3/api-docs
+2026-09-27 11:11:38.551 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs", parameters={}
+2026-09-27 11:11:38.557 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2026-09-27 11:11:39.333 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.stylecommunicator.exception.GlobalExceptionHandler#handleUnexpected(Exception, HttpServletRequest)
+2026-09-27 11:11:39.339 [http-nio-8080-exec-1] ERROR c.s.exception.GlobalExceptionHandler - Unhandled exception at /v3/api-docs
+jakarta.servlet.ServletException: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1104)
+	at org.springframework.web.servlet.DispatcherServlet.doService(DispatcherServlet.java:979)
+	at org.springframework.web.servlet.FrameworkServlet.processRequest(FrameworkServlet.java:1014)
+	at org.springframework.web.servlet.FrameworkServlet.doGet(FrameworkServlet.java:903)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:564)
+	at org.springframework.web.servlet.FrameworkServlet.service(FrameworkServlet.java:885)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:658)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:195)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.tomcat.websocket.server.WsFilter.doFilter(WsFilter.java:51)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:110)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at com.stylecommunicator.filter.RateLimitFilter.doFilter(RateLimitFilter.java:62)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:108)
+	at org.springframework.security.web.FilterChainProxy.lambda$doFilterInternal$3(FilterChainProxy.java:231)
+	at org.springframework.security.web.ObservationFilterChainDecorator$FilterObservation$SimpleFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:479)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$1(ObservationFilterChainDecorator.java:340)
+	at org.springframework.security.web.ObservationFilterChainDecorator.lambda$wrapSecured$0(ObservationFilterChainDecorator.java:82)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:128)
+	at org.springframework.security.web.access.intercept.AuthorizationFilter.doFilter(AuthorizationFilter.java:101)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:126)
+	at org.springframework.security.web.access.ExceptionTranslationFilter.doFilter(ExceptionTranslationFilter.java:120)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:131)
+	at org.springframework.security.web.session.SessionManagementFilter.doFilter(SessionManagementFilter.java:85)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.authentication.AnonymousAuthenticationFilter.doFilter(AnonymousAuthenticationFilter.java:100)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter.doFilter(SecurityContextHolderAwareRequestFilter.java:179)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.savedrequest.RequestCacheAwareFilter.doFilter(RequestCacheAwareFilter.java:63)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at com.stylecommunicator.security.JwtAuthFilter.doFilterInternal(JwtAuthFilter.java:43)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.web.filter.CorsFilter.doFilterInternal(CorsFilter.java:91)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.header.HeaderWriterFilter.doHeadersAfter(HeaderWriterFilter.java:90)
+	at org.springframework.security.web.header.HeaderWriterFilter.doFilterInternal(HeaderWriterFilter.java:75)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:82)
+	at org.springframework.security.web.context.SecurityContextHolderFilter.doFilter(SecurityContextHolderFilter.java:69)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter.doFilterInternal(WebAsyncManagerIntegrationFilter.java:62)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:227)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.session.DisableEncodeUrlFilter.doFilterInternal(DisableEncodeUrlFilter.java:42)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.wrapFilter(ObservationFilterChainDecorator.java:240)
+	at org.springframework.security.web.ObservationFilterChainDecorator$AroundFilterObservation$SimpleAroundFilterObservation.lambda$wrap$0(ObservationFilterChainDecorator.java:323)
+	at org.springframework.security.web.ObservationFilterChainDecorator$ObservationFilter.doFilter(ObservationFilterChainDecorator.java:224)
+	at org.springframework.security.web.ObservationFilterChainDecorator$VirtualFilterChain.doFilter(ObservationFilterChainDecorator.java:137)
+	at org.springframework.security.web.FilterChainProxy.doFilterInternal(FilterChainProxy.java:233)
+	at org.springframework.security.web.FilterChainProxy.doFilter(FilterChainProxy.java:191)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.servlet.handler.HandlerMappingIntrospector.lambda$createCacheFilter$3(HandlerMappingIntrospector.java:243)
+	at org.springframework.web.filter.CompositeFilter$VirtualFilterChain.doFilter(CompositeFilter.java:113)
+	at org.springframework.web.filter.CompositeFilter.doFilter(CompositeFilter.java:74)
+	at org.springframework.security.config.annotation.web.configuration.WebMvcSecurityConfiguration$CompositeFilterChainProxy.doFilter(WebMvcSecurityConfiguration.java:238)
+	at org.springframework.web.filter.DelegatingFilterProxy.invokeDelegate(DelegatingFilterProxy.java:362)
+	at org.springframework.web.filter.DelegatingFilterProxy.doFilter(DelegatingFilterProxy.java:278)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.RequestContextFilter.doFilterInternal(RequestContextFilter.java:100)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.FormContentFilter.doFilterInternal(FormContentFilter.java:93)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.ServerHttpObservationFilter.doFilterInternal(ServerHttpObservationFilter.java:114)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.springframework.web.filter.CharacterEncodingFilter.doFilterInternal(CharacterEncodingFilter.java:201)
+	at org.springframework.web.filter.OncePerRequestFilter.doFilter(OncePerRequestFilter.java:116)
+	at org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:164)
+	at org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:140)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:167)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:90)
+	at org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:483)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:116)
+	at org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:93)
+	at org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:74)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:344)
+	at org.apache.coyote.http11.Http11Processor.service(Http11Processor.java:398)
+	at org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:63)
+	at org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:903)
+	at org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1740)
+	at org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:52)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1189)
+	at org.apache.tomcat.util.threads.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:658)
+	at org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:63)
+	at java.base/java.lang.Thread.run(Unknown Source)
+Caused by: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)'
+	at org.springdoc.core.service.GenericResponseService.lambda$getGenericMapResponse$8(GenericResponseService.java:706)
+	at java.base/java.util.stream.ReferencePipeline$2$1.accept(Unknown Source)
+	at java.base/java.util.Spliterators$ArraySpliterator.forEachRemaining(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.copyInto(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.wrapAndCopyInto(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.evaluate(Unknown Source)
+	at java.base/java.util.stream.AbstractPipeline.evaluateToArrayNode(Unknown Source)
+	at java.base/java.util.stream.ReferencePipeline.toArray(Unknown Source)
+	at java.base/java.util.stream.ReferencePipeline.toArray(Unknown Source)
+	at java.base/java.util.stream.ReferencePipeline.toList(Unknown Source)
+	at org.springdoc.core.service.GenericResponseService.getGenericMapResponse(GenericResponseService.java:708)
+	at org.springdoc.core.service.GenericResponseService.build(GenericResponseService.java:247)
+	at org.springdoc.api.AbstractOpenApiResource.calculatePath(AbstractOpenApiResource.java:499)
+	at org.springdoc.api.AbstractOpenApiResource.calculatePath(AbstractOpenApiResource.java:676)
+	at org.springdoc.webmvc.api.OpenApiResource.lambda$calculatePath$11(OpenApiResource.java:220)
+	at java.base/java.util.Optional.ifPresent(Unknown Source)
+	at org.springdoc.webmvc.api.OpenApiResource.calculatePath(OpenApiResource.java:201)
+	at org.springdoc.webmvc.api.OpenApiResource.lambda$getPaths$2(OpenApiResource.java:171)
+	at java.base/java.util.Optional.ifPresent(Unknown Source)
+	at org.springdoc.webmvc.api.OpenApiResource.getPaths(OpenApiResource.java:150)
+	at org.springdoc.api.AbstractOpenApiResource.getOpenApi(AbstractOpenApiResource.java:353)
+	at org.springdoc.webmvc.api.OpenApiResource.openapiJson(OpenApiResource.java:125)
+	at org.springdoc.webmvc.api.OpenApiWebMvcResource.openapiJson(OpenApiWebMvcResource.java:114)
+	at java.base/jdk.internal.reflect.DirectMethodHandleAccessor.invoke(Unknown Source)
+	at java.base/java.lang.reflect.Method.invoke(Unknown Source)
+	at org.springframework.web.method.support.InvocableHandlerMethod.doInvoke(InvocableHandlerMethod.java:258)
+	at org.springframework.web.method.support.InvocableHandlerMethod.invokeForRequest(InvocableHandlerMethod.java:191)
+	at org.springframework.web.servlet.mvc.method.annotation.ServletInvocableHandlerMethod.invokeAndHandle(ServletInvocableHandlerMethod.java:118)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.invokeHandlerMethod(RequestMappingHandlerAdapter.java:986)
+	at org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerAdapter.handleInternal(RequestMappingHandlerAdapter.java:891)
+	at org.springframework.web.servlet.mvc.method.AbstractHandlerMethodAdapter.handle(AbstractHandlerMethodAdapter.java:87)
+	at org.springframework.web.servlet.DispatcherServlet.doDispatch(DispatcherServlet.java:1089)
+	... 124 common frames omitted
+2026-09-27 11:11:39.386 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [application/json, */*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:11:39.404 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ErrorResponse[status=500, error=Internal Server Error, errorCode=null, message=An unexpected error o (truncated)...]
+2026-09-27 11:11:39.423 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [jakarta.servlet.ServletException: Handler dispatch failed: java.lang.NoSuchMethodError: 'void org.springframework.web.method.ControllerAdviceBean.<init>(java.lang.Object)']
+2026-09-27 11:11:39.430 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 500 INTERNAL_SERVER_ERROR
+2026-09-27 11:16:33.726 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Shutdown initiated...
+2026-09-27 11:16:33.748 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Shutdown completed.
+2026-09-27 11:33:03.934 [background-preinit] INFO  o.h.validator.internal.util.Version - HV000001: Hibernate Validator 8.0.2.Final
+2026-09-27 11:33:04.138 [main] INFO  c.s.StyleCommunicatorApplication - Starting StyleCommunicatorApplication v0.1.0 using Java 21.0.12.1 with PID 1 (/app/app.jar started by appuser in /app)
+2026-09-27 11:33:04.158 [main] DEBUG c.s.StyleCommunicatorApplication - Running with Spring Boot v3.4.5, Spring v6.2.6
+2026-09-27 11:33:04.173 [main] INFO  c.s.StyleCommunicatorApplication - The following 1 profile is active: "dev"
+2026-09-27 11:33:10.992 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Initializing ProtocolHandler ["http-nio-8080"]
+2026-09-27 11:33:11.001 [main] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2026-09-27 11:33:11.011 [main] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.40]
+2026-09-27 11:33:11.131 [main] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2026-09-27 11:33:12.682 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Starting...
+2026-09-27 11:33:13.411 [main] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-StyleCommunicator - Added connection org.postgresql.jdbc.PgConnection@103478b8
+2026-09-27 11:33:13.418 [main] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Start completed.
+2026-09-27 11:33:13.559 [main] INFO  org.flywaydb.core.FlywayExecutor - Database: jdbc:postgresql://db:5432/stylecommunicator (PostgreSQL 16.14)
+2026-09-27 11:33:13.869 [main] INFO  o.f.core.internal.command.DbValidate - Successfully validated 9 migrations (execution time 00:00.140s)
+2026-09-27 11:33:13.933 [main] INFO  o.f.core.internal.command.DbMigrate - Current version of schema "public": 10
+2026-09-27 11:33:13.953 [main] INFO  o.f.core.internal.command.DbMigrate - Schema "public" is up to date. No migration necessary.
+2026-09-27 11:33:14.375 [main] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2026-09-27 11:33:14.692 [main] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.6.13.Final
+2026-09-27 11:33:14.848 [main] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2026-09-27 11:33:16.025 [main] INFO  o.hibernate.orm.connections.pooling - HHH10001005: Database info:
+	Database JDBC URL [Connecting through datasource 'HikariDataSource (HikariPool-StyleCommunicator)']
+	Database driver: undefined/unknown
+	Database version: 16.14
+	Autocommit mode: undefined/unknown
+	Isolation level: undefined/unknown
+	Minimum pool size: undefined/unknown
+	Maximum pool size: undefined/unknown
+2026-09-27 11:33:19.176 [main] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2026-09-27 11:33:20.808 [main] DEBUG o.s.w.f.ServerHttpObservationFilter - Filter 'webMvcObservationFilter' configured for use
+2026-09-27 11:33:20.812 [main] DEBUG c.s.security.JwtAuthFilter - Filter 'jwtAuthFilter' configured for use
+2026-09-27 11:33:23.756 [main] INFO  o.s.s.c.a.a.c.InitializeUserDetailsBeanManagerConfigurer$InitializeUserDetailsManagerConfigurer - Global AuthenticationManager configured with UserDetailsService bean with name userDetailsService
+2026-09-27 11:33:24.331 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - 34 mappings in 'requestMappingHandlerMapping'
+2026-09-27 11:33:24.448 [main] DEBUG o.s.w.s.c.a.WebMvcConfigurer - Default resource handling disabled
+2026-09-27 11:33:24.475 [main] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Patterns [/swagger-ui*/*swagger-initializer.js, /swagger-ui*/**] in 'resourceHandlerMapping'
+2026-09-27 11:33:25.464 [main] DEBUG o.s.s.web.DefaultSecurityFilterChain - Will secure any request with filters: DisableEncodeUrlFilter, WebAsyncManagerIntegrationFilter, SecurityContextHolderFilter, HeaderWriterFilter, CorsFilter, JwtAuthFilter, RequestCacheAwareFilter, SecurityContextHolderAwareRequestFilter, AnonymousAuthenticationFilter, SessionManagementFilter, ExceptionTranslationFilter, AuthorizationFilter
+2026-09-27 11:33:25.871 [main] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerAdapter - ControllerAdvice beans: 0 @ModelAttribute, 0 @InitBinder, 1 RequestBodyAdvice, 1 ResponseBodyAdvice
+2026-09-27 11:33:26.154 [main] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - ControllerAdvice beans: 2 @ExceptionHandler, 1 ResponseBodyAdvice
+2026-09-27 11:33:27.382 [main] INFO  o.a.coyote.http11.Http11NioProtocol - Starting ProtocolHandler ["http-nio-8080"]
+2026-09-27 11:33:27.501 [main] INFO  c.s.StyleCommunicatorApplication - Started StyleCommunicatorApplication in 25.381 seconds (process running for 26.948)
+2026-09-27 11:33:50.849 [http-nio-8080-exec-1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2026-09-27 11:33:50.851 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2026-09-27 11:33:50.855 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected StandardServletMultipartResolver
+2026-09-27 11:33:50.862 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected AcceptHeaderLocaleResolver
+2026-09-27 11:33:50.888 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected FixedThemeResolver
+2026-09-27 11:33:50.904 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.view.DefaultRequestToViewNameTranslator@baee849
+2026-09-27 11:33:50.913 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Detected org.springframework.web.servlet.support.SessionFlashMapManager@23ea17e
+2026-09-27 11:33:50.921 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - enableLoggingRequestDetails='false': request parameters and headers will be masked to prevent unsafe logging of potentially sensitive data
+2026-09-27 11:33:50.935 [http-nio-8080-exec-1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 81 ms
+2026-09-27 11:33:51.032 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/index.html
+2026-09-27 11:33:51.094 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:51.124 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/index.html
+2026-09-27 11:33:51.154 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.html", parameters={}
+2026-09-27 11:33:51.170 [http-nio-8080-exec-1] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:51.258 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:51.326 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-ui.css
+2026-09-27 11:33:51.338 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/index.css
+2026-09-27 11:33:51.338 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:51.344 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-ui-bundle.js
+2026-09-27 11:33:51.349 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:51.355 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-ui.css
+2026-09-27 11:33:51.357 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:51.369 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/index.css
+2026-09-27 11:33:51.416 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui.css", parameters={}
+2026-09-27 11:33:51.490 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-ui-bundle.js
+2026-09-27 11:33:51.526 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/index.css", parameters={}
+2026-09-27 11:33:51.563 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:51.586 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui-bundle.js", parameters={}
+2026-09-27 11:33:51.608 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:51.684 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:51.701 [http-nio-8080-exec-4] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:51.730 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:51.745 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-09-27 11:33:51.895 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/swagger-initializer.js
+2026-09-27 11:33:51.916 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:51.920 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:51.936 [http-nio-8080-exec-3] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:51.949 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-ui-standalone-preset.js
+2026-09-27 11:33:51.958 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/swagger-initializer.js
+2026-09-27 11:33:51.969 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-ui-standalone-preset.js", parameters={}
+2026-09-27 11:33:51.980 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/swagger-initializer.js", parameters={}
+2026-09-27 11:33:51.992 [http-nio-8080-exec-2] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:52.000 [http-nio-8080-exec-3] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:52.042 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:52.110 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:54.925 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /v3/api-docs/swagger-config
+2026-09-27 11:33:54.929 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /swagger-ui/favicon-32x32.png
+2026-09-27 11:33:54.935 [http-nio-8080-exec-5] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:54.936 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:54.942 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /v3/api-docs/swagger-config
+2026-09-27 11:33:54.944 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /swagger-ui/favicon-32x32.png
+2026-09-27 11:33:54.957 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs/swagger-config", parameters={}
+2026-09-27 11:33:54.961 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/swagger-ui/favicon-32x32.png", parameters={}
+2026-09-27 11:33:54.968 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.ui.SwaggerConfigResource#openapiJson(HttpServletRequest)
+2026-09-27 11:33:54.972 [http-nio-8080-exec-6] DEBUG o.s.w.s.h.SimpleUrlHandlerMapping - Mapped to ResourceHttpRequestHandler [classpath [META-INF/resources/webjars/]]
+2026-09-27 11:33:54.994 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:55.041 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json]
+2026-09-27 11:33:55.061 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{configUrl=/v3/api-docs/swagger-config, oauth2RedirectUrl=http://localhost:8080/swagger-ui/oauth2-re (truncated)...]
+2026-09-27 11:33:55.091 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:33:55.763 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /v3/api-docs
+2026-09-27 11:33:55.771 [http-nio-8080-exec-7] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:33:55.781 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /v3/api-docs
+2026-09-27 11:33:55.789 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/v3/api-docs", parameters={}
+2026-09-27 11:33:55.795 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to org.springdoc.webmvc.api.OpenApiWebMvcResource#openapiJson(HttpServletRequest, String, Locale)
+2026-09-27 11:33:57.332 [http-nio-8080-exec-7] INFO  o.s.api.AbstractOpenApiResource - Init duration for springdoc-openapi is: 1486 ms
+2026-09-27 11:33:57.404 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [application/json, */*] and supported [application/json]
+2026-09-27 11:33:57.413 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{123, 34, 111, 112, 101, 110, 97, 112, 105, 34, 58, 34, 51, 46, 49, 46, 48, 34, 44, 34, 105, 110, 10 (truncated)...]
+2026-09-27 11:33:57.420 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:39:24.782 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:39:24.791 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:39:24.813 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.Http403ForbiddenEntryPoint - Pre-authenticated entry point called. Rejecting access
+2026-09-27 11:39:24.840 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /error
+2026-09-27 11:39:24.859 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:39:24.877 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.Http403ForbiddenEntryPoint - Pre-authenticated entry point called. Rejecting access
+2026-09-27 11:39:45.436 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:39:45.440 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:39:45.450 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.Http403ForbiddenEntryPoint - Pre-authenticated entry point called. Rejecting access
+2026-09-27 11:39:45.470 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /error
+2026-09-27 11:39:45.484 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:39:45.495 [http-nio-8080-exec-4] DEBUG o.s.s.w.a.Http403ForbiddenEntryPoint - Pre-authenticated entry point called. Rejecting access
+2026-09-27 11:43:14.814 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:14.873 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:14.885 [http-nio-8080-exec-6] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:43:14.895 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:14.905 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:43:14.910 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:43:15.215 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:43:15.384 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:43:15.413 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:43:15.430 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:43:28.818 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:28.831 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:28.843 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:28.852 [http-nio-8080-exec-8] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:43:28.858 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:28.862 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:43:28.921 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:43:28.949 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:43:28.978 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:43:29.001 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:43:29.021 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:43:29.045 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:29.075 [http-nio-8080-exec-9] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:43:29.109 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:43:29.139 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:43:29.150 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:43:29.167 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:43:29.180 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:43:29.187 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:43:29.194 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:43:55.057 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/login
+2026-09-27 11:43:55.074 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/login
+2026-09-27 11:43:55.092 [http-nio-8080-exec-1] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:43:55.106 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/login
+2026-09-27 11:43:55.112 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/login", parameters={}
+2026-09-27 11:43:55.121 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#login(LoginRequest, HttpServletResponse)
+2026-09-27 11:43:55.179 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [LoginRequest[email=shrey@gmail.com, password=12345678]]
+2026-09-27 11:43:55.368 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.email=?
+2026-09-27 11:43:55.399 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.stylecommunicator.exception.GlobalExceptionHandler#handleResponseStatus(ResponseStatusException, HttpServletRequest)
+2026-09-27 11:43:55.423 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:43:55.442 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ErrorResponse[status=401, error=Unauthorized, errorCode=null, message=Invalid credentials, details=[ (truncated)...]
+2026-09-27 11:43:55.455 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.server.ResponseStatusException: 401 UNAUTHORIZED "Invalid credentials"]
+2026-09-27 11:43:55.471 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 401 UNAUTHORIZED
+2026-09-27 11:44:25.524 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/register
+2026-09-27 11:44:25.541 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/auth/register
+2026-09-27 11:44:25.548 [http-nio-8080-exec-2] DEBUG o.s.s.w.a.AnonymousAuthenticationFilter - Set SecurityContextHolder to anonymous SecurityContext
+2026-09-27 11:44:25.555 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/auth/register
+2026-09-27 11:44:25.561 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/auth/register", parameters={}
+2026-09-27 11:44:25.568 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#register(RegisterRequest, HttpServletResponse)
+2026-09-27 11:44:25.576 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [RegisterRequest[email=shrey@gmail.com, password=12345678]]
+2026-09-27 11:44:25.608 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        au1_0.id 
+    from
+        app_user au1_0 
+    where
+        au1_0.email=? 
+    fetch
+        first ? rows only
+2026-09-27 11:44:25.951 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.AppUser */insert 
+    into
+        app_user (active, created_at, email, password_hash, role, id) 
+    values
+        (?, ?, ?, ?, ?, ?)
+2026-09-27 11:44:26.264 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:26.272 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:26.281 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 201 CREATED
+2026-09-27 11:44:26.664 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:26.665 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:26.700 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:26.868 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:26.889 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:26.894 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:44:26.900 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:44:26.909 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:44:26.921 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:26.929 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:44:26.934 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:26.939 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:26.953 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:26.964 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:26.968 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:44:26.975 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:44:26.984 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:44:26.995 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:27.000 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:44:27.005 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:29.477 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/me
+2026-09-27 11:44:29.477 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/me
+2026-09-27 11:44:29.506 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:29.519 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:29.531 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:29.535 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:29.540 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:29.547 [http-nio-8080-exec-10] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:29.558 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:29.563 [http-nio-8080-exec-10] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:29.569 [http-nio-8080-exec-10] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:29.574 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:29.588 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:29.593 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/start
+2026-09-27 11:44:29.593 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/start
+2026-09-27 11:44:29.598 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:29.601 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:29.605 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:29.608 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/start
+2026-09-27 11:44:29.612 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:29.620 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/start
+2026-09-27 11:44:29.625 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:29.626 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:29.631 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:29.633 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:29.641 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:29.646 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/start
+2026-09-27 11:44:29.653 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/start
+2026-09-27 11:44:29.659 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/start", parameters={}
+2026-09-27 11:44:29.660 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/start", parameters={}
+2026-09-27 11:44:29.664 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#start(StartSessionRequest, HttpServletRequest)
+2026-09-27 11:44:29.667 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#start(StartSessionRequest, HttpServletRequest)
+2026-09-27 11:44:29.683 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [StartSessionRequest[styleProfileId=a0000000-0000-4000-8000-000000000001]]
+2026-09-27 11:44:29.683 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [StartSessionRequest[styleProfileId=a0000000-0000-4000-8000-000000000001]]
+2026-09-27 11:44:29.703 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:44:29.703 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:44:29.721 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.user_id,
+        up1_0.average_scores,
+        up1_0.current_level,
+        up1_0.habit_flags,
+        up1_0.last_updated,
+        up1_0.strong_areas,
+        up1_0.total_sessions,
+        up1_0.version,
+        up1_0.weak_areas 
+    from
+        user_progress up1_0 
+    where
+        up1_0.user_id=?
+2026-09-27 11:44:29.723 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.user_id,
+        up1_0.average_scores,
+        up1_0.current_level,
+        up1_0.habit_flags,
+        up1_0.last_updated,
+        up1_0.strong_areas,
+        up1_0.total_sessions,
+        up1_0.version,
+        up1_0.weak_areas 
+    from
+        user_progress up1_0 
+    where
+        up1_0.user_id=?
+2026-09-27 11:44:29.772 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(se1_0.id) 
+    from
+        situation_bank se1_0 
+    where
+        se1_0.power=? 
+        and se1_0.level=? 
+        and se1_0.context=?
+2026-09-27 11:44:29.772 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(se1_0.id) 
+    from
+        situation_bank se1_0 
+    where
+        se1_0.power=? 
+        and se1_0.level=? 
+        and se1_0.context=?
+2026-09-27 11:44:29.791 [http-nio-8080-exec-3] INFO  c.s.service.SituationBankService - Stock low for power=DOMINANT level=A1 context=PROFESSIONAL — triggering async replenishment
+2026-09-27 11:44:29.792 [http-nio-8080-exec-6] INFO  c.s.service.SituationBankService - Stock low for power=DOMINANT level=A1 context=PROFESSIONAL — triggering async replenishment
+2026-09-27 11:44:29.811 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Replenishing: power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:44:29.817 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        SituationEntry s 
+    WHERE
+        s.power = :power 
+        AND s.level = :level 
+        AND s.context = :context 
+    ORDER BY
+        s.useCount ASC,
+        s.createdAt DESC */ select
+            se1_0.id,
+            se1_0.context,
+            se1_0.created_at,
+            se1_0.level,
+            se1_0.power,
+            se1_0.source,
+            se1_0.text,
+            se1_0.use_count 
+        from
+            situation_bank se1_0 
+        where
+            se1_0.power=? 
+            and se1_0.level=? 
+            and se1_0.context=? 
+        order by
+            se1_0.use_count,
+            se1_0.created_at desc 
+        fetch
+            first ? rows only
+2026-09-27 11:44:29.817 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        SituationEntry s 
+    WHERE
+        s.power = :power 
+        AND s.level = :level 
+        AND s.context = :context 
+    ORDER BY
+        s.useCount ASC,
+        s.createdAt DESC */ select
+            se1_0.id,
+            se1_0.context,
+            se1_0.created_at,
+            se1_0.level,
+            se1_0.power,
+            se1_0.source,
+            se1_0.text,
+            se1_0.use_count 
+        from
+            situation_bank se1_0 
+        where
+            se1_0.power=? 
+            and se1_0.level=? 
+            and se1_0.context=? 
+        order by
+            se1_0.use_count,
+            se1_0.created_at desc 
+        fetch
+            first ? rows only
+2026-09-27 11:44:29.825 [situation-replenish-1] INFO  c.s.s.situation.LlmSituationSource - LlmSituationSource: generating 12 situations (power=DOMINANT level=A1 context=PROFESSIONAL)
+2026-09-27 11:44:29.851 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.user_id=? 
+    order by
+        ps1_0.created_at desc 
+    fetch
+        first ? rows only
+2026-09-27 11:44:29.851 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.user_id=? 
+    order by
+        ps1_0.created_at desc 
+    fetch
+        first ? rows only
+2026-09-27 11:44:29.892 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.PracticeSession */insert 
+    into
+        practice_session (created_at, emotional_context, feedback, required_word, situation, style_profile_id, user_id, user_response, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:44:29.893 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.PracticeSession */insert 
+    into
+        practice_session (created_at, emotional_context, feedback, required_word, situation, style_profile_id, user_id, user_response, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:44:29.924 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.stylecommunicator.entity.SituationEntry */update situation_bank 
+    set
+        context=?,
+        level=?,
+        power=?,
+        source=?,
+        text=?,
+        use_count=? 
+    where
+        id=?
+2026-09-27 11:44:29.925 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.stylecommunicator.entity.SituationEntry */update situation_bank 
+    set
+        context=?,
+        level=?,
+        power=?,
+        source=?,
+        text=?,
+        use_count=? 
+    where
+        id=?
+2026-09-27 11:44:29.954 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:29.954 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:29.981 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=df85e8ad-a1fb-4bf9-9a33-56946fbede82, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:44:29.982 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=102a9382-7ca9-4ec7-9f65-880c9b8c9036, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:44:29.989 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:29.989 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:30.153 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:44:30.266 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:44:30.338 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Generate 12 unique communication practice scenarios.
+Language level: very simple English, short sentences, everyday vocabulary.
+Power dynamic: The user is the leader, team lead, or senior person. The other person is pushing back or causing a problem.
+Context and tone:
+Tone: professional, workplace, formal or semi-formal.
+Settings: office, team meetings, work emails, corporate environments.
+Examples: "a colleague challenges your decision in front of the team",
+          "your manager asks you to take on work outside your role",
+          "you need to push back on a deadline without damaging the relationship".
+
+FORMAT — every scenario must follow this exact structure:
+"You are the [user role]. Your [their role] [their name] just [action + medium]: \"[what they said].\" Write your reply. Goal: [what the user needs to accomplish]."
+
+Rules:
+- Match the context tone exactly — do NOT generate corporate situations for CASUAL/DRAMATIC
+- [user role] and [their role] should fit the context (friend/teammate for casual, ally/rival for dramatic, manager/colleague for professional)
+- [their name]: a realistic first name
+- Keep each scenario to 2–3 sentences max
+- Each scenario must be unique
+- Return JSON only, no markdown: {"situations": ["...", "..."]}
+, role=user}]}] as "application/json"
+2026-09-27 11:44:32.479 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:44:32.486 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:44:35.042 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/me
+2026-09-27 11:44:35.042 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/me
+2026-09-27 11:44:35.061 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:35.080 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:35.092 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:35.097 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:35.103 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:35.110 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:35.122 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:35.125 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:35.134 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:35.141 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:35.162 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/progress/me
+2026-09-27 11:44:35.162 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/progress/trend
+2026-09-27 11:44:35.164 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:35.182 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/progress/trend
+2026-09-27 11:44:35.182 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/progress/me
+2026-09-27 11:44:35.183 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:35.197 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:35.202 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:35.203 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:35.219 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/progress/trend
+2026-09-27 11:44:35.225 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:35.243 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/progress/me
+2026-09-27 11:44:35.250 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/progress/trend", parameters={}
+2026-09-27 11:44:35.260 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:35.262 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/progress/me", parameters={}
+2026-09-27 11:44:35.276 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.ProgressController#getProgress(UUID, HttpServletRequest)
+2026-09-27 11:44:35.289 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:35.290 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.ProgressController#getMyProgress(HttpServletRequest)
+2026-09-27 11:44:35.304 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:35.307 [http-nio-8080-exec-1] DEBUG o.s.web.method.HandlerMethod - Could not resolve parameter [0] in public com.stylecommunicator.controller.ProgressController$ProgressResponse com.stylecommunicator.controller.ProgressController.getProgress(java.util.UUID,jakarta.servlet.http.HttpServletRequest): Method parameter 'userId': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: trend
+2026-09-27 11:44:35.310 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.user_id,
+        up1_0.average_scores,
+        up1_0.current_level,
+        up1_0.habit_flags,
+        up1_0.last_updated,
+        up1_0.strong_areas,
+        up1_0.total_sessions,
+        up1_0.version,
+        up1_0.weak_areas 
+    from
+        user_progress up1_0 
+    where
+        up1_0.user_id=?
+2026-09-27 11:44:35.321 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:35.330 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.stylecommunicator.exception.GlobalExceptionHandler#handleTypeMismatch(MethodArgumentTypeMismatchException, HttpServletRequest)
+2026-09-27 11:44:35.351 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.user_id=? 
+    order by
+        ps1_0.created_at desc
+2026-09-27 11:44:35.360 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:35.381 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ErrorResponse[status=400, error=Bad Request, errorCode=null, message=Invalid value for 'userId': tre (truncated)...]
+2026-09-27 11:44:35.401 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [org.springframework.web.method.annotation.MethodArgumentTypeMismatchException: Method parameter 'userId': Failed to convert value of type 'java.lang.String' to required type 'java.util.UUID'; Invalid UUID string: trend]
+2026-09-27 11:44:35.402 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:35.437 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 400 BAD_REQUEST
+2026-09-27 11:44:35.461 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [ProgressResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, currentLevel=1, totalSessions=0, avera (truncated)...]
+2026-09-27 11:44:35.476 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:37.280 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:37.294 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:37.305 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:37.309 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:37.314 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:37.320 [http-nio-8080-exec-3] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:37.329 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:37.332 [http-nio-8080-exec-3] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:37.337 [http-nio-8080-exec-3] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:37.344 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:37.358 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:37.371 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:37.377 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:37.384 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:37.392 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:37.403 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:37.410 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:37.418 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:39.086 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:39.107 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:39.122 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:39.135 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:39.139 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:44:39.144 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:44:39.158 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:44:39.169 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:39.177 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:44:39.185 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:39.192 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:39.205 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:39.215 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:44:39.220 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:44:39.225 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:44:39.239 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:44:39.255 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:39.259 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:44:39.271 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:40.876 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/me
+2026-09-27 11:44:40.877 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/auth/me
+2026-09-27 11:44:40.899 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:40.913 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:40.926 [http-nio-8080-exec-9] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:40.935 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:40.945 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:40.955 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:40.974 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:40.992 [http-nio-8080-exec-9] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:41.003 [http-nio-8080-exec-9] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:41.008 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/auth/me
+2026-09-27 11:44:41.024 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:41.025 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/start
+2026-09-27 11:44:41.026 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/start
+2026-09-27 11:44:41.040 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/auth/me
+2026-09-27 11:44:41.055 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/start
+2026-09-27 11:44:41.056 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/auth/me", parameters={}
+2026-09-27 11:44:41.066 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.AuthController#me(HttpServletRequest)
+2026-09-27 11:44:41.070 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/start
+2026-09-27 11:44:41.074 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:41.080 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:41.093 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:44:41.101 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/start
+2026-09-27 11:44:41.103 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:41.110 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [AuthResponse[userId=f1799e26-1218-42d6-987c-5bc41df71146, email=shrey@gmail.com, role=USER]]
+2026-09-27 11:44:41.111 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/start", parameters={}
+2026-09-27 11:44:41.116 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:41.118 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/start
+2026-09-27 11:44:41.120 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#start(StartSessionRequest, HttpServletRequest)
+2026-09-27 11:44:41.134 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/start", parameters={}
+2026-09-27 11:44:41.140 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [StartSessionRequest[styleProfileId=a0000000-0000-4000-8000-000000000001]]
+2026-09-27 11:44:41.144 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#start(StartSessionRequest, HttpServletRequest)
+2026-09-27 11:44:41.153 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:44:41.154 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [StartSessionRequest[styleProfileId=a0000000-0000-4000-8000-000000000001]]
+2026-09-27 11:44:41.166 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:44:41.168 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.user_id,
+        up1_0.average_scores,
+        up1_0.current_level,
+        up1_0.habit_flags,
+        up1_0.last_updated,
+        up1_0.strong_areas,
+        up1_0.total_sessions,
+        up1_0.version,
+        up1_0.weak_areas 
+    from
+        user_progress up1_0 
+    where
+        up1_0.user_id=?
+2026-09-27 11:44:41.184 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.user_id,
+        up1_0.average_scores,
+        up1_0.current_level,
+        up1_0.habit_flags,
+        up1_0.last_updated,
+        up1_0.strong_areas,
+        up1_0.total_sessions,
+        up1_0.version,
+        up1_0.weak_areas 
+    from
+        user_progress up1_0 
+    where
+        up1_0.user_id=?
+2026-09-27 11:44:41.187 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(se1_0.id) 
+    from
+        situation_bank se1_0 
+    where
+        se1_0.power=? 
+        and se1_0.level=? 
+        and se1_0.context=?
+2026-09-27 11:44:41.193 [http-nio-8080-exec-6] INFO  c.s.service.SituationBankService - Stock low for power=DOMINANT level=A1 context=PROFESSIONAL — triggering async replenishment
+2026-09-27 11:44:41.201 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        count(se1_0.id) 
+    from
+        situation_bank se1_0 
+    where
+        se1_0.power=? 
+        and se1_0.level=? 
+        and se1_0.context=?
+2026-09-27 11:44:41.203 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        SituationEntry s 
+    WHERE
+        s.power = :power 
+        AND s.level = :level 
+        AND s.context = :context 
+    ORDER BY
+        s.useCount ASC,
+        s.createdAt DESC */ select
+            se1_0.id,
+            se1_0.context,
+            se1_0.created_at,
+            se1_0.level,
+            se1_0.power,
+            se1_0.source,
+            se1_0.text,
+            se1_0.use_count 
+        from
+            situation_bank se1_0 
+        where
+            se1_0.power=? 
+            and se1_0.level=? 
+            and se1_0.context=? 
+        order by
+            se1_0.use_count,
+            se1_0.created_at desc 
+        fetch
+            first ? rows only
+2026-09-27 11:44:41.219 [http-nio-8080-exec-5] INFO  c.s.service.SituationBankService - Stock low for power=DOMINANT level=A1 context=PROFESSIONAL — triggering async replenishment
+2026-09-27 11:44:41.221 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.user_id=? 
+    order by
+        ps1_0.created_at desc 
+    fetch
+        first ? rows only
+2026-09-27 11:44:41.224 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        SituationEntry s 
+    WHERE
+        s.power = :power 
+        AND s.level = :level 
+        AND s.context = :context 
+    ORDER BY
+        s.useCount ASC,
+        s.createdAt DESC */ select
+            se1_0.id,
+            se1_0.context,
+            se1_0.created_at,
+            se1_0.level,
+            se1_0.power,
+            se1_0.source,
+            se1_0.text,
+            se1_0.use_count 
+        from
+            situation_bank se1_0 
+        where
+            se1_0.power=? 
+            and se1_0.level=? 
+            and se1_0.context=? 
+        order by
+            se1_0.use_count,
+            se1_0.created_at desc 
+        fetch
+            first ? rows only
+2026-09-27 11:44:41.232 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.PracticeSession */insert 
+    into
+        practice_session (created_at, emotional_context, feedback, required_word, situation, style_profile_id, user_id, user_response, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:44:41.239 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.stylecommunicator.entity.SituationEntry */update situation_bank 
+    set
+        context=?,
+        level=?,
+        power=?,
+        source=?,
+        text=?,
+        use_count=? 
+    where
+        id=?
+2026-09-27 11:44:41.239 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.user_id=? 
+    order by
+        ps1_0.created_at desc 
+    fetch
+        first ? rows only
+2026-09-27 11:44:41.248 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:41.251 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=e9d9cfc4-313b-4e0e-82ba-1783fc9fd217, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:44:41.254 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:44:41.255 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.PracticeSession */insert 
+    into
+        practice_session (created_at, emotional_context, feedback, required_word, situation, style_profile_id, user_id, user_response, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:44:41.266 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.stylecommunicator.entity.SituationEntry */update situation_bank 
+    set
+        context=?,
+        level=?,
+        power=?,
+        source=?,
+        text=?,
+        use_count=? 
+    where
+        id=?
+2026-09-27 11:44:41.279 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:44:41.284 [http-nio-8080-exec-5] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=4b6817c0-1616-40fc-84ae-1365a36283e9, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:44:41.288 [http-nio-8080-exec-5] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:45:10.977 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:45:10.997 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:45:11.017 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:45:11.028 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:45:11.035 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit", parameters={}
+2026-09-27 11:45:11.042 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#submit(UUID, SubmitSessionRequest, HttpServletRequest)
+2026-09-27 11:45:11.057 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SubmitSessionRequest[userResponse=df  susd hdflajkd  lkjdf dlkjsd]]
+2026-09-27 11:45:11.076 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:45:11.091 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:45:11.109 [http-nio-8080-exec-8] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:45:11.115 [http-nio-8080-exec-8] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:45:11.122 [http-nio-8080-exec-8] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=You are checking whether a learner's text is a genuine attempt to respond
+to a workplace scenario, even if imperfect.
+
+Scenario:
+Someone in your team made a mistake. Talk to them about it.
+
+Learner's response:
+"df  susd hdflajkd  lkjdf dlkjsd"
+
+Decide:
+- VALID if the response addresses the scenario in any meaningful way
+  (it can be short, informal, or imperfect — it just needs to be a real attempt)
+- INVALID if the response is clearly nonsense, random characters, unrelated
+  content, or shows zero engagement with the scenario
+
+Return ONLY valid JSON, no markdown:
+{"valid": true, "reason": ""}
+or
+{"valid": false, "reason": "One friendly sentence explaining why it's not a valid response."}
+, role=user}]}] as "application/json"
+2026-09-27 11:45:13.083 [http-nio-8080-exec-8] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:45:13.086 [http-nio-8080-exec-8] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:45:13.345 [http-nio-8080-exec-8] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=698 durationMs=2237
+2026-09-27 11:45:13.348 [http-nio-8080-exec-8] DEBUG c.s.service.IntentValidationService - Intent validation LLM: valid=false reason=The response consists of random characters and does not contain any meaningful words or engagement with the scenario.
+2026-09-27 11:45:13.353 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.stylecommunicator.exception.GlobalExceptionHandler#handleIntentValidation(IntentValidationException, HttpServletRequest)
+2026-09-27 11:45:13.357 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:45:13.362 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ErrorResponse[status=422, error=Unprocessable Entity, errorCode=INTENT_VALIDATION_FAILED, message=Th (truncated)...]
+2026-09-27 11:45:13.368 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.stylecommunicator.exception.IntentValidationException: The response consists of random characters and does not contain any meaningful words or engagement with the scenario.]
+2026-09-27 11:45:13.372 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 422 UNPROCESSABLE_ENTITY
+2026-09-27 11:45:26.369 [situation-replenish-1] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=1260 durationMs=56506
+2026-09-27 11:45:26.413 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Stored 12 situations for power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:45:26.431 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.452 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.462 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.467 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.476 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.481 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.510 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.538 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.553 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.563 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.569 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.575 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:26.597 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Replenishing: power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:45:26.603 [situation-replenish-1] INFO  c.s.s.situation.LlmSituationSource - LlmSituationSource: generating 12 situations (power=DOMINANT level=A1 context=PROFESSIONAL)
+2026-09-27 11:45:26.609 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:45:26.614 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:45:26.620 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Generate 12 unique communication practice scenarios.
+Language level: very simple English, short sentences, everyday vocabulary.
+Power dynamic: The user is the leader, team lead, or senior person. The other person is pushing back or causing a problem.
+Context and tone:
+Tone: professional, workplace, formal or semi-formal.
+Settings: office, team meetings, work emails, corporate environments.
+Examples: "a colleague challenges your decision in front of the team",
+          "your manager asks you to take on work outside your role",
+          "you need to push back on a deadline without damaging the relationship".
+
+FORMAT — every scenario must follow this exact structure:
+"You are the [user role]. Your [their role] [their name] just [action + medium]: \"[what they said].\" Write your reply. Goal: [what the user needs to accomplish]."
+
+Rules:
+- Match the context tone exactly — do NOT generate corporate situations for CASUAL/DRAMATIC
+- [user role] and [their role] should fit the context (friend/teammate for casual, ally/rival for dramatic, manager/colleague for professional)
+- [their name]: a realistic first name
+- Keep each scenario to 2–3 sentences max
+- Each scenario must be unique
+- Return JSON only, no markdown: {"situations": ["...", "..."]}
+, role=user}]}] as "application/json"
+2026-09-27 11:45:28.740 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:45:28.745 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:45:28.843 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:45:28.848 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:45:28.853 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Generate 12 unique communication practice scenarios.
+Language level: very simple English, short sentences, everyday vocabulary.
+Power dynamic: The user is the leader, team lead, or senior person. The other person is pushing back or causing a problem.
+Context and tone:
+Tone: professional, workplace, formal or semi-formal.
+Settings: office, team meetings, work emails, corporate environments.
+Examples: "a colleague challenges your decision in front of the team",
+          "your manager asks you to take on work outside your role",
+          "you need to push back on a deadline without damaging the relationship".
+
+FORMAT — every scenario must follow this exact structure:
+"You are the [user role]. Your [their role] [their name] just [action + medium]: \"[what they said].\" Write your reply. Goal: [what the user needs to accomplish]."
+
+Rules:
+- Match the context tone exactly — do NOT generate corporate situations for CASUAL/DRAMATIC
+- [user role] and [their role] should fit the context (friend/teammate for casual, ally/rival for dramatic, manager/colleague for professional)
+- [their name]: a realistic first name
+- Keep each scenario to 2–3 sentences max
+- Each scenario must be unique
+- Return JSON only, no markdown: {"situations": ["...", "..."]}
+, role=user}]}] as "application/json"
+2026-09-27 11:45:29.940 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:45:29.972 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:45:37.738 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:45:37.789 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:45:37.825 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:45:37.837 [http-nio-8080-exec-2] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:45:37.840 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit", parameters={}
+2026-09-27 11:45:37.845 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#submit(UUID, SubmitSessionRequest, HttpServletRequest)
+2026-09-27 11:45:37.852 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SubmitSessionRequest[userResponse=some one in team made mistake]]
+2026-09-27 11:45:37.863 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:45:37.875 [http-nio-8080-exec-2] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:45:37.889 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:45:37.898 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:45:37.904 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=You are checking whether a learner's text is a genuine attempt to respond
+to a workplace scenario, even if imperfect.
+
+Scenario:
+Someone in your team made a mistake. Talk to them about it.
+
+Learner's response:
+"some one in team made mistake"
+
+Decide:
+- VALID if the response addresses the scenario in any meaningful way
+  (it can be short, informal, or imperfect — it just needs to be a real attempt)
+- INVALID if the response is clearly nonsense, random characters, unrelated
+  content, or shows zero engagement with the scenario
+
+Return ONLY valid JSON, no markdown:
+{"valid": true, "reason": ""}
+or
+{"valid": false, "reason": "One friendly sentence explaining why it's not a valid response."}
+, role=user}]}] as "application/json"
+2026-09-27 11:45:40.172 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:45:40.177 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:45:40.254 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:45:40.257 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:45:40.260 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=You are checking whether a learner's text is a genuine attempt to respond
+to a workplace scenario, even if imperfect.
+
+Scenario:
+Someone in your team made a mistake. Talk to them about it.
+
+Learner's response:
+"some one in team made mistake"
+
+Decide:
+- VALID if the response addresses the scenario in any meaningful way
+  (it can be short, informal, or imperfect — it just needs to be a real attempt)
+- INVALID if the response is clearly nonsense, random characters, unrelated
+  content, or shows zero engagement with the scenario
+
+Return ONLY valid JSON, no markdown:
+{"valid": true, "reason": ""}
+or
+{"valid": false, "reason": "One friendly sentence explaining why it's not a valid response."}
+, role=user}]}] as "application/json"
+2026-09-27 11:45:40.529 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:45:40.776 [http-nio-8080-exec-2] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:45:41.838 [http-nio-8080-exec-2] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=696 durationMs=3949
+2026-09-27 11:45:41.841 [http-nio-8080-exec-2] DEBUG c.s.service.IntentValidationService - Intent validation LLM: valid=false reason=
+2026-09-27 11:45:41.846 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Using @ExceptionHandler com.stylecommunicator.exception.GlobalExceptionHandler#handleIntentValidation(IntentValidationException, HttpServletRequest)
+2026-09-27 11:45:41.849 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:45:41.853 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.HttpEntityMethodProcessor - Writing [ErrorResponse[status=422, error=Unprocessable Entity, errorCode=INTENT_VALIDATION_FAILED, message=Th (truncated)...]
+2026-09-27 11:45:41.858 [http-nio-8080-exec-2] DEBUG o.s.w.s.m.m.a.ExceptionHandlerExceptionResolver - Resolved [com.stylecommunicator.exception.IntentValidationException: This doesn't appear to be a response to the situation. Try addressing what was asked in the scenario.]
+2026-09-27 11:45:41.862 [http-nio-8080-exec-2] DEBUG o.s.web.servlet.DispatcherServlet - Completed 422 UNPROCESSABLE_ENTITY
+2026-09-27 11:45:47.334 [situation-replenish-1] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=1260 durationMs=20726
+2026-09-27 11:45:47.343 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Stored 12 situations for power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:45:47.349 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.360 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.367 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.372 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.376 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.384 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.390 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.394 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.403 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.413 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.417 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.423 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:45:47.440 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Replenishing: power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:45:47.442 [situation-replenish-1] INFO  c.s.s.situation.LlmSituationSource - LlmSituationSource: generating 12 situations (power=DOMINANT level=A1 context=PROFESSIONAL)
+2026-09-27 11:45:47.448 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:45:47.454 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:45:47.459 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Generate 12 unique communication practice scenarios.
+Language level: very simple English, short sentences, everyday vocabulary.
+Power dynamic: The user is the leader, team lead, or senior person. The other person is pushing back or causing a problem.
+Context and tone:
+Tone: professional, workplace, formal or semi-formal.
+Settings: office, team meetings, work emails, corporate environments.
+Examples: "a colleague challenges your decision in front of the team",
+          "your manager asks you to take on work outside your role",
+          "you need to push back on a deadline without damaging the relationship".
+
+FORMAT — every scenario must follow this exact structure:
+"You are the [user role]. Your [their role] [their name] just [action + medium]: \"[what they said].\" Write your reply. Goal: [what the user needs to accomplish]."
+
+Rules:
+- Match the context tone exactly — do NOT generate corporate situations for CASUAL/DRAMATIC
+- [user role] and [their role] should fit the context (friend/teammate for casual, ally/rival for dramatic, manager/colleague for professional)
+- [their name]: a realistic first name
+- Keep each scenario to 2–3 sentences max
+- Each scenario must be unique
+- Return JSON only, no markdown: {"situations": ["...", "..."]}
+, role=user}]}] as "application/json"
+2026-09-27 11:45:59.902 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:45:59.908 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:46:03.994 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:46:04.009 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:46:04.026 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:46:04.038 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit
+2026-09-27 11:46:04.041 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/submit", parameters={}
+2026-09-27 11:46:04.046 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#submit(UUID, SubmitSessionRequest, HttpServletRequest)
+2026-09-27 11:46:04.053 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Read "application/json;charset=UTF-8" to [SubmitSessionRequest[userResponse=some one in team made mistake then i will try to console<EOL>]]
+2026-09-27 11:46:04.059 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:46:04.070 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:46:04.082 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:46:04.085 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:46:04.091 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=You are checking whether a learner's text is a genuine attempt to respond
+to a workplace scenario, even if imperfect.
+
+Scenario:
+Someone in your team made a mistake. Talk to them about it.
+
+Learner's response:
+"some one in team made mistake then i will try to console"
+
+Decide:
+- VALID if the response addresses the scenario in any meaningful way
+  (it can be short, informal, or imperfect — it just needs to be a real attempt)
+- INVALID if the response is clearly nonsense, random characters, unrelated
+  content, or shows zero engagement with the scenario
+
+Return ONLY valid JSON, no markdown:
+{"valid": true, "reason": ""}
+or
+{"valid": false, "reason": "One friendly sentence explaining why it's not a valid response."}
+, role=user}]}] as "application/json"
+2026-09-27 11:46:04.988 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:46:04.998 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:46:06.052 [http-nio-8080-exec-6] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=723 durationMs=1971
+2026-09-27 11:46:06.057 [http-nio-8080-exec-6] DEBUG c.s.service.IntentValidationService - Intent validation LLM: valid=true reason=
+2026-09-27 11:46:06.064 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:46:06.073 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:46:06.114 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Style:DOM|F9|SP|pat:direct,noHedge|avoid:sorry,maybe
+
+The style above is the TARGET the user is deliberately practicing —
+it is not a generic "professional" baseline. Score every dimension
+relative to that target style, not against generic corporate norms.
+
+For example: if the target style is blunt, sarcastic, or
+confrontational (e.g. a "roaster" persona), a response that is
+blunt and sarcastic should score HIGH on professionalism and
+emotional_control if it executes that style well and stays
+purposeful — do not penalize it for lacking diplomacy or warmth
+it was never meant to have. Only score those dimensions low if
+the response is genuinely out of control, incoherent, or
+actually undermines the user's own goal in the situation —
+not simply because it doesn't sound polite.
+
+Situation: Someone in your team made a mistake. Talk to them about it.
+Required word: "respectfully"
+Emotional context: enthusiastic
+User: "some one in team made mistake then i will try to console
+"
+Score 0-100 relative to the target style above: confidence, tone,
+persuasion, emotional_control, professionalism, style_match.
+Return JSON:
+{"scores":{"confidence":85},"grammar_notes":[],"misinterpretation_warnings":[]}
+, role=user}]}] as "application/json"
+2026-09-27 11:46:07.954 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:46:07.960 [http-nio-8080-exec-6] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:46:38.159 [http-nio-8080-exec-6] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=1205 durationMs=32096
+2026-09-27 11:46:38.194 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:46:38.252 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        up1_0.user_id,
+        up1_0.average_scores,
+        up1_0.current_level,
+        up1_0.habit_flags,
+        up1_0.last_updated,
+        up1_0.strong_areas,
+        up1_0.total_sessions,
+        up1_0.version,
+        up1_0.weak_areas 
+    from
+        user_progress up1_0 
+    where
+        up1_0.user_id=?
+2026-09-27 11:46:38.322 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.stylecommunicator.entity.PracticeSession */update practice_session 
+    set
+        created_at=?,
+        emotional_context=?,
+        feedback=?,
+        required_word=?,
+        situation=?,
+        style_profile_id=?,
+        user_id=?,
+        user_response=? 
+    where
+        id=?
+2026-09-27 11:46:38.353 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.user_id=? 
+    order by
+        ps1_0.created_at desc 
+    fetch
+        first ? rows only
+2026-09-27 11:46:38.383 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.UserProgress */insert 
+    into
+        user_progress (average_scores, current_level, habit_flags, last_updated, strong_areas, total_sessions, version, weak_areas, user_id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:46:38.420 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:46:38.424 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=4b6817c0-1616-40fc-84ae-1365a36283e9, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:46:38.430 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:46:45.343 [http-nio-8080-exec-5] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9
+2026-09-27 11:46:45.360 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9
+2026-09-27 11:46:45.377 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:46:45.386 [http-nio-8080-exec-7] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9
+2026-09-27 11:46:45.390 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9", parameters={}
+2026-09-27 11:46:45.393 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#get(UUID)
+2026-09-27 11:46:45.397 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:46:45.409 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:46:45.412 [http-nio-8080-exec-7] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=4b6817c0-1616-40fc-84ae-1365a36283e9, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:46:45.416 [http-nio-8080-exec-7] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:46:45.430 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9
+2026-09-27 11:46:45.441 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:46:45.450 [http-nio-8080-exec-8] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9
+2026-09-27 11:46:45.452 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9", parameters={}
+2026-09-27 11:46:45.455 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#get(UUID)
+2026-09-27 11:46:45.458 [http-nio-8080-exec-8] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:46:45.465 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:46:45.468 [http-nio-8080-exec-8] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [SessionResponse[id=4b6817c0-1616-40fc-84ae-1365a36283e9, userId=f1799e26-1218-42d6-987c-5bc41df71146 (truncated)...]
+2026-09-27 11:46:45.471 [http-nio-8080-exec-8] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:47:00.848 [situation-replenish-1] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=1260 durationMs=73401
+2026-09-27 11:47:00.860 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Stored 12 situations for power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:47:00.871 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.877 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.884 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.893 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.901 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.907 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.912 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.917 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.920 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.924 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.930 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.938 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:00.956 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Replenishing: power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:47:00.960 [situation-replenish-1] INFO  c.s.s.situation.LlmSituationSource - LlmSituationSource: generating 12 situations (power=DOMINANT level=A1 context=PROFESSIONAL)
+2026-09-27 11:47:00.967 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:47:00.972 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:47:00.972 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Generate 12 unique communication practice scenarios.
+Language level: very simple English, short sentences, everyday vocabulary.
+Power dynamic: The user is the leader, team lead, or senior person. The other person is pushing back or causing a problem.
+Context and tone:
+Tone: professional, workplace, formal or semi-formal.
+Settings: office, team meetings, work emails, corporate environments.
+Examples: "a colleague challenges your decision in front of the team",
+          "your manager asks you to take on work outside your role",
+          "you need to push back on a deadline without damaging the relationship".
+
+FORMAT — every scenario must follow this exact structure:
+"You are the [user role]. Your [their role] [their name] just [action + medium]: \"[what they said].\" Write your reply. Goal: [what the user needs to accomplish]."
+
+Rules:
+- Match the context tone exactly — do NOT generate corporate situations for CASUAL/DRAMATIC
+- [user role] and [their role] should fit the context (friend/teammate for casual, ally/rival for dramatic, manager/colleague for professional)
+- [their name]: a realistic first name
+- Keep each scenario to 2–3 sentences max
+- Each scenario must be unique
+- Return JSON only, no markdown: {"situations": ["...", "..."]}
+, role=user}]}] as "application/json"
+2026-09-27 11:47:02.432 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:47:02.436 [situation-replenish-1] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:47:24.304 [http-nio-8080-exec-10] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/rewrites
+2026-09-27 11:47:24.350 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Securing POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/rewrites
+2026-09-27 11:47:24.380 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:47:24.390 [http-nio-8080-exec-4] DEBUG o.s.security.web.FilterChainProxy - Secured POST /api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/rewrites
+2026-09-27 11:47:24.402 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - POST "/api/sessions/4b6817c0-1616-40fc-84ae-1365a36283e9/rewrites", parameters={}
+2026-09-27 11:47:24.409 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.SessionController#rewrites(UUID, HttpServletRequest)
+2026-09-27 11:47:24.417 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:47:24.436 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        sp1_0.id,
+        sp1_0.avoid_patterns,
+        sp1_0.compressed_prompt,
+        sp1_0.created_at,
+        sp1_0.created_by,
+        sp1_0.emotional_range,
+        sp1_0.formality_level,
+        sp1_0.key_patterns,
+        sp1_0.name,
+        sp1_0.power_dynamic,
+        sp1_0.raw_description,
+        sp1_0.sample_phrases,
+        sp1_0.sentence_structure,
+        sp1_0.source,
+        sp1_0.vocabulary_tier 
+    from
+        style_profile sp1_0 
+    where
+        sp1_0.id=?
+2026-09-27 11:47:24.446 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:47:24.455 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:47:24.458 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Rewrite the user's response to be more assertive, then more diplomatic.
+Original: "some one in team made mistake then i will try to console
+"
+Target style: DOMINANT, formal 9.
+Return JSON: {"assertive":"...","diplomatic":"..."}
+, role=user}]}] as "application/json"
+2026-09-27 11:47:35.223 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:47:35.228 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:47:36.229 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - HTTP POST https://openrouter.ai/api/v1/chat/completions
+2026-09-27 11:47:36.232 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Accept=[text/plain, application/json, application/yaml, application/*+json, */*]
+2026-09-27 11:47:36.239 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Writing [{temperature=0.3, response_format={type=json_object}, model=openrouter/free, messages=[{content=Rewrite the user's response to be more assertive, then more diplomatic.
+Original: "some one in team made mistake then i will try to console
+"
+Target style: DOMINANT, formal 9.
+Return JSON: {"assertive":"...","diplomatic":"..."}
+, role=user}]}] as "application/json"
+2026-09-27 11:47:36.832 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Response 200 OK
+2026-09-27 11:47:36.835 [http-nio-8080-exec-4] DEBUG o.s.web.client.RestTemplate - Reading to [java.lang.String] as "application/json"
+2026-09-27 11:47:39.280 [http-nio-8080-exec-4] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=QUALITY promptChars=228 durationMs=14834
+2026-09-27 11:47:39.290 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:47:39.307 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    select
+        ps1_0.id,
+        ps1_0.created_at,
+        ps1_0.emotional_context,
+        ps1_0.feedback,
+        ps1_0.required_word,
+        ps1_0.situation,
+        ps1_0.style_profile_id,
+        ps1_0.user_id,
+        ps1_0.user_response 
+    from
+        practice_session ps1_0 
+    where
+        ps1_0.id=?
+2026-09-27 11:47:39.322 [http-nio-8080-exec-4] DEBUG org.hibernate.SQL - 
+    /* update
+        for com.stylecommunicator.entity.PracticeSession */update practice_session 
+    set
+        created_at=?,
+        emotional_context=?,
+        feedback=?,
+        required_word=?,
+        situation=?,
+        style_profile_id=?,
+        user_id=?,
+        user_response=? 
+    where
+        id=?
+2026-09-27 11:47:39.336 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:47:39.340 [http-nio-8080-exec-4] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [{assertive=When a team member errs, I address the failure directly and implement corrective measures (truncated)...]
+2026-09-27 11:47:39.348 [http-nio-8080-exec-4] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:47:52.229 [situation-replenish-1] INFO  c.s.aop.LlmCallLoggingAspect - LLM call succeeded tier=FAST promptChars=1260 durationMs=51263
+2026-09-27 11:47:52.235 [situation-replenish-1] INFO  c.s.s.s.SituationSourceRouter - Stored 12 situations for power=DOMINANT level=A1 context=PROFESSIONAL
+2026-09-27 11:47:52.246 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.253 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.259 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.264 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.268 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.273 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.278 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.284 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.290 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.296 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.302 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:52.307 [situation-replenish-1] DEBUG org.hibernate.SQL - 
+    /* insert for
+        com.stylecommunicator.entity.SituationEntry */insert 
+    into
+        situation_bank (context, created_at, level, power, source, text, use_count, id) 
+    values
+        (?, ?, ?, ?, ?, ?, ?, ?)
+2026-09-27 11:47:59.560 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:47:59.571 [http-nio-8080-exec-3] DEBUG o.s.security.web.FilterChainProxy - Securing OPTIONS /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:47:59.578 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:47:59.591 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:47:59.602 [http-nio-8080-exec-1] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:47:59.605 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:47:59.610 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:47:59.619 [http-nio-8080-exec-1] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:47:59.628 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:47:59.632 [http-nio-8080-exec-1] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:47:59.636 [http-nio-8080-exec-1] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 11:47:59.647 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Securing GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:47:59.659 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    select
+        au1_0.id,
+        au1_0.active,
+        au1_0.created_at,
+        au1_0.email,
+        au1_0.password_hash,
+        au1_0.role 
+    from
+        app_user au1_0 
+    where
+        au1_0.id=?
+2026-09-27 11:47:59.670 [http-nio-8080-exec-6] DEBUG o.s.security.web.FilterChainProxy - Secured GET /api/styles/library?source=PRESET%2CUSER_DESCRIBED
+2026-09-27 11:47:59.675 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - GET "/api/styles/library?source=PRESET%2CUSER_DESCRIBED", parameters={masked}
+2026-09-27 11:47:59.680 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestMappingHandlerMapping - Mapped to com.stylecommunicator.controller.StyleController#library(String)
+2026-09-27 11:47:59.690 [http-nio-8080-exec-6] DEBUG org.hibernate.SQL - 
+    /* SELECT
+        s 
+    FROM
+        StyleProfile s 
+    WHERE
+        s.source IN :sources 
+    ORDER BY
+        s.name ASC */ select
+            sp1_0.id,
+            sp1_0.avoid_patterns,
+            sp1_0.compressed_prompt,
+            sp1_0.created_at,
+            sp1_0.created_by,
+            sp1_0.emotional_range,
+            sp1_0.formality_level,
+            sp1_0.key_patterns,
+            sp1_0.name,
+            sp1_0.power_dynamic,
+            sp1_0.raw_description,
+            sp1_0.sample_phrases,
+            sp1_0.sentence_structure,
+            sp1_0.source,
+            sp1_0.vocabulary_tier 
+        from
+            style_profile sp1_0 
+        where
+            sp1_0.source in (?, ?) 
+        order by
+            sp1_0.name
+2026-09-27 11:47:59.704 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Using 'application/json', given [*/*] and supported [application/json, application/*+json, application/yaml]
+2026-09-27 11:47:59.714 [http-nio-8080-exec-6] DEBUG o.s.w.s.m.m.a.RequestResponseBodyMethodProcessor - Writing [[StyleProfileDto[id=a0000000-0000-4000-8000-000000000001, name=Assertive CEO, source=PRESET, vocabul (truncated)...]
+2026-09-27 11:47:59.721 [http-nio-8080-exec-6] DEBUG o.s.web.servlet.DispatcherServlet - Completed 200 OK
+2026-09-27 12:04:29.212 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Shutdown initiated...
+2026-09-27 12:04:29.222 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-StyleCommunicator - Shutdown completed.

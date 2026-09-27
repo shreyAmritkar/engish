@@ -79,6 +79,32 @@ export type RivalEntry = {
   sharedBestScore: number;
 };
 
+export type DimensionTrend = {
+  dimension: string;
+  earlierAverage: number;
+  recentAverage: number;
+  delta: number;
+  direction: "IMPROVED" | "DECLINED" | "STEADY";
+};
+
+/**
+ * "Past you vs now" — mirrors ProgressTrendService.TrendResult on the backend.
+ * mode tells you which comparison was actually used, so the UI never claims
+ * a timeframe ("three weeks ago") the data doesn't support:
+ *  - CALENDAR: real 14–21-day-ago vs last-7-days comparison
+ *  - FALLBACK: not enough calendar spacing yet, oldest-third vs newest-third instead
+ *  - NOT_ENOUGH_HISTORY: fewer than 6 sessions total — dimensions is empty
+ */
+export type TrendResult = {
+  mode: "CALENDAR" | "FALLBACK" | "NOT_ENOUGH_HISTORY";
+  headline: string;
+  timeframeLabel: string | null;
+  dimensions: DimensionTrend[];
+  hasEnoughHistory: boolean;
+  sessionCount: number;
+  sessionsNeeded: number;
+};
+
 // ── HTTP helper ───────────────────────────────────────────────────────────────
 
 async function request<T>(path: string, options: RequestInit = {}): Promise<T> {
@@ -213,6 +239,8 @@ export const api = {
     }),
 
   getProgress: () => request<ProgressData>("/api/progress/me"),
+
+  getTrend: () => request<TrendResult>("/api/progress/trend"),
 
   getRivals: () => request<RivalEntry[]>("/api/leaderboard/rivals"),
 };

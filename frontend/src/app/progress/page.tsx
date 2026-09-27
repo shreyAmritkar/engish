@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { api, ProgressData } from "@/lib/api";
+import { api, ProgressData, TrendResult } from "@/lib/api";
 import { ScoreRadar } from "@/components/ScoreRadar";
+import { TrendCard } from "@/components/TrendCard";
 import { useAuth } from "@/hooks/useAuth";
 import { parseApiError } from "@/lib/errors";
 import { ErrorBanner } from "@/components/ui/ErrorBanner";
@@ -16,12 +17,21 @@ export default function ProgressDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const [trend, setTrend] = useState<TrendResult | null>(null);
+
   useEffect(() => {
     if (!ready) return;
     api.getProgress()
       .then(setData)
       .catch((e) => setError(parseApiError(e)))
       .finally(() => setLoading(false));
+
+    // Fetched independently on purpose: this is a nice-to-have on top of
+    // the core progress page, so a failure here should never block or
+    // error out the rest of the dashboard.
+    api.getTrend()
+      .then(setTrend)
+      .catch(() => setTrend(null));
   }, [ready]);
 
   if (!ready) return null;
@@ -64,6 +74,8 @@ export default function ProgressDashboard() {
         </div>
         <p className="text-xs text-slate mt-1">{data.totalSessions} sessions completed</p>
       </section>
+
+      {trend && <TrendCard trend={trend} />}
 
       {Object.keys(avgScores).length > 0 && (
         <section className="rounded-xl border bg-white p-6">

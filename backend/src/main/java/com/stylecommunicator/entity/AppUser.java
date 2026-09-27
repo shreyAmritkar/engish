@@ -24,6 +24,9 @@ public class AppUser {
     @Column(name = "created_at")
     private Instant createdAt = Instant.now();
 
+    @Column(nullable = false)
+    private boolean active = true;
+
     // ── Getters / Setters ──────────────────────────────────────────────────
 
     public UUID getId() { return id; }
@@ -40,4 +43,7 @@ public class AppUser {
 
     public Instant getCreatedAt() { return createdAt; }
     public void setCreatedAt(Instant createdAt) { this.createdAt = createdAt; }
+
+    public boolean isActive() { return active; }
+    public void setActive(boolean active) { this.active = active; }
 }

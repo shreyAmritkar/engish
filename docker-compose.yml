@@ -3,7 +3,7 @@ version: "3.9"
 services:
   db:
     image: postgres:16-alpine
-    container_name: style_db
+    container_name: style_db1
     environment:
       POSTGRES_DB: stylecommunicator
       POSTGRES_USER: postgres
@@ -22,16 +22,19 @@ services:
     build:
       context: ./backend
       dockerfile: Dockerfile
-    container_name: style_backend
+    container_name: style_backend1
     env_file:
       - ./backend/.env
     environment:
       DATABASE_URL: jdbc:postgresql://db:5432/stylecommunicator
       DB_USER: postgres
       DB_PASSWORD: postgres
+      SPRING_PROFILES_ACTIVE: dev
       PORT: 8080
     ports:
       - "8080:8080"
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       db:
         condition: service_healthy

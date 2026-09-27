@@ -1,5 +1,7 @@
 package com.stylecommunicator.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 import com.stylecommunicator.dto.StartSessionRequest;
 import com.stylecommunicator.dto.SubmitSessionRequest;
 import com.stylecommunicator.entity.PracticeSession;
@@ -11,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.Map;
 import java.util.UUID;
 
+@Tag(name = "Sessions", description = "Practice session lifecycle: start, submit, rewrite, coaching tip.")
 @RestController
 @RequestMapping("/api/sessions")
 public class SessionController {

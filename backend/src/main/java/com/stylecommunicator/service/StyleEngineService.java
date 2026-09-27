@@ -100,7 +100,7 @@ public class StyleEngineService {
                   "avoid_patterns": ["pattern1"],
                   "sample_phrases": ["phrase1"]
                 }
-                """.formatted(truncate(description, 1500));
+                """.formatted(truncate(description, 2000));
 
         try {
             return llmClient.generateJson(prompt, LlmTier.FAST);

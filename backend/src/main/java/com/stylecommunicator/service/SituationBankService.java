@@ -8,6 +8,7 @@ import com.stylecommunicator.service.situation.SituationSourceRouter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 public class SituationBankService {
@@ -36,17 +38,25 @@ public class SituationBankService {
         "align", "decision", "timeline", "support", "outcome"
     );
 
+    // All known buckets — used only by the BACKGROUND pre-load sweep below.
+    private static final List<String> ALL_POWERS   = List.of("DOMINANT", "EQUAL", "SUBMISSIVE");
+    private static final List<String> ALL_LEVELS   = List.of("A1", "A2", "B1", "B2");
+    private static final List<String> ALL_CONTEXTS = List.of("PROFESSIONAL", "CASUAL", "DRAMATIC");
+
     private final SituationRepository repository;
     private final PracticeSessionRepository practiceSessionRepository;
     private final SituationSourceRouter router;
+    private final SituationLoadingService loadingService;
     private final Random rng = new Random();
 
     public SituationBankService(SituationRepository repository,
                                 PracticeSessionRepository practiceSessionRepository,
-                                SituationSourceRouter router) {
+                                SituationSourceRouter router,
+                                SituationLoadingService loadingService) {
         this.repository = repository;
         this.practiceSessionRepository = practiceSessionRepository;
         this.router = router;
+        this.loadingService = loadingService;
     }
 
     // ── Backward-compatible overload ──────────────────────────────────────
@@ -100,6 +110,53 @@ public class SituationBankService {
         chosen.setUseCount(chosen.getUseCount() + 1);
         repository.save(chosen);
         return chosen.getText();
+    }
+
+    // ── BACKGROUND loading strategy ─────────────────────────────────────────
+    //
+    // ON_DEMAND (default): the reactive check inside pickSituation() above is
+    // the only replenishment path — a bucket only gets topped up once a real
+    // request actually finds it low.
+    //
+    // BACKGROUND: this sweep proactively tops up every bucket ahead of time,
+    // so a real request is less likely to ever hit the reactive low-stock
+    // path. It's a no-op unless an admin has switched the strategy via
+    // SituationLoadingService — see AdminController's
+    // /api/admin/settings/situation-loading endpoint.
+    //
+    // Runs every 15 minutes; that's slow enough that a bucket topped up by
+    // one sweep won't still be low by the next one, and it stays well under
+    // situationReplenishExecutor's small queue (core=1, max=2, capacity=10 —
+    // see AsyncConfig) even when every one of the 36 buckets needs a refill
+    // on the very first run.
+    @Scheduled(fixedDelay = 15 * 60 * 1000)
+    public void backgroundReplenishSweep() {
+        if (!loadingService.shouldPreLoadInBackground()) {
+            return;
+        }
+
+        int triggered = 0;
+        for (String power : ALL_POWERS) {
+            for (String level : ALL_LEVELS) {
+                for (String context : ALL_CONTEXTS) {
+                    if (repository.countByPowerAndLevelAndContext(power, level, context) < LOW_STOCK_THRESHOLD) {
+                        try {
+                            router.replenishAsync(power, level, context);
+                            triggered++;
+                        } catch (RejectedExecutionException e) {
+                            // Executor's queue is full — the reactive path in
+                            // pickSituation() will pick this bucket back up
+                            // next time a real request needs it.
+                            log.warn("Replenish executor busy, skipping power={} level={} context={} this sweep",
+                                    power, level, context);
+                        }
+                    }
+                }
+            }
+        }
+        if (triggered > 0) {
+            log.info("Background sweep: triggered replenishment for {} low-stock buckets", triggered);
+        }
     }
 
     public String pickRequiredWord() {

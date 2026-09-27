@@ -24,13 +24,14 @@ class SituationBankServiceTest {
     @Mock private SituationRepository       repository;
     @Mock private PracticeSessionRepository practiceSessionRepository;
     @Mock private SituationSourceRouter     router;
+    @Mock private SituationLoadingService   loadingService;
     private SituationBankService service;
 
     private final UUID USER = UUID.randomUUID();
 
     @BeforeEach
     void setUp() {
-        service = new SituationBankService(repository, practiceSessionRepository, router);
+        service = new SituationBankService(repository, practiceSessionRepository, router, loadingService);
         lenient().when(practiceSessionRepository.findTop20ByUserIdOrderByCreatedAtDesc(any()))
             .thenReturn(List.of());
     }
@@ -236,6 +237,43 @@ class SituationBankServiceTest {
     void pickEmotionalContext_neverReturnsBlank() {
         for (int i = 0; i < 20; i++)
             assertFalse(service.pickEmotionalContext().isBlank());
+    }
+
+    // ── BACKGROUND pre-load sweep ────────────────────────────────────────
+
+    @Test
+    void backgroundReplenishSweep_noOpWhenStrategyIsOnDemand() {
+        when(loadingService.shouldPreLoadInBackground()).thenReturn(false);
+
+        service.backgroundReplenishSweep();
+
+        verifyNoInteractions(repository, router);
+    }
+
+    @Test
+    void backgroundReplenishSweep_replenishesOnlyLowStockBuckets() {
+        when(loadingService.shouldPreLoadInBackground()).thenReturn(true);
+        // Every bucket "well stocked" except DOMINANT/B2/CASUAL
+        when(repository.countByPowerAndLevelAndContext(anyString(), anyString(), anyString()))
+            .thenReturn(999L);
+        when(repository.countByPowerAndLevelAndContext("DOMINANT", "B2", "CASUAL"))
+            .thenReturn(5L);
+
+        service.backgroundReplenishSweep();
+
+        verify(router, times(1)).replenishAsync("DOMINANT", "B2", "CASUAL");
+        verify(router, never()).replenishAsync(eq("EQUAL"), anyString(), anyString());
+    }
+
+    @Test
+    void backgroundReplenishSweep_skipsBucketWhenExecutorQueueIsFull() {
+        when(loadingService.shouldPreLoadInBackground()).thenReturn(true);
+        when(repository.countByPowerAndLevelAndContext(anyString(), anyString(), anyString()))
+            .thenReturn(0L);
+        doThrow(new java.util.concurrent.RejectedExecutionException("queue full"))
+            .when(router).replenishAsync(anyString(), anyString(), anyString());
+
+        assertDoesNotThrow(() -> service.backgroundReplenishSweep());
     }
 
     // ── Helper ────────────────────────────────────────────────────────────

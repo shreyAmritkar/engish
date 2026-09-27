@@ -4,6 +4,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -174,6 +176,40 @@ public class GlobalExceptionHandler {
                         HttpStatus.UNPROCESSABLE_ENTITY,
                         "INTENT_VALIDATION_FAILED",
                         ex.getMessage(),
+                        req.getRequestURI()));
+    }
+
+    // ── Database constraint races ──────────────────────────────────────────────
+
+    /**
+     * Thrown when a DB-level unique/foreign-key constraint is violated —
+     * most notably the app_user.email unique constraint (V5 migration) when
+     * two concurrent registrations race past AuthController's existsByEmail
+     * pre-check. That pre-check narrows the window but can't close it, so
+     * this is the real guard.
+     */
+    @ExceptionHandler(DataIntegrityViolationException.class)
+    public ResponseEntity<ErrorResponse> handleDataIntegrityViolation(
+            DataIntegrityViolationException ex, HttpServletRequest req) {
+        log.warn("Data integrity violation at {}: {}", req.getRequestURI(), ex.getMostSpecificCause().getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(HttpStatus.CONFLICT,
+                        "This request conflicts with existing data (e.g. an email that's already registered).",
+                        req.getRequestURI()));
+    }
+
+    /**
+     * Thrown by Spring Data's @Version-based optimistic locking (see
+     * UserProgress.version) when a row was updated by another request
+     * between this request's read and write.
+     */
+    @ExceptionHandler(OptimisticLockingFailureException.class)
+    public ResponseEntity<ErrorResponse> handleOptimisticLocking(
+            OptimisticLockingFailureException ex, HttpServletRequest req) {
+        log.warn("Optimistic locking failure at {}: {}", req.getRequestURI(), ex.getMessage());
+        return ResponseEntity.status(HttpStatus.CONFLICT)
+                .body(ErrorResponse.of(HttpStatus.CONFLICT,
+                        "This record was updated by another request. Please retry.",
                         req.getRequestURI()));
     }
 

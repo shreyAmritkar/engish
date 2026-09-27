@@ -1,0 +1,39 @@
+spring:
+  application:
+    name: style-communicator (DEV)
+
+  # No datasource override here — dev still uses the same real Postgres from
+  # application.yml (via docker-compose), not an in-memory DB. An H2
+  # in-memory swap here would (a) wipe all data on every restart, breaking
+  # any dummy-data demo setup, and (b) fail outright anyway: the Flyway
+  # migrations use Postgres-only syntax (gen_random_uuid(), JSONB) that H2
+  # doesn't support without extra compatibility config nobody set up here.
+
+  # ============ JPA - Show SQL for local debugging ============
+  jpa:
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# ============ Logging - Debug level, but never bound parameters ============
+# BasicBinder is deliberately NOT set to TRACE here (or anywhere) — it logs
+# every bound SQL parameter verbatim, including user emails and full
+# practice-session text, to the console/log file. hibernate.SQL DEBUG (just
+# the statement shape) is enough for local debugging.
+logging:
+  level:
+    root: INFO
+    com.stylecommunicator: DEBUG
+    org.springframework.web: DEBUG
+    org.springframework.security: DEBUG
+    org.hibernate.SQL: DEBUG
+
+# ============ Server - Full error details for local debugging ============
+server:
+  error:
+    include-message: always
+    include-binding-errors: always
+    include-exception: true
+    include-stacktrace: always
+  port: 8080

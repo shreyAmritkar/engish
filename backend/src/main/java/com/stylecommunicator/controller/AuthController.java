@@ -1,5 +1,9 @@
 package com.stylecommunicator.controller;
 
+import io.swagger.v3.oas.annotations.tags.Tag;
+
+import com.stylecommunicator.dto.LoginRequest;
+import com.stylecommunicator.dto.RegisterRequest;
 import com.stylecommunicator.entity.AppUser;
 import com.stylecommunicator.repository.AppUserRepository;
 import com.stylecommunicator.security.JwtService;
@@ -7,9 +11,6 @@ import com.stylecommunicator.util.CookieUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +18,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import java.util.UUID;
 
+@Tag(name = "Auth", description = "Register, login, logout - cookie-based JWT.")
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -37,16 +39,8 @@ public class AuthController {
     }
 
     // ── DTOs ──────────────────────────────────────────────────────────────────
-
-    public record RegisterRequest(
-            @NotBlank @Email String email,
-            @NotBlank @Size(min = 8, message = "Password must be at least 8 characters") String password
-    ) {}
-
-    public record LoginRequest(
-            @NotBlank @Email String email,
-            @NotBlank String password
-    ) {}
+    // RegisterRequest / LoginRequest live in dto/ (shared validation, reused
+    // wherever an admin or test needs the same request shape).
 
     /**
      * Token is NOT returned in the body — it lives in the HttpOnly cookie.
@@ -88,6 +82,10 @@ public class AuthController {
 
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Invalid credentials");
+        }
+
+        if (!user.isActive()) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "This account has been deactivated");
         }
 
         String token = jwtService.generateToken(user.getId(), user.getEmail(), user.getRole());
