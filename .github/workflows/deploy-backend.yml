@@ -43,7 +43,7 @@ jobs:
           DATABASE_URL: jdbc:postgresql://localhost:5432/stylecommunicator_test
           DB_USER: postgres
           DB_PASSWORD: postgres
-          PORT: 10000
+          PORT: 8080
           LLM_PROVIDER: openrouter
           OPENROUTER_API_KEY: dummy-for-tests
         run: mvn -B verify

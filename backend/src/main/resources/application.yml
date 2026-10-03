@@ -59,7 +59,7 @@ spring:
 
 # ============ Server Configuration ============
 server:
-  port: ${PORT:10000}
+  port: ${PORT:8080}
   tomcat:
     threads:
       max: 200

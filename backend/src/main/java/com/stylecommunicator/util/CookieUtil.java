@@ -25,13 +25,6 @@ public class CookieUtil {
         cookie.setSecure(appProperties.isCookieSecure()); // HTTPS only on prod
         cookie.setPath("/");
         cookie.setMaxAge(MAX_AGE);
-        // SameSite=None: required because frontend (Vercel) and backend (Render)
-        // are different domains, so every API call is a cross-site request.
-        // SameSite=Lax silently drops the cookie on cross-site fetch/XHR POSTs
-        // (it only allows top-level navigation GETs), which is why auth worked
-        // on permitAll() GET endpoints but failed with 403 on POST endpoints
-        // requiring authentication. SameSite=None REQUIRES Secure=true, which
-        // is already true in production (Render serves over HTTPS).
         cookie.setAttribute("SameSite", appProperties.isCookieSecure() ? "None" : "Lax");
         response.addCookie(cookie);
     }
